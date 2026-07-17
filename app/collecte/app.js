@@ -25,7 +25,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v190";
+const APP_VERSION = "v191";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle).
@@ -964,19 +964,21 @@ async function renderMergePanel() {
   const box = $("#lang-merge-panel");
   if (!box) return;
   const langs = visibleLanguages(knownLanguages());
+  // Interpole {a}/{b} dans un libellé i18n en ÉCHAPPANT les noms (données), sans
+  // toucher au gabarit (qui contient un <b> voulu).
+  const tm = (key, a, b) => t(key).replace("{a}", escapeHtml(a || "?")).replace("{b}", escapeHtml(b || "?"));
   let html = "";
 
   // (1) Confirmations en attente (les DEUX déclarants doivent valider).
   let pending = [];
   try { pending = await mergesForDevice(deviceId()); } catch (e) { pending = []; }
   for (const m of pending) {
-    const na = escapeHtml(m.nom_a || m.id_a || "?"), nb = escapeHtml(m.nom_b || m.id_b || "?");
     const pid = escapeHtml(m.id_prop || "");
     html += `<div class="merge-item merge-item--ask">
-      <p class="merge-q">Quelqu'un pense que <b>${na}</b> et <b>${nb}</b> sont la même langue. Est-ce le cas ?</p>
+      <p class="merge-q">${tm("merge.ask", m.nom_a || m.id_a, m.nom_b || m.id_b)}</p>
       <div class="merge-actions">
-        <button class="btn btn--next merge-yes" type="button" data-prop="${pid}">Oui, les fusionner</button>
-        <button class="chip chip--btn merge-no" type="button" data-prop="${pid}">Non, distinctes</button>
+        <button class="btn btn--next merge-yes" type="button" data-prop="${pid}">${escapeHtml(t("merge.yes"))}</button>
+        <button class="chip chip--btn merge-no" type="button" data-prop="${pid}">${escapeHtml(t("merge.no"))}</button>
       </div></div>`;
   }
 
@@ -987,10 +989,24 @@ async function renderMergePanel() {
     const pc = pickCanonical(p.a, p.b);
     if (!pc.canonical || !pc.other) continue;
     html += `<div class="merge-item merge-item--sugg">
-      <p class="merge-q"><b>${escapeHtml(p.a.nom)}</b> et <b>${escapeHtml(p.b.nom)}</b> se ressemblent beaucoup. Est-ce la même langue ?</p>
+      <p class="merge-q">${tm("merge.sugg", p.a.nom, p.b.nom)}</p>
       <div class="merge-actions">
         <button class="chip chip--btn merge-propose" type="button"
-                data-other="${escapeHtml(pc.other.id)}" data-canon="${escapeHtml(pc.canonical.id)}">Proposer la fusion</button>
+                data-other="${escapeHtml(pc.other.id)}" data-canon="${escapeHtml(pc.canonical.id)}">${escapeHtml(t("merge.propose"))}</button>
+      </div></div>`;
+  }
+
+  // (3) Proposition MANUELLE : choisir DEUX langues quelconques et proposer de les
+  // réunir (couvre le cas où le moteur ne les a pas rapprochées). Dès 2 langues.
+  if (langs.length >= 2) {
+    const opts = `<option value="">${escapeHtml(t("merge.manual.pick"))}</option>` +
+      langs.map((l) => `<option value="${escapeHtml(l.id)}">${escapeHtml(l.nom)}</option>`).join("");
+    html += `<div class="merge-item merge-item--manual">
+      <p class="merge-q">${escapeHtml(t("merge.manual.hint"))}</p>
+      <div class="merge-manual-row">
+        <select id="merge-sel-a" class="merge-sel" aria-label="${escapeHtml(t("merge.manual.h"))} 1">${opts}</select>
+        <select id="merge-sel-b" class="merge-sel" aria-label="${escapeHtml(t("merge.manual.h"))} 2">${opts}</select>
+        <button id="merge-manual-go" class="chip chip--btn" type="button">${escapeHtml(t("merge.propose"))}</button>
       </div></div>`;
   }
 
@@ -999,6 +1015,19 @@ async function renderMergePanel() {
   box.querySelectorAll(".merge-yes").forEach((b) => b.addEventListener("click", () => respondToMerge(b.dataset.prop, "oui")));
   box.querySelectorAll(".merge-no").forEach((b) => b.addEventListener("click", () => respondToMerge(b.dataset.prop, "non")));
   box.querySelectorAll(".merge-propose").forEach((b) => b.addEventListener("click", () => proposeToMerge(b.dataset.other, b.dataset.canon)));
+  const go = $("#merge-manual-go");
+  if (go) go.addEventListener("click", onManualMerge);
+}
+
+/** Proposition MANUELLE : l'utilisateur choisit deux langues et propose de les réunir. */
+async function onManualMerge() {
+  const a = ($("#merge-sel-a") || {}).value, b = ($("#merge-sel-b") || {}).value;
+  if (!a || !b || a === b) { toast(t("merge.same"), "warn"); return; }
+  const langs = visibleLanguages(knownLanguages());
+  const la = langs.find((l) => l.id === a), lb = langs.find((l) => l.id === b);
+  if (!la || !lb) { toast(t("merge.same"), "warn"); return; }
+  const pc = pickCanonical(la, lb);
+  await proposeToMerge(pc.other.id, pc.canonical.id);
 }
 
 async function respondToMerge(pid, valeur) {
@@ -1007,11 +1036,11 @@ async function respondToMerge(pid, valeur) {
   try { r = await respondMerge({ id_prop: pid, device_id: deviceId(), valeur: valeur }); } catch (e) { r = null; }
   if (r && r.ok) {
     toast(valeur === "oui"
-      ? (r.statut === "confirmee" ? "Langues fusionnées ✓" : "Merci, en attente de l'autre déclarant.")
-      : "Noté : langues distinctes.", "ok");
+      ? (r.statut === "confirmee" ? t("merge.done") : t("merge.pending"))
+      : t("merge.distinct"), "ok");
     await refreshLanguagesThenRender();
   } else {
-    toast("Action impossible pour le moment (connexion ?).", "warn");
+    toast(t("merge.fail"), "warn");
   }
 }
 async function proposeToMerge(otherId, canonId) {
@@ -1019,10 +1048,10 @@ async function proposeToMerge(otherId, canonId) {
   let r = null;
   try { r = await proposeMerge({ id_a: otherId, id_b: canonId, id_canonique: canonId, device_id: deviceId() }); } catch (e) { r = null; }
   if (r && r.ok) {
-    toast(r.statut === "confirmee" ? "Langues fusionnées ✓" : "Proposition envoyée : les déclarants vont confirmer.", "ok");
+    toast(r.statut === "confirmee" ? t("merge.done") : t("merge.sent"), "ok");
     await refreshLanguagesThenRender();
   } else {
-    toast((r && r.error) ? r.error : "Proposition impossible pour le moment (connexion ?).", "warn");
+    toast((r && r.error) ? r.error : t("merge.fail"), "warn");
   }
 }
 /** Recharge le registre distant (avec l'état de fusion à jour) puis re-rend l'écran. */
@@ -1496,6 +1525,7 @@ const TOURS = {
     { sel: "#lang-search", title: "Chercher une langue", text: "Tape le nom d'une langue, une région ou un pays : la liste se filtre à mesure que tu écris. Bien pratique quand beaucoup de langues sont déjà déclarées, pour retrouver la tienne d'un coup d'œil" },
     { sel: "#lang-declare-btn", title: "Déclarer ta langue", text: "Si ta langue n'apparaît pas encore dans la liste, ce bouton ouvre un court formulaire pour la créer. Elle devient aussitôt disponible pour toi et pour toute personne qui la parle : LANGA est fait pour accueillir toutes nos langues" },
     { sel: "#lang-grid", title: "Choisir ta langue", text: "Chaque carte est une langue déjà présente : touche-la pour contribuer dans cette langue. Le ngiemboon a son clavier dédié avec les tons ; les autres s'écrivent avec le clavier habituel de ton téléphone en attendant le leur" },
+    { sel: "#lang-merge-panel", title: "Réunir les doublons", text: "Deux personnes ont parfois créé la même langue sous des écritures différentes. LANGA te le signale ici : tu peux confirmer une fusion qu'on te propose, accepter une ressemblance repérée automatiquement, ou choisir toi-même deux langues que tu sais identiques et proposer de les réunir. La fusion n'a lieu qu'avec l'accord des personnes concernées, et rien n'est perdu : les orthographes et les régions des deux sont conservées" },
     { sel: "#ld-nom", title: "Le nom de la langue", text: "Écris le nom sous lequel ta langue est connue. Pendant que tu tapes, LANGA compare avec les langues déjà déclarées pour t'éviter de créer un doublon sous une orthographe un peu différente" },
     { sel: "#ld-pays", title: "Le pays", text: "Le pays où la langue est parlée. On part du plus large, le pays, avant de préciser la région : cela situe d'emblée la langue sur la carte" },
     { sel: "#ld-region", title: "Où on la parle", text: "La région ou la localité, plus précise que le pays. Deux langues de noms proches mais de régions éloignées sont sans doute distinctes, et cette précision aide à ne pas les confondre" },

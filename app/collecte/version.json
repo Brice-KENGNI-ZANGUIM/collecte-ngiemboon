@@ -1,6 +1,10 @@
 {
-  "version": "v190",
+  "version": "v191",
   "changelog": {
+    "v191": [
+      "Réunion de langues en double : en plus des ressemblances repérées automatiquement, tu peux maintenant proposer toi-même de réunir deux langues que tu sais identiques",
+      "Le panneau de réunion des langues est traduit (français et anglais) et expliqué dans l'aide guidée"
+    ],
     "v190": [
       "Jumelage de langues : LANGA repère les langues déclarées en double (mêmes langues sous des orthographes ou régions différentes) et propose de les réunir",
       "Deux personnes qui ont créé la même langue peuvent la fusionner : chacune confirme « c'est bien la même », et les deux fiches sont réunies sans rien perdre (orthographes gardées comme autres noms, régions et pays cumulés)",
