@@ -27,11 +27,14 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v193";
+const APP_VERSION = "v194";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
-// Vue affichée (pour la visite guidée contextuelle).
-let _currentView = "profile";
+// Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
+// aucune vue n'est encore rendue, donc le garde d'idempotence de routeTo() ne doit pas
+// court-circuiter la 1re route (bug : défaut « profile » vidait #/profil après rechargement,
+// notamment à la bascule de langue). showView() renseigne la vraie vue dès le 1er rendu.
+let _currentView = null;
 let _aboutReturn = "hub"; // vue vers laquelle « ← Retour » ramène depuis À propos
 
 // --- Identité de l'appareil (persistante) --------------------------------

@@ -1,6 +1,10 @@
 {
-  "version": "v193",
+  "version": "v194",
   "changelog": {
+    "v194": [
+      "Correction : sur la page « Mon profil », changer de langue laissait parfois la page vide ; désormais chaque page se réaffiche correctement après un changement de langue",
+      "Beaucoup plus de nombres à traduire : de quelques dizaines à plus de 150 (dizaines, centaines, milliers, millions, ordinaux, fractions), chacun affiché aussi en anglais"
+    ],
     "v193": [
       "Mode anglais complet : quand tu choisis l'anglais, tout le site s'affiche en anglais (boutons, menus, aide, visite guidée), et le mot ou la phrase à traduire s'affiche aussi en anglais. Les francophones gardent le français",
       "Partager une traduction ou une prononciation crée un message clair avec un lien qui ouvre directement ce mot sur le site, pour inviter d'autres personnes à l'écouter, le vérifier ou l'enrichir",

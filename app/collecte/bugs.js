@@ -12,6 +12,16 @@
 // Auteur : Brice Kengni Zanguim
 export const BUGS = [
   {
+    id: "BUG-010", titre: "Page vide après changement de langue sur « Mon profil »",
+    titre_en: "Blank page after switching language on “My profile”",
+    description: "Sur la page « Mon profil », changer la langue (français ↔ anglais) rechargeait la page mais laissait le corps vide ; il fallait cliquer sur un bouton du menu pour réafficher une page.",
+    description_en: "On the “My profile” page, switching language (French ↔ English) reloaded the page but left the body blank; you had to click a menu button to show a page again.",
+    statut: "resolu", severite: "majeur", zone: "Interface", zone_en: "Interface",
+    detecte_le: "2026-07-18", resolu_le: "2026-07-18", version: "v194",
+    correctif: "La page affichée « par défaut » au démarrage était le profil, ce qui trompait la protection anti-doublon du menu et empêchait le réaffichage. Corrigé par un état de départ neutre : chaque page se réaffiche correctement après un changement de langue.",
+    correctif_en: "The page shown “by default” at startup was the profile, which fooled the navigation's duplicate guard and prevented redisplay. Fixed with a neutral start state: every page redisplays correctly after a language change.",
+  },
+  {
     id: "BUG-001", titre: "Certains envois ne partaient pas (données)",
     titre_en: "Some sends didn't go through (data)",
     description: "En cliquant sur « Envoyer les données » avec beaucoup de contributions, quelques-unes étaient comptées comme échouées alors qu'elles avaient bien été enregistrées : le résultat de l'envoi était mal interprété.",
