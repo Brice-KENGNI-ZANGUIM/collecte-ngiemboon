@@ -1,0 +1,802 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>LANGA · Collecte des langues</title>
+  <meta name="theme-color" content="#f4f8fc" />
+  <meta name="description" content="LANGA : plateforme communautaire pour numériser les langues d'Afrique, en texte et en voix. Transcris, traduis, explore, gratuitement." />
+  <!-- Open Graph : aperçu de lien (Facebook, WhatsApp, X…). Sans ces balises, les
+       réseaux « devinent » et affichent une image au hasard de la page. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="LANGA" />
+  <meta property="og:title" content="LANGA : Numériser les langues d'Afrique, texte et voix" />
+  <meta property="og:description" content="Plateforme communautaire pour numériser nos langues, en texte et en voix. Transcris, traduis, explore, gratuitement." />
+  <meta property="og:url" content="https://brice-kengni-zanguim.github.io/langa/app/collecte/" />
+  <meta property="og:image" content="https://brice-kengni-zanguim.github.io/langa/app/collecte/og-cover.jpg" />
+  <meta property="og:image:secure_url" content="https://brice-kengni-zanguim.github.io/langa/app/collecte/og-cover.jpg" />
+  <meta property="og:image:type" content="image/jpeg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="LANGA : numériser les langues d'Afrique, texte et voix" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="LANGA : Numériser les langues d'Afrique, texte et voix" />
+  <meta name="twitter:description" content="Plateforme communautaire pour numériser nos langues, en texte et en voix. Transcris, traduis, explore, gratuitement." />
+  <meta name="twitter:image" content="https://brice-kengni-zanguim.github.io/langa/app/collecte/og-cover.jpg" />
+  <!-- Thème posé AVANT le premier rendu (clair par défaut) → aucun flash. -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem("ng-theme");
+        if (t !== "dark" && t !== "light") t = "light";
+        document.documentElement.setAttribute("data-theme", t);
+      } catch (e) { document.documentElement.setAttribute("data-theme", "light"); }
+    })();
+  </script>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icons/logo.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <link rel="stylesheet" href="../keyboard/ngiemboon-keyboard.css" />
+  <link rel="stylesheet" href="./fonts.css" />
+  <link rel="stylesheet" href="./app.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand brand--home" id="brand-home" role="link" tabindex="0"
+         title="Revenir à l'accueil" aria-label="Revenir à l'accueil : Traduire, Transcrire, Explorer">
+      <span class="brand-mark"><img src="./icons/logo.svg" alt="LANGA" width="52" height="52" /></span>
+      <div class="brand-txt">
+        <h1>LANGA <span class="brand-sub">· Collecte</span></h1>
+        <p class="tagline" data-i18n="tagline">Numériser les langues d'Afrique, texte et voix, par leurs communautés</p>
+      </div>
+    </div>
+    <!-- Header en 2 niveaux : NAV (boutons d'action, avec texte) sur une ligne, MÉTA
+         (état + version + langue + thème) sur l'autre. Cf. .topbar en grille. -->
+    <div class="chips-nav">
+      <button id="home-link" class="chip chip--btn" type="button"
+              title="Retour à l'accueil" aria-label="Retour à l'accueil"><img class="chip-ico" src="icons/ui/hi-home.svg" alt="" aria-hidden="true"><span data-i18n="chip.home">Accueil</span></button>
+      <button id="lang-chip" class="chip chip--btn" type="button" hidden
+              title="Changer de langue" aria-label="Changer de langue"><img class="chip-ico" src="icons/ui/hi-lang.svg" alt="" aria-hidden="true"><span id="lang-chip-name">Langue</span></button>
+      <button id="about-link" class="chip chip--btn" type="button"
+              title="À propos du projet" aria-label="À propos du projet"><img class="chip-ico" src="icons/ui/hi-about.svg" alt="" aria-hidden="true"><span data-i18n="chip.about">À propos</span></button>
+      <button id="help-btn" class="chip chip--btn" type="button"
+              title="Visite guidée de cette page" aria-label="Visite guidée"><img class="chip-ico" src="icons/ui/hi-help.svg" alt="" aria-hidden="true"><span data-i18n="chip.help">Aide</span></button>
+      <button id="bugs-link" class="chip chip--btn" type="button"
+              title="Suivi des bugs" aria-label="Suivi des bugs"><img class="chip-ico" src="icons/ui/hi-bug.svg" alt="" aria-hidden="true"><span data-i18n="chip.bugs">Bugs</span></button>
+      <button id="btn-open-profile" class="chip chip--btn" type="button" hidden><img class="chip-ico" src="icons/ui/hi-profile.svg" alt="" aria-hidden="true"><span data-i18n="chip.profile">Mon profil</span></button>
+      <!-- Outils (version + langue d'interface + thème) : poussés À DROITE de la ligne
+           de nav (margin-left:auto). Ils basculent proprement à la ligne suivante,
+           toujours alignés à droite, quand la nav déborde. -->
+      <div class="chips-tools">
+        <span id="app-ver" class="chip chip--ghost" title="Version de l'application"></span>
+        <button id="ui-lang-toggle" class="chip chip--btn" type="button" data-i18n="chip.ui" data-i18n-title="chip.ui.title"
+                title="Switch to English" aria-label="Switch to English">EN</button>
+        <button id="theme-toggle" class="chip chip--btn" type="button"
+                title="Basculer clair / sombre" aria-label="Basculer clair / sombre"><img class="chip-ico" src="icons/ui/hi-theme.svg" alt="" aria-hidden="true"></button>
+      </div>
+    </div>
+    <div class="chips-meta">
+      <span id="net" class="chip">…</span>
+      <span id="srv" class="chip">…</span>
+      <span id="srv-stats" class="chip chip--ghost"></span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- Navigation permanente entre les espaces (masquée sur profil et accueil) -->
+    <nav id="main-nav" class="main-nav" hidden>
+      <div class="nav-tabs" role="tablist" aria-label="Espaces">
+        <button id="tab-transcrire" class="nav-tab" type="button"><img class="nav-ico" src="icons/mic-real.png" alt="" aria-hidden="true"><span data-i18n="nav.transcribe">Transcrire</span></button>
+        <button id="tab-traduire" class="nav-tab" type="button"><img class="nav-ico" src="icons/act-translate.svg" alt="" aria-hidden="true"><span data-i18n="nav.translate">Traduire</span></button>
+        <button id="tab-explorer" class="nav-tab" type="button"><img class="nav-ico" src="icons/act-explore.svg" alt="" aria-hidden="true"><span data-i18n="nav.explore">Explorer</span></button>
+      </div>
+      <div class="nav-right">
+        <span class="welcome" id="welcome-user"></span>
+      </div>
+    </nav>
+
+    <!-- ============= VUE 0 : CHOIX DE LA LANGUE (1er accès + à tout moment) ====== -->
+    <section id="view-lang" class="view" hidden>
+      <div class="hub-head"><h2 class="view-title" id="lang-title" data-i18n="lang.title">Choisis ta langue 🌍</h2></div>
+      <p class="hub-vision" data-i18n="lang.intro">LANGA est une plateforme communautaire où chaque langue s'enrichit
+        des traductions et des voix de celles et ceux qui la parlent. Choisis la tienne, ou
+        déclare-la si elle n'existe pas encore, pour que d'autres puissent l'enrichir avec toi.</p>
+      <!-- Contrôles TOUJOURS visibles en haut (avant la grille) : recherche + le
+           bouton « déclarer ma langue » bien distinct, pour ne pas avoir à faire
+           défiler toute la liste (utile quand les langues se multiplient). -->
+      <div class="lang-controls">
+        <div class="lang-search-row">
+          <input id="lang-search" class="lang-search" type="search" autocomplete="off"
+                 placeholder="Rechercher une langue (nom, région…)" data-i18n-ph="lang.search.ph"
+                 aria-label="Rechercher une langue" />
+          <button id="lang-search-btn" class="lang-btn lang-search-btn" type="button">
+            <span aria-hidden="true">🔎</span>
+            <span data-i18n="lang.search.go">Rechercher</span>
+          </button>
+        </div>
+        <button id="lang-declare-btn" class="lang-btn lang-declare-cta" type="button">
+          <span aria-hidden="true">➕</span>
+          <span data-i18n="lang.add">Déclarer ma langue</span>
+        </button>
+      </div>
+      <!-- Jumelage de langues (Phase C) : confirmations en attente pour ce contributeur
+           et suggestions de fusion de doublons probables. Rempli par renderMergePanel(). -->
+      <div id="lang-merge-panel" class="lang-merge-panel" hidden></div>
+      <div id="lang-grid" class="lang-grid" role="list"></div>
+      <p id="lang-empty" class="lang-empty" data-i18n="lang.search.none" hidden>Aucune langue ne correspond. Tu peux la déclarer ci-dessus.</p>
+      <div id="lang-declare" class="lang-declare card" hidden>
+        <h3 data-i18n="lang.declare.h">➕ Déclarer une nouvelle langue</h3>
+        <p class="lang-declare-hint" data-i18n="lang.declare.hint">Elle deviendra aussitôt visible et enrichissable par toute la communauté.</p>
+        <div class="grid2">
+          <label class="field"><span data-i18n="lang.f.nom">Nom de la langue *</span>
+            <input id="ld-nom" type="text" placeholder="ex. Bassa" autocomplete="off" maxlength="40" /></label>
+          <label class="field"><span data-i18n="lang.f.pays">Pays (optionnel)</span>
+            <input id="ld-pays" type="text" placeholder="ex. Cameroun" autocomplete="off" maxlength="40" /></label>
+          <label class="field"><span data-i18n="lang.f.region">Région / localité *</span>
+            <input id="ld-region" type="text" placeholder="ex. Ouest (Bamiléké)" autocomplete="off" maxlength="60" /></label>
+          <label class="field"><span data-i18n="lang.f.autonym">Autonyme (optionnel)</span>
+            <input id="ld-autonyme" type="text" placeholder="le nom dans la langue elle-même" data-i18n-ph="lang.f.autonym.ph" autocomplete="off" maxlength="40" /></label>
+          <label class="field"><span data-i18n="lang.f.alias">Autres noms / orthographes (optionnel)</span>
+            <input id="ld-alias" type="text" placeholder="ex. Nguiembor, Nguiembow" data-i18n-ph="lang.f.alias.ph" autocomplete="off" maxlength="120" /></label>
+          <label class="field"><span data-i18n="lang.f.famille">Famille / groupe (optionnel)</span>
+            <input id="ld-famille" type="text" placeholder="ex. bamiléké, bantou" data-i18n-ph="lang.f.famille.ph" autocomplete="off" maxlength="60" /></label>
+          <label class="field field--wide"><span data-i18n="lang.f.note">Note sur l'alphabet (optionnel)</span>
+            <input id="ld-note" type="text" placeholder="lettres ou tons particuliers (futur clavier dédié)" data-i18n-ph="lang.f.note.ph" autocomplete="off" maxlength="140" /></label>
+        </div>
+        <!-- Suggestions de langues DÉJÀ présentes qui ressemblent (anti-doublon), rempli en JS -->
+        <div id="ld-similar" class="ld-similar" hidden></div>
+        <p id="ld-error" class="lang-declare-err" hidden></p>
+        <div class="lang-declare-actions">
+          <button id="ld-cancel" class="chip chip--btn" type="button" data-i18n="lang.cancel">Annuler</button>
+          <button id="ld-submit" class="btn btn--next" type="button" data-i18n="lang.submit">Créer et donner voix →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ VUE AMORCE SONORE : premières voix d'une langue créée ======== -->
+    <section id="view-amorce" class="view" hidden>
+      <div class="card amorce">
+        <h2 class="view-title" id="amorce-title">Donne voix à ta langue 🎙️</h2>
+        <p class="amorce-intro" id="amorce-intro" data-i18n-html="amorce.intro">Ta langue est <b>créée</b> ✓.
+          Pour lui donner ses toutes premières voix, enregistre-toi en prononçant quelques mots de
+          base. Vise au moins <b id="amorce-min">5</b> mots, mais tu peux t'arrêter quand tu veux,
+          car tout ce que tu enregistres est gardé.</p>
+
+        <div class="amorce-progress" aria-hidden="false">
+          <div class="amorce-bar"><span id="amorce-bar-fill" class="amorce-bar-fill"></span></div>
+          <div class="amorce-count"><b id="amorce-done">0</b> <span data-i18n="amorce.done.sep">/</span>
+            <span id="amorce-goal">5</span> <span data-i18n="amorce.done.min">minimum</span></div>
+        </div>
+
+        <div class="amorce-word">
+          <span class="amorce-word-cat" id="amorce-cat"></span>
+          <span class="amorce-word-fr" id="amorce-fr">…</span>
+          <span class="amorce-word-hint" data-i18n="amorce.word.hint">Prononce ce mot à voix haute dans ta langue</span>
+        </div>
+
+        <div class="amorce-rec">
+          <button id="amorce-rec-btn" class="btn btn--rec" type="button" data-i18n="amorce.rec">● Enregistrer</button>
+          <span id="amorce-rec-status" class="amorce-rec-status" aria-live="polite"></span>
+          <audio id="amorce-audio" class="amorce-audio" controls hidden></audio>
+        </div>
+
+        <div class="amorce-actions">
+          <button id="amorce-skip" class="chip chip--btn" type="button" data-i18n="amorce.skip">Passer ce mot</button>
+          <button id="amorce-validate" class="btn btn--primary" type="button" disabled data-i18n="amorce.validate">Valider &amp; suivant →</button>
+          <button id="amorce-finish" class="btn btn--next" type="button" data-i18n="amorce.finish">J'ai terminé</button>
+        </div>
+        <p id="amorce-note" class="amorce-note" hidden></p>
+      </div>
+    </section>
+
+    <!-- ================= VUE 1 : PROFIL (accueil obligatoire / édition) ========= -->
+    <section id="view-profile" class="view" hidden>
+      <div class="card contrib">
+        <h2 class="view-title" id="profile-title">Bienvenue 👋</h2>
+        <p class="contrib-why" data-i18n-html="p.intro">Avant de commencer, renseigne ton profil. Ces informations servent
+          à <b>te créditer</b> comme contributeur et à <b>revenir vers toi</b> si une traduction
+          demande une précision. Elles sont enregistrées sur ton appareil : tu ne les saisiras
+          qu'une seule fois. <span class="req">* obligatoire</span></p>
+        <div class="grid2">
+          <label class="field">
+            <span data-i18n-html="p.nom">Nom <span class="req">*</span></span>
+            <input id="c-nom" type="text" placeholder="Ton nom" data-i18n-ph="p.nom.ph" autocomplete="family-name" />
+          </label>
+          <label class="field">
+            <span data-i18n-html="p.prenom">Prénom <span class="req">*</span></span>
+            <input id="c-prenom" type="text" placeholder="Ton prénom" data-i18n-ph="p.prenom.ph" autocomplete="given-name" />
+          </label>
+          <div class="field">
+            <span data-i18n-html="p.village">Village / variante <span class="req">*</span></span>
+            <div class="combo" id="village-combo">
+              <input id="c-village" type="text" autocomplete="off" data-i18n-ph="p.village.ph"
+                     placeholder="Choisis dans la liste ou tape ton village / quartier" />
+              <button type="button" id="village-toggle" class="combo-toggle" aria-label="Voir la liste">▾</button>
+              <ul id="village-list" class="combo-list" hidden></ul>
+            </div>
+          </div>
+          <div class="field">
+            <span data-i18n-html="p.role">Rôle <span class="req">*</span></span>
+            <select id="c-role">
+              <option value="" disabled selected data-i18n="p.role.choose">Choisir…</option>
+              <option value="natif" data-i18n="p.role.natif">Locuteur natif</option>
+              <option value="apprenant" data-i18n="p.role.apprenant">Apprenant</option>
+              <option value="linguiste" data-i18n="p.role.linguiste">Linguiste</option>
+            </select>
+          </div>
+          <label class="field">
+            <span data-i18n-html="p.email">E-mail <span class="req">*</span></span>
+            <input id="c-email" type="text" inputmode="email" placeholder="ton@email.com" data-i18n-ph="p.email.ph" autocomplete="off" />
+          </label>
+          <div class="field">
+            <span data-i18n-html="p.tel">Téléphone (avec indicatif) <span class="req">*</span></span>
+            <div class="tel-row">
+              <select id="c-indicatif" class="tel-ind" aria-label="Indicatif du pays"></select>
+              <input id="c-tel" type="text" inputmode="tel" class="tel-num" placeholder="6XX XX XX XX" autocomplete="off" />
+            </div>
+          </div>
+          <div class="field field--langs">
+            <span data-i18n-html="p.langs">Mes langues d'appartenance
+              <span class="hint-inline">(touche une langue pour l'ajouter, retouche-la pour en faire la principale)</span></span>
+            <div id="profile-langs" class="lang-chips" role="group" aria-label="Mes langues"></div>
+          </div>
+          <label class="field field--check field--consent">
+            <input id="c-consent" type="checkbox" />
+            <span data-i18n-html="p.consent">J'accepte que mes contributions (texte et voix) servent à documenter et outiller la
+              langue, et qu'on puisse me contacter à ce sujet. <span class="req">*</span></span>
+          </label>
+          <label class="field field--check field--credit">
+            <input id="c-credit-on" type="checkbox" />
+            <span data-i18n-html="p.credit">J'autorise l'affichage de mon nom sur mes contributions dans la
+              <b>bibliothèque publique</b>. <span class="hint-inline">(facultatif, sinon tu restes anonyme)</span></span>
+          </label>
+          <div class="field" id="credit-format-wrap" hidden>
+            <span data-i18n="p.credit.label">Nom affiché dans la bibliothèque</span>
+            <select id="c-credit-format">
+              <option value="prenom" data-i18n="p.credit.prenom">Prénom seul</option>
+              <option value="sigle" data-i18n="p.credit.sigle">Sigle (ex. « Brice K.Z. »)</option>
+            </select>
+            <span class="credit-preview" id="credit-preview"></span>
+          </div>
+        </div>
+        <div class="actions profile-actions">
+          <button id="btn-profile-continue" class="btn btn--primary" type="button" disabled data-i18n="profile.continue">Continuer →</button>
+          <button id="btn-profile-cancel" class="btn" type="button" hidden data-i18n="profile.cancel">Annuler</button>
+          <p id="profile-lock" class="lock-hint" hidden data-i18n="profile.lock">🔒 Complète tous les champs obligatoires
+            (marqués <span class="req">*</span>) pour continuer.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== VUE HUB : « Que veux-tu faire ? » ==================== -->
+    <section id="view-hub" class="view" hidden>
+      <div class="hub-head">
+        <h2 class="view-title" id="hub-title">Que veux-tu faire ? 👋</h2>
+        <p class="contrib-why" data-i18n="hub.choose">Choisis une activité pour commencer. Tu passeras de l'une à l'autre
+          quand tu veux, grâce au menu en haut.</p>
+        <p class="hub-vision" data-i18n-html="hub.vision">LANGA numérise <b>nos langues d'Afrique</b>, texte et voix. Le <b>ngiemboon</b> est la plus avancée, avec son clavier dédié ; d'autres langues sont déjà ouvertes et tu peux déclarer la tienne. Tout le monde peut y contribuer.</p>
+      </div>
+      <div class="ndop-sep" aria-hidden="true"><i></i></div>
+      <div class="hub-cards">
+        <button class="hub-card" type="button" data-go="transcribe">
+          <span class="hub-card-head">
+            <img class="hub-ico" src="icons/mic-real.png" alt="" aria-hidden="true">
+            <span class="hub-name" data-i18n="hub.card.transcribe">Transcrire</span>
+          </span>
+          <span class="hub-desc">Enregistre ta voix qui prononce un mot ou une phrase en ngiemboon.
+            Le texte peut t'être proposé : la voix est l'essentiel.</span>
+          <span class="hub-go" data-i18n="hub.start">Commencer →</span>
+        </button>
+        <button class="hub-card" type="button" data-go="translate">
+          <span class="hub-card-head">
+            <img class="hub-ico" src="icons/act-translate.svg" alt="" aria-hidden="true">
+            <span class="hub-name" data-i18n="hub.card.translate">Traduire</span>
+          </span>
+          <span class="hub-desc">Donne la traduction d'un mot ou d'une phrase (français ↔ ngiemboon).
+            Tu peux ajouter ta voix, c'est un plus.</span>
+          <span class="hub-go" data-i18n="hub.start">Commencer →</span>
+        </button>
+        <button class="hub-card" type="button" data-go="explore">
+          <span class="hub-card-head">
+            <img class="hub-ico" src="icons/act-explore.svg" alt="" aria-hidden="true">
+            <span class="hub-name" data-i18n="hub.card.explore">Explorer</span>
+          </span>
+          <span class="hub-desc" data-i18n="hub.card.explore.desc">Parcours les contributions déjà faites : apprends, écoute les
+            prononciations, propose des améliorations.</span>
+          <span class="hub-go" data-i18n="hub.open">Ouvrir →</span>
+        </button>
+      </div>
+      <div class="hub-share">
+        <span class="share-lead" data-i18n="share.hub">Aide nos langues à rayonner, partage LANGA :</span>
+        <div class="share-mount" id="share-hub"></div>
+      </div>
+    </section>
+
+    <!-- ============== VUE OUTILS : Traduire / Transcrire =================== -->
+    <section id="view-app" class="view" hidden data-act="translate">
+      <div class="work-head">
+        <h2 class="view-title view-title--ico"><img id="work-ico" class="title-ico" src="icons/act-translate.svg" alt="" aria-hidden="true"><span id="work-title">Traduire</span></h2>
+        <p class="work-help" id="work-help"></p>
+      </div>
+
+    <!-- Sens de traduction -->
+    <div class="card" id="work-card">
+      <div class="mode-toggle" role="group" aria-label="Mode de saisie">
+        <button id="mode-prop" class="dir-btn" data-i18n="work.mode.proposed">Se faire proposer un mot</button>
+        <button id="mode-libre" class="dir-btn" data-i18n="work.mode.free">Écrire moi-même</button>
+      </div>
+
+      <div class="prop-bar" id="prop-bar">
+        <label class="prop-catwrap"><span id="prop-cat-label">À traduire :</span>
+          <select id="prop-cat" class="prop-cat"></select>
+        </label>
+        <span id="prop-progress" class="prop-progress"></span>
+        <button id="prop-next" class="btn btn--next" type="button">Prochain mot →</button>
+      </div>
+
+      <div class="dir-toggle" id="dir-toggle" role="group" aria-label="Sens de traduction">
+        <button id="dir-fr2nge" class="dir-btn">Français → Ngiemboon</button>
+        <button id="dir-nge2fr" class="dir-btn">Ngiemboon → Français</button>
+      </div>
+
+      <div class="field zone zone--source" id="source-wrap">
+        <span class="field-label"><span id="lbl-source">Mot / phrase</span>
+          <span id="tag-source" class="lang-tag">FR</span></span>
+        <textarea id="source" rows="2" placeholder="Saisis ici…"
+          spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+      </div>
+
+      <div class="field zone zone--target" id="target-wrap">
+        <span class="field-label"><span id="lbl-target">Traduction</span>
+          <span id="tag-target" class="lang-tag">NGE</span>
+          <button id="tr-guide-open-t" class="mini tr-guide-open" type="button" data-i18n="tr.guide.open">📋 Revoir les consignes</button></span>
+        <textarea id="target" rows="2" placeholder="Traduction…"
+          spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+        <!-- Le clavier ngiemboon est déplacé ici ou sous #source selon le sens -->
+        <div class="kb-block" id="kb-block">
+          <!-- Clavier masqué par défaut : s'ouvre quand on touche le champ ngiemboon
+               (ou via ce bouton), se referme en touchant ailleurs. -->
+          <button type="button" id="kb-open-btn" class="kb-open-btn">⌨ Ouvrir le clavier ngiemboon</button>
+          <div class="kb-panel" id="kb-panel">
+            <div class="kb-bar">
+              <span id="kb-host-label" class="kb-label">Clavier ngiemboon</span>
+              <div class="kb-bar-right">
+                <label class="switch-row" for="tips-toggle">Aide phonétique
+                  <span class="switch"><input id="tips-toggle" type="checkbox" checked role="switch" />
+                    <span class="slider"></span></span>
+                </label>
+                <button type="button" id="kb-close-btn" class="kb-close-btn" aria-label="Fermer le clavier">✕ Fermer</button>
+              </div>
+            </div>
+            <!-- Zone d'aide phonétique : affiche la lettre pressée (phonétique +
+                 exemple) quand l'aide est activée, au lieu d'une info-bulle au survol -->
+            <div id="tip-panel" class="tip-panel" aria-live="polite"></div>
+            <!-- Barre de suggestions (clavier prédictif ngiemboon) : mots RÉELS
+                 proposés à la frappe, façon clavier de téléphone. Masquée s'il
+                 n'y a rien à proposer. -->
+            <div id="kb-suggest" class="kb-suggest" aria-live="polite" hidden></div>
+            <div id="kb-host" class="kb-host"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <label class="field">
+          <span data-i18n="work.domaine">Domaine (facultatif)</span>
+          <input id="domaine" type="text" placeholder="ex. parenté, nourriture, nature…" data-i18n-ph="work.domaine.ph" />
+        </label>
+        <label class="field">
+          <span data-i18n="work.note">Note (facultatif)</span>
+          <input id="note" type="text" placeholder="registre, contexte d'emploi…" data-i18n-ph="work.note.ph" />
+        </label>
+      </div>
+
+      <!-- Audio (zone encadrée à part) -->
+      <div class="zone zone--audio">
+        <span class="field-label audio-label"><span id="lbl-audio">Transcription audio</span>
+          <span id="tag-audio" class="lang-tag">NGE</span></span>
+        <div class="audio-row">
+          <button id="btn-rec" class="btn btn--rec" type="button">🎙️ <span>Enregistrer l'audio</span></button>
+          <span id="rec-timer" class="rec-timer" hidden aria-live="polite">00:00</span>
+          <span id="rec-state" class="rec-state"></span>
+          <div id="audio-preview" class="audio-preview"></div>
+          <button id="btn-clear-audio" class="mini" type="button" hidden>retirer</button>
+          <button id="btn-mic-test" class="mini" type="button">🔎 Tester le micro</button>
+          <button id="tr-guide-open" class="mini tr-guide-open" type="button" data-i18n="tr.guide.open">📋 Revoir les consignes</button>
+        </div>
+        <div id="mic-diag" class="mic-diag" hidden></div>
+      </div>
+
+      <div class="actions">
+        <button id="btn-save" class="btn btn--primary" type="button" data-i18n="work.save">Enregistrer la contribution</button>
+        <p id="save-lock" class="lock-hint" hidden>🔒 Renseigne d'abord <b>ton profil</b> tout
+          en haut (tous les champs marqués <span class="req">*</span>) pour activer ce bouton.</p>
+      </div>
+    </div>
+
+    <!-- Envoi + suivi (2 groupes : envoyés / à renvoyer) -->
+    <div class="card">
+      <div class="send-row">
+        <div class="counters">
+          <span class="counter counter--ok"><b id="count-sent">0</b> envoyés&nbsp;✓</span>
+          <span class="counter counter--todo"><b id="count-pending">0</b> à renvoyer</span>
+          <span class="counter"><b id="count-total">0</b> au total</span>
+        </div>
+        <div class="send-actions">
+          <span id="send-status" class="send-status"></span>
+          <button id="btn-send" class="btn btn--send" type="button" disabled>
+            Envoyer les données →
+          </button>
+        </div>
+      </div>
+      <p id="send-lock" class="lock-hint" hidden>🔒 Renseigne d'abord <b>ton profil</b> tout en
+        haut (tous les champs marqués <span class="req">*</span>) pour activer l'envoi.</p>
+      <p class="send-hint" id="send-hint">L'envoi est <b>automatique et redondant</b> : chaque
+        contribution est renvoyée jusqu'à ce qu'elle soit <b>confirmée présente dans la base</b>.
+        Hors connexion, tout reste en sécurité sur l'appareil.</p>
+
+      <!-- Groupe À RENVOYER : non encore confirmés dans la base distante -->
+      <div id="grp-pending" class="sendgrp sendgrp--todo" hidden>
+        <div class="sendgrp-head">
+          <span class="sendgrp-title"><span class="dot dot--todo"></span>À envoyer / en cours
+            <b id="grp-pending-n">0</b></span>
+          <button id="btn-resend" class="mini-btn" type="button">↻ Renvoyer maintenant</button>
+        </div>
+        <ul id="list-pending" class="list"></ul>
+      </div>
+
+      <!-- Groupe ENVOYÉS : confirmés présents dans la base distante -->
+      <div id="grp-sent" class="sendgrp sendgrp--ok" hidden>
+        <div class="sendgrp-head">
+          <span class="sendgrp-title"><span class="dot dot--ok"></span>Envoyés et confirmés dans la
+            base <b id="grp-sent-n">0</b></span>
+        </div>
+        <ul id="list-sent" class="list"></ul>
+      </div>
+    </div>
+    </section>
+
+    <!-- ============== VUE EXPLORER (bibliothèque communautaire) =========== -->
+    <section id="view-explore" class="view" hidden>
+      <div class="card">
+        <h2 class="view-title view-title--ico"><img class="title-ico" src="icons/act-explore.svg" alt="" aria-hidden="true"><span data-i18n="exp.title">Explorer la bibliothèque</span></h2>
+        <p class="contrib-why" data-i18n="exp.intro">Consulte les traductions et transcriptions déjà partagées par la
+          communauté, pour <b>apprendre</b>, <b>écouter</b> les prononciations, et repérer ce qui
+          pourrait être amélioré. Chaque entrée montre son <b>contexte</b> : domaine, variante du
+          village, rôle du contributeur.</p>
+        <div class="explore-controls">
+          <input id="explore-search" type="text" class="explore-search" data-i18n-ph="exp.search.ph"
+                 placeholder="🔎 Rechercher un mot, une phrase…" autocomplete="off" />
+          <div class="explore-filters">
+            <select id="filter-direction" aria-label="Sens de traduction">
+              <option value="" data-i18n="exp.f.dir">Tous les sens</option>
+              <option value="fr2nge">Français → Ngiemboon</option>
+              <option value="nge2fr">Ngiemboon → Français</option>
+            </select>
+            <select id="filter-role" aria-label="Rôle du contributeur">
+              <option value="" data-i18n="exp.f.role">Tous les rôles</option>
+              <option value="natif">Locuteur natif</option>
+              <option value="apprenant">Apprenant</option>
+              <option value="linguiste">Linguiste</option>
+            </select>
+            <select id="filter-variante" aria-label="Variante">
+              <option value="" data-i18n="exp.f.variante">Toutes les variantes</option>
+            </select>
+            <select id="filter-domaine" aria-label="Domaine">
+              <option value="" data-i18n="exp.f.domaine">Tous les domaines</option>
+            </select>
+          </div>
+          <div class="explore-export">
+            <button id="export-csv" class="chip chip--btn" type="button" data-i18n="exp.export.csv">⬇ Exporter (CSV)</button>
+            <button id="export-json" class="chip chip--btn" type="button" data-i18n="exp.export.json">⬇ Exporter (JSON)</button>
+          </div>
+        </div>
+        <div class="explore-status" id="explore-status"></div>
+      </div>
+      <div id="variant-map" class="vmap" hidden></div>
+      <div id="explore-list" class="explore-list"></div>
+    </section>
+
+    <!-- ================= VUE : À PROPOS (page entière de l'app) ============== -->
+    <section id="view-about" class="view" hidden>
+      <div class="about-head">
+        <h2 class="view-title view-title--ico">
+          <svg class="about-title-ic" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11.2v4.6"/><path d="M12 7.9h.01"/></svg>
+          <span data-i18n="about.title">À propos de LANGA</span>
+        </h2>
+        <p class="contrib-why" data-i18n-html="about.lead">Dans les langues nguni, <b>LANGA</b> signifie « la lumière », et le mot évoque aussi « langue ». Son ambition est de donner une <b>voix numérique</b> à nos langues.</p>
+      </div>
+
+      <div class="card about-vision">
+        <h3 data-i18n="about.vision.h">La vision : nos langues d'Afrique, texte et voix</h3>
+        <p data-i18n-html="about.vision.p1">LANGA est un projet <b>ouvert à tous</b>. Il rassemble <b>les mots et les voix</b> de <b>nos
+          langues</b> pour bâtir ensemble les outils qui les font vivre, qu'il s'agisse <b>de dictionnaires, de claviers ou d'intelligences artificielles</b> qui les comprennent.</p>
+        <p data-i18n-html="about.vision.p2">LANGA donne une <b>voix numérique</b> à <b>nos langues d'Afrique</b>. Le <b>ngiemboon</b> est aujourd'hui
+          la langue la plus avancée, car il possède déjà son clavier dédié et le corpus le plus riche, mais la plateforme accueille plusieurs langues et chacun peut y ajouter la sienne. Où que tu sois, un simple <b>téléphone ou ordinateur</b> suffit pour y contribuer.</p>
+      </div>
+
+      <h3 class="about-sec" id="about-sec-why" data-i18n="about.why.h">Pourquoi participer</h3>
+      <div class="about-grid" id="about-grid-why">
+        <div class="card about-cell" style="--a:#2ad4ee">
+          <div class="about-ic"><svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3l11 6v8c0 7-5 10-11 12C10 27 5 24 5 17V9z"/><path d="M11 16l3.5 3.5L21 12"/></svg></div>
+          <h4 data-i18n="about.why.1.h">Préserver</h4>
+          <p data-i18n="about.why.1.p">Chaque mot et chaque prononciation enregistrés aujourd'hui restent pour toutes les générations à venir</p>
+        </div>
+        <div class="card about-cell" style="--a:#34d399">
+          <div class="about-ic"><svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="6" width="16" height="14" rx="3"/><path d="M12 25h8M16 20v5M12 11h.01M20 11h.01M13 15c1.8 1.4 4.2 1.4 6 0"/></svg></div>
+          <h4 data-i18n="about.why.2.h">Outiller</h4>
+          <p data-i18n="about.why.2.p">Une langue présente dans le numérique reste vivante : traduction, clavier, intelligence artificielle</p>
+        </div>
+        <div class="card about-cell" style="--a:#5aa0ff">
+          <div class="about-ic"><svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="12" r="4"/><circle cx="22" cy="14" r="3.2"/><path d="M4 27c0-4 3.5-7 7-7s7 3 7 7M18.5 26c.4-3 2.4-5 5-5 2.2 0 4.1 1.4 4.9 3.6"/></svg></div>
+          <h4 data-i18n="about.why.3.h">Ensemble</h4>
+          <p data-i18n="about.why.3.p">La langue appartient à sa communauté. Ta contribution en fait partie, quel que soit ton village</p>
+        </div>
+      </div>
+
+      <h3 class="about-sec" id="about-sec-how" data-i18n="about.how.h">Trois façons de contribuer</h3>
+      <div class="about-grid" id="about-grid-how">
+        <div class="card about-cell" style="--a:#e2b56f">
+          <div class="about-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1L20 7a2.1 2.1 0 0 0-3-3L5 16l-1 4z"/><path d="M14.5 6.5l3 3"/></svg></div>
+          <h4 data-i18n="about.how.1.h">Traduire</h4>
+          <p data-i18n="about.how.1.p">Donne la traduction de mots et de phrases entières (français ↔ ngiemboon)</p>
+        </div>
+        <div class="card about-cell" style="--a:#a78bfa">
+          <div class="about-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/></svg></div>
+          <h4 data-i18n="about.how.2.h">Transcrire</h4>
+          <p data-i18n="about.how.2.p">Enregistre ta voix quand tu prononces les mots : un trésor à préserver</p>
+        </div>
+        <div class="card about-cell" style="--a:#2dd4bf">
+          <div class="about-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6c3-1.5 6-1.5 9 0v13c-3-1.5-6-1.5-9 0zM21 6c-3-1.5-6-1.5-9 0v13c3-1.5 6-1.5 9 0z"/></svg></div>
+          <h4 data-i18n="about.how.3.h">Explorer</h4>
+          <p data-i18n="about.how.3.p">Écoute, apprends et vote pour les meilleures améliorations</p>
+        </div>
+      </div>
+
+      <div class="card about-share">
+        <div class="about-share-txt">
+          <h3 data-i18n="about.share.h">Partager le projet</h3>
+          <p data-i18n="about.share.p">Fais découvrir LANGA autour de toi : montre le QR ou partage le flyer</p>
+          <div class="about-links">
+            <a class="about-share-btn" href="../flyer/flyer.png" target="_blank" rel="noopener" download data-i18n="about.share.img">⬇ Flyer (image)</a>
+            <a class="about-share-btn" href="../flyer/flyer.pdf" target="_blank" rel="noopener" download data-i18n="about.share.pdf">⬇ Flyer (PDF)</a>
+            <button id="present-open" class="about-share-btn about-share-btn--main" type="button" data-i18n="about.share.present">🖥 Mode présentation</button>
+          </div>
+          <p class="share-lead" data-i18n="share.lead">Ou partage le lien en un clic :</p>
+          <div class="share-mount" id="share-about"></div>
+        </div>
+        <img class="about-qr" src="../flyer/qr.svg" alt="QR code vers l'application, encadré de motifs Ndop" />
+      </div>
+
+      <div class="ndop-sep" aria-hidden="true"><i></i></div>
+      <div class="about-cta">
+        <button class="btn btn--primary" id="about-start" type="button" data-i18n="about.cta.start">Commencer à contribuer →</button>
+        <button class="btn btn--ghost" id="about-back" type="button" data-i18n="btn.back">← Retour</button>
+      </div>
+    </section>
+
+    <!-- ============== VUE SUIVI DES BUGS ================================== -->
+    <section id="view-bugs" class="view" hidden>
+      <div class="about-head">
+        <h2 class="view-title" data-i18n="bugs.title">🐞 Suivi des bugs</h2>
+        <p class="contrib-why" data-i18n-html="bugs.intro">Chaque bug est <b>identifié</b>, décrit, daté et suivi jusqu'à sa
+          résolution. Tu peux <b>signaler</b> un problème : il rejoint la liste et tu suis son
+          avancement (⏳ en attente → ✅ résolu).</p>
+      </div>
+
+      <div class="card bug-report">
+        <h3 data-i18n="bugs.report.h">Signaler un bug</h3>
+        <div class="bug-form">
+          <label><span data-i18n="bugs.f.title">Titre court</span>
+            <input id="bug-titre" type="text" placeholder="ex. Le bouton « Envoyer » ne répond pas" maxlength="120" />
+          </label>
+          <label><span data-i18n="bugs.f.desc">Description</span>
+            <textarea id="bug-desc" rows="3" placeholder="Que s'est-il passé ? Sur quel écran ? Comment le reproduire ?"></textarea>
+          </label>
+          <div class="bug-form-row">
+            <label>Gravité
+              <select id="bug-sev">
+                <option value="mineur">Mineur</option>
+                <option value="majeur">Majeur</option>
+                <option value="critique">Critique</option>
+              </select>
+            </label>
+            <label>Zone concernée
+              <select id="bug-zone">
+                <option>Interface</option><option>Envoi / synchro</option><option>Audio</option>
+                <option>Clavier</option><option>Propositions</option><option>Explorer</option><option>Autre</option>
+              </select>
+            </label>
+          </div>
+          <div class="send-actions">
+            <span id="bug-status" class="send-status"></span>
+            <button id="bug-send" class="btn btn--primary" type="button">Envoyer le signalement →</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="bugs-grp-open" class="sendgrp sendgrp--todo" hidden>
+        <div class="sendgrp-head"><span class="sendgrp-title"><span class="dot dot--todo"></span>En attente <b id="bugs-open-n">0</b></span></div>
+        <ul id="bugs-open" class="bug-list"></ul>
+      </div>
+      <div id="bugs-grp-done" class="sendgrp sendgrp--ok" hidden>
+        <div class="sendgrp-head"><span class="sendgrp-title"><span class="dot dot--ok"></span>Résolus <b id="bugs-done-n">0</b></span></div>
+        <ul id="bugs-done" class="bug-list"></ul>
+      </div>
+
+      <div class="about-cta">
+        <button class="btn btn--ghost" id="bugs-back" type="button">← Retour</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="foot-inner">
+      <div class="foot-brand foot-brand--home" id="foot-home" role="link" tabindex="0"
+           title="Revenir à l'accueil" aria-label="Revenir à l'accueil : Traduire, Transcrire, Explorer">
+        <span class="foot-mark"><img src="./icons/logo.svg" alt="LANGA" width="46" height="46" /></span>
+        <div>
+          <div class="foot-title">LANGA <span>· Collecte</span></div>
+          <div class="foot-sub" data-i18n="foot.sub">Numériser les langues d'Afrique, texte et voix, par leurs communautés</div>
+        </div>
+      </div>
+      <div class="foot-info">
+        <p class="foot-by"><span data-i18n="foot.by">Créé par</span> <b>Brice Kengni Zanguim</b></p>
+        <p class="foot-contact" data-i18n="foot.contact">Un problème ou une suggestion ?</p>
+        <p class="foot-contact"><a href="mailto:kenzabri2@yahoo.com">kenzabri2@yahoo.com</a></p>
+        <p class="foot-contact"><a href="https://wa.me/33772088236" target="_blank" rel="noopener">WhatsApp&nbsp;: +33 07 72 08 82 36</a></p>
+      </div>
+    </div>
+    <div class="foot-share">
+      <span class="share-lead" data-i18n="share.foot">Partage LANGA autour de toi :</span>
+      <div class="share-mount" id="share-foot"></div>
+    </div>
+    <div class="foot-copy">© 2026 Brice Kengni Zanguim · Merci à chaque contributeur de la langue</div>
+  </footer>
+
+  <!-- Visite guidée : projecteur sur un élément + bulle explicative -->
+  <div id="tour" class="tour" hidden>
+    <div class="tour-spot" id="tour-spot"></div>
+    <div class="tour-card" id="tour-card">
+      <div class="tour-step" id="tour-step"></div>
+      <div class="tour-title" id="tour-title"></div>
+      <div class="tour-text" id="tour-text"></div>
+      <div class="tour-actions">
+        <button class="tour-skip" id="tour-skip" type="button">Passer</button>
+        <button class="tour-next" id="tour-next" type="button">Suivant</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <!-- Bannière « nouvelle version disponible » : voyante, avec bouton de mise à jour
+       qui vide le cache + recharge (équivalent Ctrl+Shift+R, automatique). -->
+  <div id="update-banner" class="update-banner" hidden role="alertdialog"
+       aria-live="assertive" aria-label="Nouvelle version disponible">
+    <span class="update-dot" aria-hidden="true"></span>
+    <div class="update-body">
+      <div class="update-title">Nouvelle version disponible <b id="update-ver"></b></div>
+      <p id="update-sub" class="update-sub">Ta version est en retard. Mets à jour pour profiter des dernières améliorations :</p>
+      <div id="update-notes" class="update-notes"></div>
+      <div class="update-actions">
+        <button id="update-now" class="btn btn--primary update-btn" type="button">⟳ Mettre à jour maintenant</button>
+        <button id="update-later" class="update-later" type="button">Plus tard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mode présentation : affichage plein écran pour montrer le projet (événements,
+       réunions). Grand logo + nom + les trois activités + QR pour contribuer. -->
+  <div id="present" class="present" hidden>
+    <button id="present-close" class="present-close" type="button" aria-label="Quitter la présentation">✕</button>
+    <div class="present-inner">
+      <div class="present-brand">
+        <img src="./icons/logo.svg" alt="LANGA" class="present-logo" width="150" height="150" />
+        <h1 class="present-title">LANGA</h1>
+        <p class="present-tag">Numériser les langues d'Afrique, texte et voix</p>
+      </div>
+      <div class="present-acts">
+        <div class="present-act"><img class="present-ico" src="./icons/act-translate.svg" alt="" aria-hidden="true"><b>Traduire</b><span>mots et phrases</span></div>
+        <div class="present-act"><img class="present-ico" src="./icons/mic-real.png" alt="" aria-hidden="true"><b>Transcrire</b><span>ta voix, ta langue</span></div>
+        <div class="present-act"><img class="present-ico" src="./icons/act-explore.svg" alt="" aria-hidden="true"><b>Explorer</b><span>la bibliothèque commune</span></div>
+      </div>
+      <div class="present-cta">
+        <div class="present-scan">Scanne pour contribuer</div>
+        <img class="present-qr" src="../flyer/qr.svg" alt="QR code pour ouvrir l'application" />
+        <div class="present-url-wrap">
+          <span class="present-url-label">Ou ouvre l'adresse :</span>
+          <a class="present-url" href="https://brice-kengni-zanguim.github.io/langa/app/collecte/"
+             target="_blank" rel="noopener">brice-kengni-zanguim.github.io/langa/app/collecte/</a>
+        </div>
+        <div class="present-stat" id="present-stat"></div>
+      </div>
+      <div class="present-tools">
+        <button id="present-dl-png" class="btn present-dl" type="button">⤓ Télécharger en image</button>
+        <button id="present-dl-pdf" class="btn present-dl" type="button">⤓ Télécharger en PDF</button>
+      </div>
+      <div class="present-share share-mount" id="share-present"></div>
+    </div>
+  </div>
+
+  <!-- Consignes OBLIGATOIRES avant la 1re transcription (qualité des enregistrements).
+       L'utilisateur doit lire puis valider « J'ai compris le principe ». -->
+  <div id="tr-guide" class="tr-guide" hidden role="dialog" aria-modal="true" aria-labelledby="tr-guide-title">
+    <div class="tr-guide-card" id="tr-guide-card" data-show="transcribe">
+      <!-- Variante TRANSCRIRE -->
+      <div class="tr-guide-variant" data-guide="transcribe">
+        <div class="tr-guide-head">
+          <div class="tr-guide-ico tr-guide-ico--img" aria-hidden="true"><img src="icons/act-transcribe.svg" alt=""></div>
+          <h2 id="tr-guide-title" data-i18n="tr.guide.title">Avant d'enregistrer ta voix</h2>
+          <p class="tr-guide-lead" data-i18n="tr.guide.lead">Deux règles simples pour un bon enregistrement :</p>
+        </div>
+        <div class="tr-guide-rules">
+          <div class="tr-guide-rule">
+            <span class="tr-guide-ri" aria-hidden="true">🤫</span>
+            <div class="tr-guide-rtext">
+              <b data-i18n-html="tr.guide.r1.t">Enregistre dans un endroit <mark class="ok">calme</mark></b>
+              <span data-i18n="tr.guide.r1.d">Pas de bruit autour : ni rue, ni télé, ni ventilateur. On doit bien entendre ta voix.</span>
+            </div>
+          </div>
+          <div class="tr-guide-rule">
+            <span class="tr-guide-ri" aria-hidden="true">🗣️</span>
+            <div class="tr-guide-rtext">
+              <b data-i18n-html="tr.guide.r2.t">Dis <mark class="ok">seulement le mot dans ta langue</mark>, <mark class="ok">une seule fois</mark></b>
+              <span data-i18n-html="tr.guide.r2.d">Ne dis <mark class="no">pas</mark> le mot français avant. Ne le répète <mark class="no">pas</mark> deux fois.</span>
+            </div>
+          </div>
+        </div>
+        <div class="tr-guide-ex">
+          <div class="tr-guide-ex-card bad">
+            <span class="tr-guide-ex-label" data-i18n="tr.guide.ex.badl">✗ À éviter</span>
+            <span class="tr-guide-ex-txt" data-i18n="tr.guide.ex.bad">« eau… jʉ… jʉ »</span>
+          </div>
+          <div class="tr-guide-ex-card good">
+            <span class="tr-guide-ex-label" data-i18n="tr.guide.ex.goodl">✓ À faire</span>
+            <span class="tr-guide-ex-txt" data-i18n="tr.guide.ex.good">« jʉ »</span>
+          </div>
+        </div>
+      </div>
+      <!-- Variante TRADUIRE -->
+      <div class="tr-guide-variant" data-guide="translate">
+        <div class="tr-guide-head">
+          <div class="tr-guide-ico" aria-hidden="true">🔤</div>
+          <h2 data-i18n="tra.guide.title">Avant de traduire</h2>
+          <p class="tr-guide-lead" data-i18n="tra.guide.lead">Deux règles simples pour une bonne traduction :</p>
+        </div>
+        <div class="tr-guide-rules">
+          <div class="tr-guide-rule">
+            <span class="tr-guide-ri" aria-hidden="true">🎯</span>
+            <div class="tr-guide-rtext">
+              <b data-i18n-html="tra.guide.r1.t">Donne le <mark class="ok">vrai mot</mark>, celui qu'on dit vraiment</b>
+              <span data-i18n-html="tra.guide.r1.d">Pas une approximation ni un mot inventé. Si tu ne connais <mark class="no">pas</mark>, passe au suivant.</span>
+            </div>
+          </div>
+          <div class="tr-guide-rule">
+            <span class="tr-guide-ri" aria-hidden="true">⌨️</span>
+            <div class="tr-guide-rtext">
+              <b data-i18n-html="tra.guide.r2.t">Écris avec les <mark class="ok">bonnes lettres</mark> et les <mark class="ok">tons</mark></b>
+              <span data-i18n="tra.guide.r2.d">Le clavier ngiemboon donne les lettres spéciales (ŋ, ɛ, ɔ, ʉ) et les tons. Une lettre change le sens.</span>
+            </div>
+          </div>
+        </div>
+        <div class="tr-guide-ex">
+          <div class="tr-guide-ex-card bad">
+            <span class="tr-guide-ex-label" data-i18n="tr.guide.ex.badl">✗ À éviter</span>
+            <span class="tr-guide-ex-txt" data-i18n="tra.guide.ex.bad">« ju »</span>
+          </div>
+          <div class="tr-guide-ex-card good">
+            <span class="tr-guide-ex-label" data-i18n="tr.guide.ex.goodl">✓ À faire</span>
+            <span class="tr-guide-ex-txt" data-i18n="tra.guide.ex.good">« jʉ »</span>
+          </div>
+        </div>
+      </div>
+      <button id="tr-guide-ok" class="btn btn--primary tr-guide-ok" type="button" data-i18n="tr.guide.ok">J'ai compris le principe</button>
+    </div>
+  </div>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

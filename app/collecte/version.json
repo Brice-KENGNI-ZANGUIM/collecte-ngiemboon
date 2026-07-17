@@ -1,0 +1,308 @@
+{
+  "version": "v190",
+  "changelog": {
+    "v190": [
+      "Jumelage de langues : LANGA repère les langues déclarées en double (mêmes langues sous des orthographes ou régions différentes) et propose de les réunir",
+      "Deux personnes qui ont créé la même langue peuvent la fusionner : chacune confirme « c'est bien la même », et les deux fiches sont réunies sans rien perdre (orthographes gardées comme autres noms, régions et pays cumulés)",
+      "Une langue réunie dans une autre redirige vers elle dans la bibliothèque : aucune contribution n'est perdue"
+    ],
+    "v189": [
+      "En-tête : « LANGA · Collecte » rétabli en entier sur tous les écrans, avec « LANGA » agrandi et « · Collecte » plus discret ; les deux pastilles d'état restent sur une seule ligne, un peu plus compactes si l'écran est étroit"
+    ],
+    "v188": [
+      "Déclaration d'une langue : le pays est demandé avant la région, du plus général au plus précis"
+    ],
+    "v187": [
+      "En-tête : les deux pastilles d'état (« en ligne » et « Drive : prêt ») tiennent de nouveau sur une seule ligne sur tous les écrans",
+      "Correction du libellé « Drive : prêt »"
+    ],
+    "v186": [
+      "Page « À propos » : le symbole en tête du titre est remplacé par une icône d'information sobre",
+      "Nom LANGA agrandi dans l'en-tête, et les boutons descendent sous le logo au plus près du bas",
+      "Textes revus pour une lecture plus naturelle et fluide, dans toute l'application"
+    ],
+    "v185": [
+      "Header plus dense et lisible : logo et nom LANGA agrandis, boutons resserrés (horizontalement et entre les lignes) pour remplir l'espace, sur PC comme sur mobile",
+      "« Mon profil » et le sélecteur de langue restent affichés sur toutes les pages dès qu'un profil et une langue existent (ils ne disparaissent plus, même sur la page profil)"
+    ],
+    "v184": [
+      "Header en 2 niveaux (PC + mobile/tablette) : en haut la marque et l'état (« en ligne », « Drive ») avec leur texte et leur point clignotant ; en dessous les boutons de nav qui passent à la ligne quand ils débordent (fini le défilement et les boutons cachés), avec version, EN et thème alignés à droite",
+      "Sur la page de choix de langue : « Mon profil » et le sélecteur de langue restent visibles (ils disparaissaient à tort), et le bouton d'aide y fonctionne enfin avec une visite guidée complète (recherche, déclaration, champs, doublons)"
+    ],
+    "v182": [
+      "Fondation du jumelage de langues (détection de doublons + fusion sans perte, logique pure et testée) — préparation de la confirmation par les déclarants"
+    ],
+    "v181": [
+      "Déclaration de langue plus intelligente : suggère les langues déjà présentes qui ressemblent (même orthographe/région différente, ex. Nguiemboon/Nguiembor) pour éviter les doublons ; nouveaux champs pays, autres noms, famille"
+    ],
+    "v180": [
+      "Partage : section d'accueil dans un cadre opaque soigné ; icônes réseaux sur fond blanc en mode sombre (logos bien visibles). Trame Ndop atténuée sur mobile/tablette"
+    ],
+    "v179": [
+      "Partage : bouton Instagram ajouté (copie le lien et ouvre Instagram) ; les liens de partage ajoutent un paramètre pour que l'aperçu s'affiche même si le réseau avait mis l'ancien en cache"
+    ],
+    "v178": [
+      "Aperçu de lien compatible avec tous les réseaux : image d'aperçu en JPEG léger (90 Ko, lisible par WhatsApp) et balises renforcées"
+    ],
+    "v177": [
+      "La version de l'application réapparaît dans le header sur mobile (elle avait été masquée par erreur au passage header compact)"
+    ],
+    "v176": [
+      "Boutons de partage du site (WhatsApp, Facebook, X, Telegram, copier le lien + partage natif) sur l'accueil, « À propos », le pied de page et le mode présentation"
+    ],
+    "v174": [
+      "Aperçu de lien soigné : image Open Graph dédiée (logo + accroche) au partage sur Facebook/WhatsApp/X, au lieu d'une image de la page recadrée"
+    ],
+    "v173": [
+      "Traduire/Transcrire : chaque zone (mot source, traduction, voix) est encadrée avec sa couleur (bleu/vert/violet) et son libellé plus grand — démarcation nette entre les parties"
+    ],
+    "v172": [
+      "« Revoir les consignes » : en Transcrire il reste dans la zone audio (inchangé) ; en Traduire il s'affiche sur la même ligne que « Traduction », à droite (fini le chevauchement)"
+    ],
+    "v171": [
+      "Barre d'onglets : Transcrire avant Traduire (comme l'accueil) ; sur mobile, les 3 onglets tiennent sur une seule ligne (un tiers chacun)"
+    ],
+    "v170": [
+      "Transcrire : icône principale = micro ultra-réaliste ; l'ancienne icône passe en tête du panneau de consignes"
+    ],
+    "v169": [
+      "« Revoir les consignes » se place selon l'activité : sous la traduction en mode Traduire, dans la zone audio en mode Transcrire"
+    ],
+    "v168": [
+      "Nouvelle identité typographique : titres en Space Grotesk (display géométrique), logo et étiquettes techniques en IBM Plex Mono ; polices embarquées hors-ligne"
+    ],
+    "v167": [
+      "Accueil : titre à droite de l'icône sur les cartes (gain de hauteur, meilleur usage de la largeur)",
+      "Mobile : header compact (logo réduit, sous-titre et méta masqués, boutons en icône seule) pour libérer l'écran"
+    ],
+    "v166": [
+      "Accueil : la Transcription est proposée en première carte, avant la Traduction"
+    ],
+    "v164": [
+      "« Transcription audio » affiche l'étiquette de la langue transcrite (ex. « Ngiemboon (NGE) »), comme les autres champs, et s'adapte à la langue courante"
+    ],
+    "v163": [
+      "Le lecteur audio moderne s'affiche PARTOUT où l'on écoute un son (aperçu après enregistrement, corrections, Explorer)",
+      "Nouvelle forme d'onde : une vraie onde du son (l'amplitude épouse le son réel — forte quand ça parle, faible dans les silences), qui se remplit à la lecture et ondule en direct selon le son joué",
+      "Icône de micro réaliste sur le bouton « Enregistrer l'audio »"
+    ],
+    "v162": [
+      "Les consignes s'affichent les 3 premières fois (au lieu d'une), pour Transcrire ET pour Traduire (une consigne dédiée à la traduction a été ajoutée) ; « Revoir les consignes » reste dispo",
+      "En Transcrire, le cadre d'enregistrement est placé juste après le mot à transcrire (avant la traduction, facultative), avec un intitulé « Transcription audio »",
+      "Boutons « Tester le micro » et « Revoir les consignes » bien plus visibles et dynamiques"
+    ],
+    "v161": [
+      "Boutons encore plus vivants : un halo lumineux qui respire (comme le logo) entoure les boutons d'action et de navigation, en plus du reflet qui balaie — impossible de les confondre avec du texte statique"
+    ],
+    "v160": [
+      "Consignes de transcription : boîte plus soignée (en-tête à icône, règles en cartes avec pictos, mots-clés mis en évidence par la couleur, exemples « À éviter / À faire » étiquetés) pour bien faire comprendre les points importants"
+    ],
+    "v159": [
+      "Boutons plus vivants : un reflet lumineux balaie en continu les boutons d'action et de navigation (et un reflet net au survol) — on voit tout de suite que ce sont des boutons cliquables"
+    ],
+    "v158": [
+      "Logo (en-tête et pied de page) : en mode clair, fini l'effet de « feuille blanche » derrière le logo — un fin anneau lumineux qui tourne remplace le halo diffus, et le mode sombre garde son aura",
+      "Boutons de navigation en or : même teinte douce en clair et en sombre (plus d'ambre trop intense en clair)"
+    ],
+    "v157": [
+      "Avant la première transcription, une consigne claire s'affiche et doit être validée : enregistrer dans un endroit calme, et dire seulement le mot dans la langue, une seule fois (pas le mot français, pas deux fois). Un lien « Revoir les consignes » reste disponible."
+    ],
+    "v156": [
+      "Durée de l'audio EXACTE : le lecteur affiche la vraie durée de l'enregistrement (mesurée à la prise de son), et la barre se remplit précisément jusqu'à la fin — fini les durées fausses annoncées par le navigateur pour les enregistrements vocaux"
+    ],
+    "v155": [
+      "Lecteur audio : la durée affichée correspond maintenant à la vraie durée de l'enregistrement (fini le « 18 s » pour un audio de 6 s), et la barre de progression se remplit exactement jusqu'à la fin",
+      "Message d'attente plus sobre pendant le chargement d'un audio"
+    ],
+    "v154": [
+      "Lecture des enregistrements dans Explorer : les prononciations se jouent directement dans le lecteur moderne, de façon fiable"
+    ],
+    "v153": [
+      "Le lecteur audio moderne s'affiche dans tous les cas : l'ancien lecteur classique ne réapparaît plus jamais"
+    ],
+    "v152": [
+      "Le lecteur audio moderne s'affiche pour tous les enregistrements (il ne repasse plus en lecteur classique)",
+      "En-tête : libellé d'état raccourci"
+    ],
+    "v151": [
+      "Explorer : nouveau lecteur audio sur-mesure, moderne et responsive — bouton lecture rond, forme d'onde qui se remplit avec une crête lumineuse à mesure de l'écoute, minuteur « position / durée », réglage du volume ; s'adapte à toutes les tailles d'écran (mobile, tablette, ordinateur)"
+    ],
+    "v150": [
+      "Boutons du site harmonisés en couleur unie (fini les dégradés) : les boutons d'action (Enregistrer, Envoyer, Prochain mot, sélecteurs…) en cyan, le bouton « Déclarer ma langue » en or — deux couleurs distinctes, lisibles en clair comme en sombre"
+    ],
+    "v149": [
+      "Écran des langues : boutons en couleur unie (fini le dégradé), lisibles en clair comme en sombre ; « Rechercher » à côté de la barre, et « Déclarer ma langue » en pleine largeur juste en dessous"
+    ],
+    "v148": [
+      "Écran « Choisis ta langue » : une barre de RECHERCHE pour trouver ta langue sans faire défiler toute la liste, et le bouton « Déclarer ma langue » remonté tout en haut, bien distinct (plus besoin de scroller jusqu'en bas)"
+    ],
+    "v147": [
+      "Clavier ngiemboon PRÉDICTIF : pendant que tu écris en ngiemboon, une barre te propose des mots RÉELS (jamais inventés) — touche une suggestion pour l'insérer. Le dictionnaire de suggestions s'enrichit tout seul avec les contributions de la communauté"
+    ],
+    "v146": [
+      "Décor plus atmosphérique sur toutes les pages : l'effet « torche » de fond (halos de lumière) est renforcé, avec une touche dorée au sommet — le texte reste parfaitement lisible en clair comme en sombre"
+    ],
+    "v145": [
+      "Boutons d'action principaux plus vivants : un léger halo « respirant » dans leur couleur (Enregistrer en vert, Prochain mot en cyan, Envoyer en bleu), désactivé si tu préfères réduire les animations"
+    ],
+    "v144": [
+      "Explorer aux couleurs de son activité (or) : chaque carte de la bibliothèque gagne un liseré et une bordure dorés, avec un halo au survol ; les liens et données restent en cyan pour rester bien repérables"
+    ],
+    "v143": [
+      "Menu du haut plus vivant : l'onglet actif prend la couleur de son activité (Traduire vert, Transcrire violet, Explorer or) avec un halo, et les boutons de l'en-tête réagissent mieux au survol"
+    ],
+    "v142": [
+      "Accueil plus vivant : chaque activité porte sa couleur d'identité (Traduire en vert, Transcrire en violet, Explorer en or) — liseré, halo d'icône, bordure et fleuron colorés, avec un léger relief au survol"
+    ],
+    "v141": [
+      "Mode Présentation (à l'écran ET affiche téléchargée) : les trois cadres sont plus écartés (affiche élargie), et le lien de l'application sous le QR est mis davantage en évidence (pastille dorée plus dense, bordure épaisse, halo, texte agrandi)"
+    ],
+    "v140": [
+      "Mode Présentation À L'ÉCRAN : les mêmes effets de lumière que l'affiche téléchargée (halos cyan renforcés sur le logo et le QR, effet « torche » qui éclaire le fond, lumière colorée propre à chaque activité) ; les trois cadres sont plus épais et répartis équitablement sur toute la largeur"
+    ],
+    "v139": [
+      "Affiche du mode Présentation plus lumineuse : halos cyan renforcés autour du logo et du QR, effet « torche » qui éclaire le fond, et une lumière de couleur propre à chaque activité (Traduire en vert, Transcrire en violet, Explorer en or)"
+    ],
+    "v138": [
+      "Rafraîchir une page te garde exactement dessus : plus jamais renvoyé à l'écran de choix de langue ou au profil au rechargement (le profil n'est demandé qu'au moment d'une action : Traduire, Transcrire, Explorer, déclarer une langue)",
+      "Mode Présentation : plus d'espace sous le cadre du QR (l'affiche ne colle plus au bas)"
+    ],
+    "v136": [
+      "Affiche du mode Présentation agrandie et plus aérée : éléments mieux séparés à la verticale, les trois activités occupent toute la largeur, textes des cartes ajustés"
+    ],
+    "v135": [
+      "Téléchargement du mode Présentation : une affiche propre et soignée (logo, activités colorées, QR avec halo doux, lien encadré) — sans aucun bouton ni autorisation"
+    ],
+    "v132": [
+      "Mode Présentation : éléments à nouveau bien espacés ; le fichier téléchargé est une affiche fidèle (halo doux, lien dans son cadre, icônes colorées)"
+    ],
+    "v131": [
+      "Mode Présentation téléchargé : rendu fidèle à l'écran — halo de lumière doux et identique, lien de l'app toujours dans son cadre (avec le libellé « Ou ouvre l'adresse : »)",
+      "Icônes des activités plus colorées et distinctes (Traduire vert/cyan, Transcrire violet, Explorer or) ; textes Traduire/Transcrire/Explorer agrandis",
+      "Icônes PWA sans fond blanc (plus de « bordure » blanche sur fond clair)"
+    ],
+    "v130": [
+      "Nouvelles icônes premium partout : Traduire, Transcrire, Explorer (accueil, onglets, titres) et tous les boutons du header (Accueil, Langue, À propos, Aide, Bugs, Thème, Mon profil) — fini les emoji en noir et blanc",
+      "Mode Présentation : le lien de l'application reste toujours dans son cadre (plus de débordement), et l'intensité des halos dans le fichier téléchargé correspond exactement à l'affichage à l'écran"
+    ],
+    "v129": [
+      "Le téléchargement du mode Présentation capture désormais les effets de lumière (halo autour du QR, du logo et du panneau) exactement comme à l'écran, et utilise des icônes premium au lieu des emoji"
+    ],
+    "v128": [
+      "L'application a maintenant une adresse par écran : l'URL change selon la page (Traduire, Explorer, À propos…), le bouton Précédent/Suivant du navigateur fonctionne, et un rafraîchissement te garde sur le même écran",
+      "Changer la langue FR/EN (ou ta langue) ne te ramène plus à l'accueil : tu restes sur l'écran où tu étais",
+      "Le téléchargement du mode Présentation s'adapte à ton thème (clair ou sombre) avec le fond, et n'affiche plus de mention d'auteur en bas"
+    ],
+    "v127": [
+      "Mode Présentation : l'adresse publique du site s'affiche désormais sous le QR code, dans un bloc d'appel à l'action mieux mis en valeur (encadré et coloré)",
+      "Mode Présentation : plus aucune coupure des bords ni débordement sur les écrans peu hauts (le contenu se centre et défile proprement)",
+      "Page « À propos » : les trois boutons « Partager le projet » (flyer image, flyer PDF, mode présentation) sont plus visibles et mieux mis en avant"
+    ],
+    "v126": [
+      "QR code agrandi (À propos et mode Présentation) avec un logo central plus grand et bien lisible",
+      "Le mode Présentation se télécharge en image (PNG) ou en PDF, prêt à imprimer ou partager lors d'un événement"
+    ],
+    "v125": [
+      "Profil désormais requis pour contribuer : Traduire, Transcrire, Explorer et la déclaration d'une langue s'ouvrent une fois ton profil créé (choisir une langue reste libre). Tout profil créé est enregistré dans la base, même sans contribution",
+      "Créer une langue lui donne aussitôt ses premières voix : un parcours « amorce sonore » invite à enregistrer quelques mots de base (au moins 5) — et si tu t'arrêtes en route, ta langue est créée quand même avec ce que tu as fait",
+      "Dans ton profil, déclare une ou plusieurs langues d'appartenance (touche une puce pour l'ajouter, retouche-la pour en faire ta langue principale)"
+    ],
+    "v124": [
+      "Partage un mot depuis Explorer : le bouton « 🔗 Partager » crée une jolie carte texte (mot, traduction, langue) à envoyer sur WhatsApp, SMS ou n'importe où — ou copiée dans le presse-papiers",
+      "Textes rafraîchis : LANGA accueille déjà plusieurs langues d'Afrique (le ngiemboon reste la plus avancée), fini les mentions « langue pilote / point de départ »"
+    ],
+    "v123": [
+      "Exporte le dictionnaire d'une langue en CSV ou JSON depuis Explorer (appropriation et partage des données)"
+    ],
+    "v122": [
+      "Claviers dédiés pour Bassa, Douala, Fulfuldé et Haoussa : les lettres spéciales (ɓ ɗ ŋ ɛ ɔ ƴ ƙ) et les tons sont accessibles directement, comme pour le ngiemboon"
+    ],
+    "v121": [
+      "5 langues africaines pré-remplies (Swahili, Bassa, Douala, Fulfuldé, Haoussa) : choisis la tienne et commence à contribuer sans attendre"
+    ],
+    "v120": [
+      "Dictionnaire public : navigue et consulte tout le site (Explorer, prononciations) SANS compte ; crée un profil seulement pour contribuer",
+      "Interface disponible en français ET en anglais (bouton FR|EN)"
+    ],
+    "v113": [
+      "Explorer : plus d'entrée « fantôme » sans mot ni audio ni traduction (bug signalé corrigé)"
+    ],
+    "v112": [
+      "LANGA devient MULTI-LANGUE et communautaire : choisis ta langue au démarrage, ou déclare-la si elle manque — elle devient enrichissable par tous. Le ngiemboon garde son clavier dédié ; les autres langues utilisent le clavier standard. Un sélecteur de langue est toujours accessible dans l'en-tête."
+    ],
+    "v108": [
+      "Les cadres posés sur le fond sont désormais opaques (la trame ne les traverse plus)",
+      "La perle de lumière des titres s'anime aussi sur mobile"
+    ],
+    "v106": [
+      "Le pied de page reste ancré tout en bas de l'écran, même sur les pages courtes",
+      "Ornement de titre affiné : ~un tiers de largeur, la barre passe derrière le losange (invisible dessous) avec une perle de lumière"
+    ],
+    "v101": [
+      "Bouton « Accueil » dans l'en-tête : reviens à l'écran des trois portes (Traduire, Transcrire, Explorer) d'un seul geste, depuis n'importe quelle page"
+    ],
+    "v100": [
+      "Décor Ndop vivant : trame en losanges tissée sur tout le fond, séparateurs qui rayonnent, bordures de cartes qui chatoient et fleurons de coin (animé sur ordinateur, figé sur mobile pour rester rapide)"
+    ],
+    "v96": [
+      "Mode présentation plein écran (pour montrer le projet lors d'événements)"
+    ],
+    "v95": [
+      "Carte des variantes dans Explorer : d'où viennent les contributions, village par village"
+    ],
+    "v94": [
+      "Petite célébration à l'enregistrement d'une contribution (halo + confettis)"
+    ],
+    "v93": [
+      "Décor enrichi : motifs Ndop (séparateurs et titres de section ornés)"
+    ],
+    "v92": [
+      "La bannière détaille les améliorations de CHAQUE version manquée, regroupées version par version"
+    ],
+    "v91": [
+      "Le logo et le nom (en haut et en bas) ramènent à l'accueil d'un simple clic"
+    ],
+    "v90": [
+      "Aide plus riche et plus claire sur chaque zone, et une box d'aide pour tout, jusqu'aux boutons du haut"
+    ],
+    "v89": [
+      "Mise à jour auto-vérifiée : si elle n'a pas pris, l'app la relance seule (plus jamais bloqué sur une ancienne version)"
+    ],
+    "v88": [
+      "La bannière de mise à jour disparaît vraiment après avoir mis à jour (plus besoin de Ctrl+Shift+R)"
+    ],
+    "v87": [
+      "La bannière n'affiche plus que les nouveautés réelles de la mise à jour (fini le texte figé)"
+    ],
+    "v86": [
+      "Propositions dans l'ordre : Mots puis Phrases en priorité (dictionnaire en dernier)"
+    ],
+    "v85": [
+      "La bannière de mise à jour se ferme bien une fois à jour"
+    ],
+    "v84": [
+      "Alerte automatique quand une nouvelle version est disponible + mise à jour en un clic"
+    ],
+    "v83": [
+      "Suivi des bugs de bout en bout : signaler, suivre et voir les bugs résolus"
+    ],
+    "v82": [
+      "Aide détaillée et bien cadrée sur chaque page"
+    ],
+    "v81": [
+      "Beaucoup plus de mots et de phrases à traduire (base enrichie)"
+    ],
+    "v80": [
+      "Progression affichée par groupe, dans un ordre clair"
+    ],
+    "v79": [
+      "Menus déroulants toujours au premier plan"
+    ],
+    "v77": [
+      "Un même mot n'est plus jamais reproposé deux fois au même contributeur"
+    ],
+    "v76": [
+      "Envoi des contributions bien plus fiable (renvoi automatique jusqu'à confirmation)"
+    ]
+  }
+}
