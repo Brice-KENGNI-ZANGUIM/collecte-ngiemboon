@@ -71,6 +71,32 @@ export function encodeWavBytes(channels, sampleRate) {
   return new Uint8Array(buf);
 }
 
+/**
+ * Détecte la zone UTILE en rognant le silence au début et à la fin (amplitude sous un
+ * seuil). Utile pour proposer automatiquement les bornes (bruit de porte/radio en dehors
+ * de la parole). Renvoie { startSec, endSec }. Si tout est silence → toute la durée.
+ * @param {Float32Array[]} channels
+ * @param {number} sampleRate
+ * @param {number} threshold   amplitude (0..1) en dessous de laquelle c'est du silence
+ * @param {number} padSec      marge de sécurité conservée autour de la zone utile
+ */
+export function detectSilenceBounds(channels, sampleRate, threshold, padSec) {
+  const sr = Number(sampleRate) > 0 ? Number(sampleRate) : 48000;
+  const chans = Array.isArray(channels) ? channels.filter((c) => c && typeof c.length === "number") : [];
+  const total = chans.length ? chans[0].length : 0;
+  const th = Number(threshold) > 0 ? Number(threshold) : 0.02;
+  const pad = Number(padSec) >= 0 ? Number(padSec) : 0.05;
+  if (!total) return { startSec: 0, endSec: 0 };
+  const amp = (i) => { let m = 0; for (let c = 0; c < chans.length; c++) { const v = Math.abs(chans[c][i] || 0); if (v > m) m = v; } return m; };
+  let first = -1, last = -1;
+  for (let i = 0; i < total; i++) { if (amp(i) > th) { first = i; break; } }
+  if (first < 0) return { startSec: 0, endSec: total / sr };   // tout est silence : ne rien rogner
+  for (let i = total - 1; i >= 0; i--) { if (amp(i) > th) { last = i; break; } }
+  const start = clamp((first / sr) - pad, 0, total / sr);
+  const end = clamp((last / sr) + pad, start, total / sr);
+  return { startSec: start, endSec: end };
+}
+
 /** Durée totale (secondes) d'un jeu de canaux. */
 export function samplesDuration(channels, sampleRate) {
   const sr = Number(sampleRate) > 0 ? Number(sampleRate) : 48000;
