@@ -402,6 +402,7 @@
           <span id="rec-timer" class="rec-timer" hidden aria-live="polite">00:00</span>
           <span id="rec-state" class="rec-state"></span>
           <div id="audio-preview" class="audio-preview"></div>
+          <button id="btn-trim-audio" class="mini" type="button" hidden data-i18n="trim.open">✂️ Découper</button>
           <button id="btn-clear-audio" class="mini" type="button" hidden>retirer</button>
           <button id="btn-mic-test" class="mini" type="button">🔎 Tester le micro</button>
           <button id="tr-guide-open" class="mini tr-guide-open" type="button" data-i18n="tr.guide.open">📋 Revoir les consignes</button>
@@ -667,6 +668,33 @@
         <button class="tour-skip" id="tour-skip" type="button">Passer</button>
         <button class="tour-next" id="tour-next" type="button">Suivant</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Découpe d'un enregistrement : garder une portion, jeter le reste. Ouvert par
+       « ✂️ Découper ». La forme d'onde + deux poignées OU les champs début/fin. -->
+  <div id="trim-modal" class="trim-modal" hidden role="dialog" aria-modal="true" aria-labelledby="trim-title">
+    <div class="trim-card">
+      <h3 id="trim-title" data-i18n="trim.h">Garder une partie de l'enregistrement</h3>
+      <p class="trim-hint" data-i18n="trim.hint">Fais glisser les deux poignées sur l'onde, ou saisis le début et la fin en secondes, pour ne conserver que la bonne partie. Le reste sera supprimé.</p>
+      <div class="trim-wave-wrap">
+        <canvas id="trim-wave" class="trim-wave" width="640" height="130" aria-hidden="true"></canvas>
+      </div>
+      <div class="trim-times">
+        <label class="trim-time"><span data-i18n="trim.start">Début (s)</span>
+          <input id="trim-start" type="number" min="0" step="0.05" inputmode="decimal" /></label>
+        <label class="trim-time"><span data-i18n="trim.end">Fin (s)</span>
+          <input id="trim-end" type="number" min="0" step="0.05" inputmode="decimal" /></label>
+        <span id="trim-dur" class="trim-dur"></span>
+      </div>
+      <div class="trim-actions">
+        <button id="trim-silence" class="chip chip--btn" type="button" data-i18n="trim.silence">Rogner les silences</button>
+        <button id="trim-play" class="chip chip--btn" type="button" data-i18n="trim.play">▶ Écouter la sélection</button>
+        <span class="trim-spacer"></span>
+        <button id="trim-cancel" class="chip chip--btn" type="button" data-i18n="trim.cancel">Annuler</button>
+        <button id="trim-keep" class="btn btn--next" type="button" data-i18n="trim.keep">Garder cette partie</button>
+      </div>
+      <audio id="trim-audio" preload="metadata"></audio>
     </div>
   </div>
 

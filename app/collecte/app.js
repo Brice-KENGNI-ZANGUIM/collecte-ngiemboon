@@ -2,6 +2,7 @@
 import { NgiemboonKeyboard } from "../keyboard/ngiemboon-keyboard.js";
 import { PredictNgiemboon } from "./predict.js";
 import { mountAudioPlayer } from "./audioplayer.js";
+import { sliceSamples, encodeWavBytes, detectSilenceBounds, samplesDuration } from "./audiotrim.js";
 import { DB } from "./db.js";
 import { reconcile, checkServer, serverStats, modeGoogle, browseLibrary,
   fetchSuggestions, postSuggestion, postVote, postBug, fetchBugs,
@@ -546,12 +547,132 @@ function mountLocalAudioPlayer(container, blobUrl, durMs) {
 function renderAudio() {
   const wrap = $("#audio-preview");
   wrap.innerHTML = "";
+  const bt = $("#btn-trim-audio");
   if (audioBlob) {
     mountLocalAudioPlayer(wrap, URL.createObjectURL(audioBlob), audioDurationMs);
     $("#btn-clear-audio").hidden = false;
+    if (bt) bt.hidden = false;
   } else {
     $("#btn-clear-audio").hidden = true;
+    if (bt) bt.hidden = true;
   }
+}
+
+// --- Découpe d'un enregistrement (#47) : garder une portion, jeter le reste. ---
+// L'outil décode l'enregistrement (Web Audio) une fois, puis toute la découpe passe
+// par le module PUR audiotrim.js (testé). « Garder cette partie » remplace l'audio
+// courant par un WAV de la seule zone sélectionnée.
+let _trimChannels = null, _trimSR = 48000, _trimTotal = 0, _trimStart = 0, _trimEnd = 0, _trimDrag = null;
+
+async function openTrim() {
+  if (!audioBlob) return;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AC();
+    const buf = await ctx.decodeAudioData(await audioBlob.arrayBuffer());
+    if (ctx.close) ctx.close();
+    _trimSR = buf.sampleRate;
+    _trimChannels = [];
+    for (let c = 0; c < buf.numberOfChannels; c++) _trimChannels.push(buf.getChannelData(c));
+    _trimTotal = samplesDuration(_trimChannels, _trimSR);
+  } catch (e) { toast(t("trim.decodeErr"), "warn"); return; }
+  _trimStart = 0; _trimEnd = _trimTotal;
+  syncTrimInputs(); drawTrimWave();
+  const m = $("#trim-modal"); if (m) m.hidden = false;
+}
+function trimClose() {
+  const m = $("#trim-modal"); if (m) m.hidden = true;
+  const a = $("#trim-audio"); if (a) { try { a.pause(); } catch (e) { /* ok */ } }
+  _trimChannels = null; _trimDrag = null;
+}
+function clampTrim() {
+  _trimStart = Math.max(0, Math.min(_trimStart, _trimTotal));
+  _trimEnd = Math.max(_trimStart, Math.min(_trimEnd, _trimTotal));
+}
+function syncTrimInputs() {
+  const si = $("#trim-start"), ei = $("#trim-end"), du = $("#trim-dur");
+  if (si) { si.max = _trimTotal.toFixed(2); si.value = _trimStart.toFixed(2); }
+  if (ei) { ei.max = _trimTotal.toFixed(2); ei.value = _trimEnd.toFixed(2); }
+  if (du) du.textContent = t("trim.dur").replace("{d}", Math.max(0, _trimEnd - _trimStart).toFixed(2));
+}
+function drawTrimWave() {
+  const cv = $("#trim-wave"); if (!cv || !_trimChannels || _trimTotal <= 0) return;
+  const g = cv.getContext("2d"), W = cv.width, H = cv.height, mid = H / 2;
+  const cs = getComputedStyle(document.documentElement);
+  const cyan = (cs.getPropertyValue("--cyan") || "#22d3ee").trim();
+  const muted = (cs.getPropertyValue("--muted") || "#88a").trim();
+  g.clearRect(0, 0, W, H);
+  const ch = _trimChannels[0] || new Float32Array(0), n = ch.length;
+  g.strokeStyle = muted; g.globalAlpha = 0.7; g.beginPath();
+  for (let x = 0; x < W; x++) {
+    const i0 = Math.floor(x / W * n), i1 = Math.floor((x + 1) / W * n);
+    let mx = 0; for (let i = i0; i < i1; i++) { const v = Math.abs(ch[i] || 0); if (v > mx) mx = v; }
+    const h = mx * (mid - 4);
+    g.moveTo(x + 0.5, mid - h); g.lineTo(x + 0.5, mid + h);
+  }
+  g.stroke(); g.globalAlpha = 1;
+  const xa = _trimStart / _trimTotal * W, xb = _trimEnd / _trimTotal * W;
+  g.fillStyle = cyan; g.globalAlpha = 0.16; g.fillRect(xa, 0, Math.max(0, xb - xa), H); g.globalAlpha = 1;
+  g.strokeStyle = cyan; g.lineWidth = 2; g.fillStyle = cyan;
+  for (const x of [xa, xb]) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); g.fillRect(x - 3, mid - 13, 6, 26); }
+}
+function trimXToTime(clientX) {
+  const cv = $("#trim-wave"), r = cv.getBoundingClientRect();
+  return Math.max(0, Math.min(1, (clientX - r.left) / r.width)) * _trimTotal;
+}
+function onTrimDown(e) {
+  if (!_trimChannels) return;
+  const tm = trimXToTime(e.clientX);
+  _trimDrag = Math.abs(tm - _trimStart) <= Math.abs(tm - _trimEnd) ? "a" : "b";
+  onTrimMove(e);
+}
+function onTrimMove(e) {
+  if (!_trimDrag) return;
+  const tm = trimXToTime(e.clientX);
+  if (_trimDrag === "a") _trimStart = tm; else _trimEnd = tm;
+  clampTrim(); syncTrimInputs(); drawTrimWave();
+}
+function onTrimUp() { _trimDrag = null; }
+/** Construit un WAV de la seule zone sélectionnée (via audiotrim.js, pur). */
+function trimSelectionBlob() {
+  const sl = sliceSamples(_trimChannels, _trimSR, _trimStart, _trimEnd);
+  if (!sl.channels.length || !sl.channels[0].length) return null;
+  return { blob: new Blob([encodeWavBytes(sl.channels, sl.sampleRate)], { type: "audio/wav" }),
+           durMs: Math.round(sl.durationSec * 1000) };
+}
+function trimPlaySelection() {
+  const sel = trimSelectionBlob();
+  if (!sel) { toast(t("trim.empty"), "warn"); return; }
+  const a = $("#trim-audio"); if (!a) return;
+  if (a._url) URL.revokeObjectURL(a._url);
+  a._url = URL.createObjectURL(sel.blob); a.src = a._url;
+  a.play().catch(() => { /* geste utilisateur requis parfois : sans gravité */ });
+}
+function trimKeep() {
+  const sel = trimSelectionBlob();
+  if (!sel) { toast(t("trim.empty"), "warn"); return; }
+  audioBlob = sel.blob; audioDurationMs = sel.durMs;
+  trimClose(); renderAudio(); toast(t("trim.kept"), "ok");
+}
+function trimAutoSilence() {
+  if (!_trimChannels) return;
+  const b = detectSilenceBounds(_trimChannels, _trimSR, 0.02, 0.08);
+  _trimStart = b.startSec; _trimEnd = b.endSec; clampTrim(); syncTrimInputs(); drawTrimWave();
+}
+function initTrim() {
+  const cv = $("#trim-wave"); if (!cv) return;
+  cv.addEventListener("pointerdown", onTrimDown);
+  window.addEventListener("pointermove", onTrimMove);
+  window.addEventListener("pointerup", onTrimUp);
+  const si = $("#trim-start"), ei = $("#trim-end");
+  if (si) si.addEventListener("input", () => { _trimStart = Number(si.value) || 0; clampTrim(); syncTrimInputs(); drawTrimWave(); });
+  if (ei) ei.addEventListener("input", () => { _trimEnd = Number(ei.value) || 0; clampTrim(); syncTrimInputs(); drawTrimWave(); });
+  const bind = (id, fn) => { const el = $(id); if (el) el.addEventListener("click", fn); };
+  bind("#btn-trim-audio", openTrim);
+  bind("#trim-silence", trimAutoSilence);
+  bind("#trim-play", trimPlaySelection);
+  bind("#trim-keep", trimKeep);
+  bind("#trim-cancel", trimClose);
 }
 
 // --- Sauvegarde locale ---------------------------------------------------
@@ -1502,6 +1623,7 @@ const TOURS = {
     { sel: "#tips-toggle", title: "L'aide à la prononciation", text: "Quand elle est active, chaque touche pressée montre comment la lettre se prononce, avec un exemple simple en français. Idéale si tu découvres l'alphabet ; tu pourras la couper une fois à l'aise" },
     { sel: "#domaine", title: "Situer le mot (facultatif)", text: "Le domaine (parenté, nourriture, nature…) et la note (registre, contexte d'emploi) ne sont pas obligatoires, mais ils rendent ta contribution bien plus utile : deux mots proches se distinguent souvent par leur seul contexte" },
     { sel: ".audio-row", title: "Enregistrer la voix", text: "Un appui lance l'enregistrement, un autre l'arrête ; tu peux réécouter puis recommencer autant que tu veux. En Traduire c'est un plus, en Transcrire c'est le cœur même de la contribution. « Tester le micro » vérifie d'abord que tout marche" },
+    { sel: "#btn-trim-audio", title: "Ne garder que le bon passage", text: "Si une partie seulement de ton enregistrement est réussie (une porte qui s'ouvre, une radio qui s'allume ont fait du bruit ailleurs), ce bouton ouvre un outil pour délimiter la portion à conserver, en glissant deux poignées sur l'onde ou en saisissant le début et la fin en secondes. Tu écoutes la sélection, puis tu la gardes : tout le reste est supprimé, sans avoir à tout réenregistrer" },
     { sel: "#btn-save", title: "Garder ta contribution", text: "Ta réponse est d'abord rangée en sécurité sur ton appareil, même sans réseau. Rien ne part encore : tu peux enchaîner tranquillement plusieurs items, puis tout transmettre d'un coup un peu plus tard" },
     { sel: ".send-row", title: "Transmettre à la base", text: "L'envoi regroupe tout ce qui attend. Il est conçu pour ne rien perdre : chaque contribution est renvoyée jusqu'à ce que la base confirme l'avoir bien reçue, même quand le réseau est capricieux" },
     { sel: "#grp-pending", title: "Ce qui reste à confirmer", text: "La liste de ce que la base n'a pas encore confirmé. L'application y revient d'elle-même, en boucle, jusqu'à ce que tout soit parti ; « Renvoyer maintenant » force une nouvelle tentative si tu es pressé" },
@@ -3569,6 +3691,7 @@ async function main() {
   initSelectAutoEnhance();                // habille TOUS les <select> (auto, présents + futurs)
   initEvents();
   initTour();
+  initTrim();        // outil de découpe d'un enregistrement (garder une portion)
   applyLanguage();   // applique la langue courante (libellés + clavier dédié/défaut) + sens
   mountShareBars();  // boutons de partage du site (réseaux) sur les emplacements dédiés
   mode = localStorage.getItem("modeSaisie") || "proposer"; // défaut : proposer

@@ -109,6 +109,21 @@ export const STR = {
   "merge.distinct": { fr: "Noté : langues distinctes.", en: "Noted: different languages." },
   "merge.same": { fr: "Choisis deux langues différentes.", en: "Choose two different languages." },
   "merge.fail": { fr: "Action impossible pour le moment (connexion ?).", en: "Action not possible right now (connection?)." },
+  // Découpe d'un enregistrement (#47)
+  "trim.open": { fr: "✂️ Découper", en: "✂️ Trim" },
+  "trim.h": { fr: "Garder une partie de l'enregistrement", en: "Keep part of the recording" },
+  "trim.hint": { fr: "Fais glisser les deux poignées sur l'onde, ou saisis le début et la fin en secondes, pour ne conserver que la bonne partie. Le reste sera supprimé.",
+                 en: "Drag the two handles on the wave, or type the start and end in seconds, to keep only the good part. The rest is removed." },
+  "trim.start": { fr: "Début (s)", en: "Start (s)" },
+  "trim.end": { fr: "Fin (s)", en: "End (s)" },
+  "trim.silence": { fr: "Rogner les silences", en: "Trim the silences" },
+  "trim.play": { fr: "▶ Écouter la sélection", en: "▶ Play selection" },
+  "trim.cancel": { fr: "Annuler", en: "Cancel" },
+  "trim.keep": { fr: "Garder cette partie", en: "Keep this part" },
+  "trim.kept": { fr: "Partie conservée ✓", en: "Selection kept ✓" },
+  "trim.decodeErr": { fr: "Impossible d'ouvrir cet enregistrement pour le découper.", en: "Could not open this recording for trimming." },
+  "trim.empty": { fr: "Sélectionne d'abord une zone à garder.", en: "First select a part to keep." },
+  "trim.dur": { fr: "Sélection : {d} s", en: "Selection: {d} s" },
 
   // — Amorce sonore (premières voix d'une langue créée) —
   "amorce.title.pre": { fr: "Donne voix à", en: "Give voice to" },
