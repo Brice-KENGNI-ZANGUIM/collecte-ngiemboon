@@ -692,6 +692,7 @@
 
       <div class="card req-form">
         <h3 data-i18n="req.form.h">Lancer une demande</h3>
+        <p class="lang-declare-req" data-i18n-html="req.f.reqlegend">Les champs marqués <span class="req">*</span> sont obligatoires.</p>
         <div class="grid2">
           <label class="field"><span data-i18n-html="req.f.texte">Mot ou phrase <span class="req">*</span></span>
             <input id="req-texte" type="text" maxlength="280" data-i18n-ph="req.f.texte.ph" placeholder="ex. mangue" autocomplete="off" />
@@ -699,8 +700,9 @@
           <div class="field"><span data-i18n-html="req.f.langue">Langue demandée <span class="req">*</span></span>
             <select id="req-langue"></select>
           </div>
-          <div class="field"><span data-i18n="req.f.kind">Ce que tu demandes</span>
+          <div class="field"><span data-i18n-html="req.f.kind">Ce que tu demandes <span class="req">*</span></span>
             <select id="req-kind">
+              <option value="" disabled selected data-i18n="req.kind.choose">Choisir…</option>
               <option value="traduction" data-i18n="req.kind.trad">La traduction (écrite)</option>
               <option value="transcription" data-i18n="req.kind.transc">La prononciation (voix)</option>
               <option value="les_deux" data-i18n="req.kind.both">Les deux</option>

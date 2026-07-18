@@ -793,7 +793,7 @@ function collectContributeur() {
 function profileComplete() {
   const c = loadContributeur();
   return !!(c.nom && c.prenom && c.village && c.role &&
-            c.telephone && c.consentement);
+            c.indicatif && c.telephone && c.consentement);
 }
 
 /** Garde FAIL-CLOSED : toute action de contribution (Traduire, Transcrire, Explorer,
@@ -2049,10 +2049,15 @@ function _fillReqLangSelects() {
   const opts = langs.map((l) => `<option value="${escapeHtml(l.id)}">${escapeHtml(l.nom)}</option>`).join("");
   const sel = $("#req-langue");
   if (sel) {
-    // Option finale : déclarer une langue absente (déclaration LÉGÈRE, sans amorce,
-    // car le demandeur n'est pas forcément locuteur).
-    sel.innerHTML = opts + `<option value="__new__">➕ ${escapeHtml(t("req.newlang.opt"))}</option>`;
-    sel.value = getCurrentLangId();
+    const prev = sel.value;   // préserve un choix déjà fait (ex. après déclaration d'une langue)
+    // Aucune valeur par défaut : l'utilisateur DOIT choisir lui-même.
+    // « Déclarer une nouvelle langue » en tête (déclaration LÉGÈRE, sans amorce,
+    // car le demandeur n'est pas forcément locuteur), avant la liste des langues.
+    sel.innerHTML =
+      `<option value="" disabled${prev ? "" : " selected"}>${escapeHtml(t("req.langue.choose"))}</option>` +
+      `<option value="__new__">➕ ${escapeHtml(t("req.newlang.opt"))}</option>` +
+      opts;
+    sel.value = prev || "";
   }
   const f = $("#req-filter-lang");
   if (f) { const cur = f.value; f.innerHTML = `<option value="">${escapeHtml(t("req.filter.all"))}</option>` + opts; f.value = cur || ""; }
@@ -2138,14 +2143,15 @@ async function renderRequests() {
 async function submitRequest() {
   const texte = ($("#req-texte").value || "").trim();
   const langue = ($("#req-langue").value || "").trim();
+  const kind = ($("#req-kind").value || "").trim();
   const err = $("#req-error");
   if (langue === "__new__") { if (err) { err.hidden = false; err.textContent = t("req.newlang.first"); } return; }
-  if (!texte || !langue) { if (err) { err.hidden = false; err.textContent = t("req.err.fields"); } return; }
+  if (!texte || !langue || !kind) { if (err) { err.hidden = false; err.textContent = t("req.err.fields"); } return; }
   if (err) err.hidden = true;
   const btn = $("#req-send"); if (btn) btn.disabled = true;
   try {
     const r = await postRequest({
-      texte, langue, lang_nom: _langNameById(langue), kind: ($("#req-kind").value || "traduction"),
+      texte, langue, lang_nom: _langNameById(langue), kind,
       pays: ($("#req-pays").value || "").trim(), note: ($("#req-note").value || "").trim(),
       device_id: deviceId(), credit: creditDisplay(),
     });
@@ -4320,9 +4326,11 @@ function initSelectAutoEnhance() {
 }
 function initIndicatifs() {
   const sel = $("#c-indicatif");
-  sel.innerHTML = (CONFIG.INDICATIFS || []).map((x) =>
-    `<option value="${escapeHtml(x.d)}">${x.f} ${escapeHtml(x.p)} (${escapeHtml(x.d)})</option>`
-  ).join("");
+  // Aucun indicatif par défaut : l'utilisateur choisit lui-même son pays.
+  sel.innerHTML = `<option value="" disabled selected>${escapeHtml(t("p.indicatif.choose"))}</option>` +
+    (CONFIG.INDICATIFS || []).map((x) =>
+      `<option value="${escapeHtml(x.d)}">${x.f} ${escapeHtml(x.p)} (${escapeHtml(x.d)})</option>`
+    ).join("");
 }
 // --- Infobulles par champ (ⓘ) : une aide COURTE et ciblée sur chaque champ du
 // profil et de la déclaration de langue, en complément de la visite guidée (qui,
@@ -4415,7 +4423,7 @@ function fillProfileFields() {
   $("#c-prenom").value = c.prenom || "";
   $("#c-role").value = c.role || "";
   $("#c-email").value = c.email || "";
-  $("#c-indicatif").value = c.indicatif || CONFIG.INDICATIF_DEFAUT || "";
+  $("#c-indicatif").value = c.indicatif || "";
   $("#c-tel").value = c.telephone || "";
   $("#c-consent").checked = !!c.consentement;
   $("#c-village").value = c.village || "";
