@@ -2,7 +2,7 @@
   "version": "v207",
   "changelog": {
     "v207": [
-      "Nouvelle invitation à contribuer : de temps en temps (au plus une fois par jour), un petit message te propose un mot que tu n'as pas encore fait dans ta langue, en s'appuyant sur ce qu'une autre personne a déjà partagé, avec un lien direct pour le dire dans ta langue"
+      "Nouvelle invitation à contribuer : jusqu'à trois fois par jour (le matin, l'après-midi et le soir, à ton heure locale), un petit message te propose un mot que tu n'as pas encore fait dans ta langue, en s'appuyant sur ce qu'une autre personne a déjà partagé, avec un lien direct pour le dire dans ta langue"
     ],
     "v206": [
       "Application plus rapide et réactive : les effets animés du décor sont allégés (plus doux, moins gourmands) et se mettent automatiquement en pause pendant que tu écris au clavier, pour une frappe parfaitement fluide ; le décor reprend vie dès que le clavier se ferme"

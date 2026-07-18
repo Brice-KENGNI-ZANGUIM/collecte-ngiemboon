@@ -1741,18 +1741,43 @@ function startTranslateWord(frWord) {
   toast(ti("saymine.toast", { w }), "ok");
 }
 
-// --- Incitation à contribuer (nudge quotidien personnalisé) -----------------
+// --- Incitation à contribuer (nudge personnalisé) ---------------------------
 // Moteur UNIQUE (réutilisable plus tard pour l'envoi d'e-mails via langia.tech) :
 // choisit un mot que l'utilisateur n'a PAS encore fait dans sa langue et, si
 // possible, s'appuie sur ce qu'un AUTRE contributeur a déjà partagé (référence
-// sociale) pour l'inviter à le dire à son tour. Au plus 1 apparition / jour.
-const INCITE_KEY = "langa-incite-day";
-function _incTodayStr() { try { return new Date().toISOString().slice(0, 10); } catch (e) { return ""; } }
+// sociale) pour l'inviter à le dire à son tour.
+// FRÉQUENCE : au plus 3×/jour, sur 3 CRÉNEAUX de la journée LOCALE de la personne
+// (l'heure de l'APPAREIL = l'heure de son pays) : matin (~9 h), après-midi (~15 h),
+// soir (~20 h). Au plus une apparition PAR CRÉNEAU, à la 1re ouverture de l'app dans
+// ce créneau (un PWA ne s'exécute pas en fond pour surgir pile à l'heure : le
+// déclenchement horaire précis 9 h/15 h/20 h sera le rôle des e-mails, à venir).
+const INCITE_KEY = "langa-incite-slots";
+function _incTodayStr() { try { const d = new Date(); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); } catch (e) { return ""; } }
+/** Créneau courant selon l'HEURE LOCALE (fuseau de l'appareil/pays), ou null la nuit. */
+function _incSlot() {
+  let h; try { h = new Date().getHours(); } catch (e) { h = 12; }
+  if (h >= 5 && h < 12) return "am";      // matin (~9 h)
+  if (h >= 12 && h < 18) return "pm";     // après-midi (~15 h)
+  if (h >= 18 && h < 24) return "eve";    // soir (~20 h)
+  return null;                            // nuit profonde (0 h–5 h) : aucune incitation
+}
+function _incShownSlots() {
+  try { const o = JSON.parse(localStorage.getItem(INCITE_KEY) || "{}");
+    return (o && o.date === _incTodayStr() && Array.isArray(o.slots)) ? o.slots : []; } catch (e) { return []; }
+}
 function incitationDue() {
   if (!profileComplete() || !hasChosenLang()) return false;
-  try { return localStorage.getItem(INCITE_KEY) !== _incTodayStr(); } catch (e) { return true; }
+  const slot = _incSlot(); if (!slot) return false;
+  return !_incShownSlots().includes(slot);
 }
-function _incMarkShown() { try { localStorage.setItem(INCITE_KEY, _incTodayStr()); } catch (e) { /* stockage indispo */ } }
+function _incMarkShown() {
+  const slot = _incSlot(); if (!slot) return;
+  try {
+    const slots = _incShownSlots();
+    if (!slots.includes(slot)) slots.push(slot);
+    localStorage.setItem(INCITE_KEY, JSON.stringify({ date: _incTodayStr(), slots }));
+  } catch (e) { /* stockage indispo */ }
+}
 function _incLangName(id) {
   const l = knownLanguages().find((x) => canonLangId(x.id) === canonLangId(id));
   return l ? l.nom : "";
