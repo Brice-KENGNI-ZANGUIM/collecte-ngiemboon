@@ -16,7 +16,7 @@ import { currentLang, getCurrentLangId, setCurrentLangId, usesDedicatedKeyboard,
   hasChosenLang, knownLanguages, cacheRemoteLanguages, langAlphabet } from "./languages.js";
 import { applyI18n, getUiLang, setUiLang, t, tToast } from "./i18n.js";
 import { legalHtml, LEGAL_SECTIONS } from "./legal.js";
-import { entriesToCSV, entriesToJSON, entriesToLIFT, exportFilename } from "./export.js";
+import { entriesToCSV, entriesToJSON, entriesToLIFT, entriesToCLDF, entriesToELAN, exportFilename } from "./export.js";
 import { shareCardText, shareTitle, mountShareBar } from "./share.js";
 import { findSimilarLanguages } from "./langsim.js";
 import { findDuplicatePairs, pickCanonical, resolveCanonicalId, visibleLanguages } from "./langmerge.js";
@@ -2341,6 +2341,12 @@ function downloadDict(fmt) {
   } else if (fmt === "lift") {
     content = entriesToLIFT(entries, { langId: lid });
     mime = "application/xml";
+  } else if (fmt === "elan") {
+    content = entriesToELAN(entries, { langId: lid });
+    mime = "application/xml";
+  } else if (fmt === "cldf") {
+    content = entriesToCLDF(entries, { langId: lid });
+    mime = "text/csv";
   } else {
     content = entriesToCSV(entries);
     mime = "text/csv";
@@ -4225,6 +4231,8 @@ function initEvents() {
   const eCsv = $("#export-csv"); if (eCsv) eCsv.addEventListener("click", () => downloadDict("csv"));
   const eJson = $("#export-json"); if (eJson) eJson.addEventListener("click", () => downloadDict("json"));
   const eLift = $("#export-lift"); if (eLift) eLift.addEventListener("click", () => downloadDict("lift"));
+  const eCldf = $("#export-cldf"); if (eCldf) eCldf.addEventListener("click", () => downloadDict("cldf"));
+  const eElan = $("#export-elan"); if (eElan) eElan.addEventListener("click", () => downloadDict("elan"));
   // Page « À propos » (vraie vue de l'app, avec header/footer/fond partagés)
   const aboutLink = $("#about-link"); if (aboutLink) aboutLink.addEventListener("click", openAbout);
   const aboutBack = $("#about-back"); if (aboutBack) aboutBack.addEventListener("click", () => showView(_aboutReturn || "hub"));

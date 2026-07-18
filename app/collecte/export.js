@@ -95,10 +95,70 @@ export function entriesToLIFT(entries, meta) {
   return out.join("\n");
 }
 
+/** Entrées → CLDF (Cross-Linguistic Data Formats) : la FormTable CSV standard des
+    wordlists comparatives (colonnes de l'ontologie CLDF). Chaque ligne = une forme
+    dans la langue reliée à un concept (Parameter_ID dérivé du sens français), avec
+    la variété de village, le rôle et l'audio. Directement exploitable par pycldf /
+    CLLD. Fonction PURE. */
+export function entriesToCLDF(entries, meta) {
+  meta = meta || {};
+  const langId = meta.langId || "und";
+  const header = ["ID", "Language_ID", "Parameter_ID", "Parameter_Gloss", "Form",
+    "Variety", "Speaker_Role", "Audio", "Comment"];
+  const rows = [header];
+  let n = 0;
+  for (const e of (entries || [])) {
+    const toFr = /2fr$/i.test(e.direction || "");
+    const form = (toFr ? e.source_text : e.target_text) || "";
+    const gloss = (toFr ? e.target_text : e.source_text) || "";
+    if (!String(form).trim()) continue;
+    n++;
+    const paramId = String(gloss).normalize("NFD").replace(/[^a-zA-Z0-9]+/g, "_").replace(/^_+|_+$/g, "").toLowerCase() || ("p" + n);
+    rows.push([String(n), langId, paramId, gloss, form, e.variante || "", e.role || "", e.audio_url || "", e.note || ""]);
+  }
+  return "﻿" + toCSV(rows);   // BOM UTF-8 (Excel + outils lisent les caractères spéciaux)
+}
+
+/** Entrées → ELAN (.eaf, XML) : format des annotations time-alignées des linguistes.
+    On produit un document avec un tier de TRANSCRIPTION (le mot dans la langue, un par
+    annotation) et un tier de GLOSE française en association symbolique. Chaque forme
+    reçoit un intervalle temporel séquentiel (le corpus est fait de mots courts, non
+    d'un média continu), ce qui donne un fichier VALIDE, ouvrable dans ELAN. PURE. */
+export function entriesToELAN(entries, meta) {
+  meta = meta || {};
+  const lang = xmlEscape(meta.langId || "und");
+  const items = (entries || []).map((e) => {
+    const toFr = /2fr$/i.test(e.direction || "");
+    return { word: (toFr ? e.source_text : e.target_text) || "", gloss: (toFr ? e.target_text : e.source_text) || "" };
+  }).filter((x) => String(x.word).trim());
+  let date; try { date = new Date().toISOString(); } catch (e) { date = "2026-01-01T00:00:00Z"; }
+  const slots = [], trans = [], glosses = [];
+  items.forEach((it, i) => {
+    const t1 = "ts" + (2 * i + 1), t2 = "ts" + (2 * i + 2), aid = "a" + (i + 1);
+    slots.push(`    <TIME_SLOT TIME_SLOT_ID="${t1}" TIME_VALUE="${i * 1000}"/>`);
+    slots.push(`    <TIME_SLOT TIME_SLOT_ID="${t2}" TIME_VALUE="${i * 1000 + 800}"/>`);
+    trans.push(`      <ANNOTATION><ALIGNABLE_ANNOTATION ANNOTATION_ID="${aid}" TIME_SLOT_REF1="${t1}" TIME_SLOT_REF2="${t2}"><ANNOTATION_VALUE>${xmlEscape(it.word)}</ANNOTATION_VALUE></ALIGNABLE_ANNOTATION></ANNOTATION>`);
+    if (String(it.gloss).trim())
+      glosses.push(`      <ANNOTATION><REF_ANNOTATION ANNOTATION_ID="g${i + 1}" ANNOTATION_REF="${aid}"><ANNOTATION_VALUE>${xmlEscape(it.gloss)}</ANNOTATION_VALUE></REF_ANNOTATION></ANNOTATION>`);
+  });
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    `<ANNOTATION_DOCUMENT AUTHOR="LANGA" DATE="${date}" FORMAT="3.0" VERSION="3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.mpi.nl/tools/elan/EAFv3.0.xsd">`,
+    '  <HEADER TIME_UNITS="milliseconds"></HEADER>',
+    '  <TIME_ORDER>', slots.join("\n"), '  </TIME_ORDER>',
+    `  <TIER TIER_ID="${lang}-transcription" LINGUISTIC_TYPE_REF="transcription">`, trans.join("\n"), '  </TIER>',
+    `  <TIER TIER_ID="gloss-fr" LINGUISTIC_TYPE_REF="gloss" PARENT_REF="${lang}-transcription">`, glosses.join("\n"), '  </TIER>',
+    '  <LINGUISTIC_TYPE LINGUISTIC_TYPE_ID="transcription" TIME_ALIGNABLE="true" GRAPHIC_REFERENCES="false"/>',
+    '  <LINGUISTIC_TYPE LINGUISTIC_TYPE_ID="gloss" TIME_ALIGNABLE="false" CONSTRAINTS="Symbolic_Association" GRAPHIC_REFERENCES="false"/>',
+    '  <CONSTRAINT STEREOTYPE="Symbolic_Association" DESCRIPTION="Stereotype for a symbolic association between annotations"/>',
+    '</ANNOTATION_DOCUMENT>',
+  ].join("\n");
+}
+
 /** Nom de fichier sûr (sans caractères hostiles au système de fichiers). */
 export function exportFilename(langId, ext) {
   const id = String(langId || "langue").normalize("NFD").replace(/[^a-zA-Z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase() || "langue";
-  const e = ({ json: "json", lift: "lift", csv: "csv" })[ext] || "csv";
-  const base = e === "lift" ? "langa-lexique" : "langa-dictionnaire";
+  const e = ({ json: "json", lift: "lift", csv: "csv", cldf: "csv", elan: "eaf" })[ext] || "csv";
+  const base = ext === "lift" ? "langa-lexique" : (ext === "cldf" ? "langa-cldf" : (ext === "elan" ? "langa-elan" : "langa-dictionnaire"));
   return `${base}-${id}.${e}`;
 }

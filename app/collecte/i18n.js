@@ -352,6 +352,10 @@ export const STR = {
   "exp.export.json": { fr: "⬇ Exporter (JSON)", en: "⬇ Export (JSON)" },
   "exp.export.lift": { fr: "⬇ Exporter (LIFT)", en: "⬇ Export (LIFT)" },
   "exp.export.lift.title": { fr: "Format LIFT : lexique standard, importable dans les outils de lexicographie (FLEx, WeSay)", en: "LIFT format: standard lexicon, importable into lexicography tools (FLEx, WeSay)" },
+  "exp.export.cldf": { fr: "⬇ Exporter (CLDF)", en: "⬇ Export (CLDF)" },
+  "exp.export.cldf.title": { fr: "Format CLDF : wordlist comparative standard (FormTable CSV), exploitable par pycldf et les bases CLLD", en: "CLDF format: standard comparative wordlist (FormTable CSV), usable with pycldf and CLLD databases" },
+  "exp.export.elan": { fr: "⬇ Exporter (ELAN)", en: "⬇ Export (ELAN)" },
+  "exp.export.elan.title": { fr: "Format ELAN (.eaf) : annotations des linguistes, tier de transcription et glose française", en: "ELAN format (.eaf): linguists' annotations, transcription tier and French gloss" },
 
   // — Boutons communs —
   "btn.back": { fr: "← Retour", en: "← Back" },
