@@ -1,6 +1,9 @@
 {
-  "version": "v196",
+  "version": "v197",
   "changelog": {
+    "v197": [
+      "Beaucoup plus de contenu à traduire : près de deux fois plus de mots (plus de 3200) et plus de deux fois plus de phrases d'exemple (plus de 3100), tous affichés aussi en anglais"
+    ],
     "v196": [
       "Nouvelles pages d'informations légales accessibles depuis le pied de page : mentions légales, politique de confidentialité, conditions d'utilisation et de vente, en français et en anglais"
     ],
