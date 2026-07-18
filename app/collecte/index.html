@@ -65,6 +65,9 @@
               title="Visite guidée de cette page" aria-label="Visite guidée"><img class="chip-ico" src="icons/ui/hi-help.png" alt="" aria-hidden="true"><span data-i18n="chip.help">Aide</span></button>
       <button id="btn-notifs" class="chip chip--btn chip--notif chip--icon" type="button" hidden data-i18n-title="chip.notifs.title"
               title="Mes notifications" aria-label="Mes notifications"><img class="chip-ico" src="icons/ui/hi-notif.png" alt="" aria-hidden="true"><span id="notif-badge" class="notif-badge" hidden aria-hidden="true">0</span></button>
+      <!-- Saut de ligne forcé : la cloche est le DERNIER bouton de la 1re ligne ;
+           Bugs, Profil et les outils (version, EN, thème) passent en 2e ligne. -->
+      <i class="chips-break" aria-hidden="true"></i>
       <button id="bugs-link" class="chip chip--btn" type="button" data-i18n-title="chip.bugs.title"
               title="Suivi des bugs" aria-label="Suivi des bugs"><img class="chip-ico" src="icons/ui/hi-bug.png" alt="" aria-hidden="true"><span data-i18n="chip.bugs">Bugs</span></button>
       <button id="btn-open-profile" class="chip chip--btn" type="button" hidden><img class="chip-ico" src="icons/ui/hi-profile.png" alt="" aria-hidden="true"><span data-i18n="chip.profile">Profil</span></button>
