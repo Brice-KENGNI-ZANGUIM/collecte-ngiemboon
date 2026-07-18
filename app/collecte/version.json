@@ -1,6 +1,9 @@
 {
-  "version": "v205",
+  "version": "v206",
   "changelog": {
+    "v206": [
+      "Application plus rapide et réactive : les effets animés du décor sont allégés (plus doux, moins gourmands) et se mettent automatiquement en pause pendant que tu écris au clavier, pour une frappe parfaitement fluide ; le décor reprend vie dès que le clavier se ferme"
+    ],
     "v205": [
       "Finition : tous les boutons (y compris secondaires comme « Annuler ») ont maintenant le même rendu soigné, avec un léger relief de matière et un halo au survol ; plus aucun bouton ne paraît « plat »",
       "Numéro de téléphone de contact affiché au format « +33 7 72 08 82 36 » partout (application et flyer)"

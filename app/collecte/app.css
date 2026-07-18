@@ -2139,3 +2139,44 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   .share-btn--native, .share-ico { transition: none; }
 }
+
+/* ============================================================================
+   PERF — DÉCOR ALLÉGÉ + FIGÉ PENDANT LA FRAPPE
+   ----------------------------------------------------------------------------
+   Les animations décoratives continues sont CONSERVÉES mais allégées (durées
+   rallongées, glows moins intenses : cf. plus bas). Surtout, elles sont TOUTES
+   GELÉES quand le clavier ngiemboon est ouvert (`body.kb-docked`) → la frappe
+   reste parfaitement fluide (le fil principal est libre), et le décor reprend
+   vie dès que le clavier se ferme. Ainsi le décor ne disparaît pas, il se met
+   juste en pause là où la réactivité prime. */
+body.kb-docked::before, body.kb-docked::after,
+body.kb-docked .brand::before, body.kb-docked .topbar::after,
+body.kb-docked .brand-mark::before, body.kb-docked .brand-mark::after,
+body.kb-docked .foot-mark::before, body.kb-docked .foot-mark::after,
+body.kb-docked .view-title::before, body.kb-docked .view-title::after,
+body.kb-docked .hub-card, body.kb-docked .hub-card::before, body.kb-docked .hub-ico,
+body.kb-docked #btn-mic-test, body.kb-docked .tr-guide-open,
+body.kb-docked .btn--primary, body.kb-docked .btn--next, body.kb-docked .btn--send,
+body.kb-docked .btn--primary::after, body.kb-docked .btn--next::after, body.kb-docked .btn--send::after,
+body.kb-docked .lang-search-btn, body.kb-docked .lang-declare-cta, body.kb-docked .corr-submit, body.kb-docked .tour-next,
+body.kb-docked .lang-search-btn::after, body.kb-docked .lang-declare-cta::after, body.kb-docked .corr-submit::after, body.kb-docked .tour-next::after,
+body.kb-docked .card::after, body.kb-docked .chip--on,
+body.kb-docked .ndop-sep, body.kb-docked .ndop-sep i, body.kb-docked .ndop-sep::before, body.kb-docked .ndop-sep::after,
+body.kb-docked .field--consent {
+  animation: none !important;
+}
+
+/* ALLÈGEMENT des animations continues (moins d'intensité / plus lentes) : impact réduit
+   au repos, tout en gardant un mouvement présent. */
+.card::after { animation-duration: 26s !important; opacity: .5 !important; }   /* bordure des cartes : drift très lent */
+.hub-card { animation-duration: 9s !important; }                              /* halo qui respire : plus doux */
+.hub-card::before { animation-duration: 9s !important; }                      /* comète : plus lente */
+.hub-ico { animation-duration: 6s !important; }                              /* glow d'icône : plus lent */
+.brand::before { animation-duration: 16s !important; }                        /* aurore d'en-tête : plus lente */
+.btn--primary, .btn--next, .btn--send:not(:disabled),
+.lang-search-btn, .lang-declare-cta, .corr-submit, .tour-next,
+#btn-mic-test, .tr-guide-open { animation-duration: 5s !important; }          /* halo des CTA : plus lent */
+@keyframes ngCtaGlowLite { 0%,100% { filter: drop-shadow(0 0 2px var(--cta-g)); } 50% { filter: drop-shadow(0 0 8px var(--cta-g)); } }
+.btn--primary, .btn--next, .btn--send:not(:disabled),
+.lang-search-btn, .lang-declare-cta, .corr-submit, .tour-next,
+#btn-mic-test, .tr-guide-open { animation-name: ngCtaGlowLite !important; }   /* glow CTA moins intense */
