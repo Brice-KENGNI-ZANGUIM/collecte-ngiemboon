@@ -300,8 +300,10 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
      Les cartes sont opaques → le flou n'apportait rien de visible. */
   border: 1px solid var(--border); border-radius: 18px;
   padding: 18px clamp(14px, 3vw, 22px);
-  /* Matière : ombre portée + reflet de verre en haut + fin liseré interne en bas (relief). */
-  box-shadow: var(--shadow-card), inset 0 1px 0 var(--card-sheen), inset 0 -1px 0 var(--card-inner);
+  /* Matière PREMIUM (identique sur TOUS les cadres de l'app) : halo d'ambiance cyan +
+     ombre portée + reflet de verre en haut + fin liseré interne en bas (relief/épaisseur). */
+  box-shadow: 0 0 32px -20px color-mix(in srgb, var(--cyan) 70%, transparent),
+    var(--shadow-card), inset 0 1px 0 var(--card-sheen), inset 0 -1px 0 var(--card-inner);
 }
 
 /* Vues (profil / app) */
@@ -1747,11 +1749,11 @@ body::after {
    (Continu → gelé sur mobile pour ne rien coûter à la frappe.) */
 .card::after {
   content: ""; position: absolute; inset: -1px; border-radius: 19px; padding: 1px;
-  background: linear-gradient(130deg, var(--cyan), transparent 40%, var(--green) 66%, transparent);
+  background: linear-gradient(130deg, var(--cyan), transparent 38%, var(--green) 62%, var(--gold));
   background-size: 300% 300%;
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor; mask-composite: exclude;
-  opacity: .42; pointer-events: none;
+  opacity: .6; pointer-events: none;
   animation: ngCardBorder 12s linear infinite;
 }
 @keyframes ngCardBorder { to { background-position: 300% 0; } }

@@ -1,6 +1,11 @@
 {
-  "version": "v203",
+  "version": "v204",
   "changelog": {
+    "v204": [
+      "Rendu plus homogène : tous les cadres de l'application ont maintenant le même effet premium (halo doux, bordure lumineuse, matière), et plus seulement ceux de Traduire, Transcrire et Explorer",
+      "Les icônes Accueil et Mon profil apparaissent aussi en haut de leur page (avant le titre), comme sur les autres pages",
+      "Nouvelle icône pour la page « À propos »"
+    ],
     "v203": [
       "Icônes du menu du haut désormais en illustrations couleur détaillées et réalistes (maison, globe, lever de soleil, ampoule, coccinelle, personne), nettes et identiques sur tous les appareils ; l'icône coccinelle des bugs est la même dans le menu et sur la page"
     ],
