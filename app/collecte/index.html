@@ -746,6 +746,21 @@
     </div>
   </div>
 
+  <!-- Invitation à contribuer (nudge quotidien personnalisé) : un mot que tu n'as pas
+       encore fait dans ta langue, en t'appuyant sur ce qu'un autre a déjà partagé. -->
+  <div id="incite-banner" class="incite-banner" hidden role="dialog" aria-live="polite"
+       data-i18n-label="incite.aria" aria-label="Invitation à contribuer">
+    <span class="incite-ico" aria-hidden="true">💬</span>
+    <div class="incite-body">
+      <p id="incite-msg" class="incite-msg"></p>
+      <div class="incite-actions">
+        <button id="incite-go" class="btn btn--primary" type="button" data-i18n="incite.cta">Le dire dans ma langue →</button>
+        <button id="incite-later" class="incite-later" type="button" data-i18n="incite.later">Plus tard</button>
+      </div>
+    </div>
+    <button id="incite-close" class="incite-close" type="button" data-i18n-title="incite.close" title="Fermer" aria-label="Fermer">✕</button>
+  </div>
+
   <!-- Mode présentation : affichage plein écran pour montrer le projet (événements,
        réunions). Grand logo + nom + les trois activités + QR pour contribuer. -->
   <div id="present" class="present" hidden>

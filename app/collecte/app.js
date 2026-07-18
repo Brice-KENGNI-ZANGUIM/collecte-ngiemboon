@@ -28,7 +28,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v206";
+const APP_VERSION = "v207";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1076,6 +1076,8 @@ function enterHub() {
   const ht = $("#hub-title");
   if (ht) ht.textContent = nom ? `${t("hub.greeting.hello")} ${nom} 👋 · ${t("hub.greeting")}` : t("hub.greeting.solo");
   showView("hub");
+  // Invitation à contribuer (au plus 1×/jour) : apparaît en douceur après l'arrivée.
+  setTimeout(() => { try { maybeShowIncitation(); } catch (e) { /* jamais bloquant */ } }, 1400);
 }
 /** Accueil = le hub aux trois portes (Traduire, Transcrire, Explorer). Si le profil
     n'est pas encore complet, l'accueil obligatoire reste la vue Profil (aucun
@@ -1737,6 +1739,70 @@ function startTranslateWord(frWord) {
   if (s) { delete s.dataset.canon; s.value = w; s.readOnly = false; s.dispatchEvent(new Event("input", { bubbles: true })); }
   const tg = $("#target"); if (tg) { tg.value = ""; setTimeout(() => tg.focus(), 60); }
   toast(ti("saymine.toast", { w }), "ok");
+}
+
+// --- Incitation à contribuer (nudge quotidien personnalisé) -----------------
+// Moteur UNIQUE (réutilisable plus tard pour l'envoi d'e-mails via langia.tech) :
+// choisit un mot que l'utilisateur n'a PAS encore fait dans sa langue et, si
+// possible, s'appuie sur ce qu'un AUTRE contributeur a déjà partagé (référence
+// sociale) pour l'inviter à le dire à son tour. Au plus 1 apparition / jour.
+const INCITE_KEY = "langa-incite-day";
+function _incTodayStr() { try { return new Date().toISOString().slice(0, 10); } catch (e) { return ""; } }
+function incitationDue() {
+  if (!profileComplete() || !hasChosenLang()) return false;
+  try { return localStorage.getItem(INCITE_KEY) !== _incTodayStr(); } catch (e) { return true; }
+}
+function _incMarkShown() { try { localStorage.setItem(INCITE_KEY, _incTodayStr()); } catch (e) { /* stockage indispo */ } }
+function _incLangName(id) {
+  const l = knownLanguages().find((x) => canonLangId(x.id) === canonLangId(id));
+  return l ? l.nom : "";
+}
+/** Choisit un item non fait (mots d'abord, puis phrases) + une référence sociale
+    optionnelle (contribution d'un AUTRE, dans une autre langue) sur ce même item. */
+async function pickIncitation() {
+  await refreshDoneTexts();
+  let undone = groupUndone("mots");
+  if (undone.length < 20) undone = undone.concat(groupUndone("phrases"));
+  if (!undone.length) return null;
+  let chosen = null, ref = null;
+  try {
+    const data = await browseLibrary({ limit: 300 });
+    const mine = canonLangId(getCurrentLangId());
+    const byNorm = new Map(undone.map((it) => [it.norm || normTxt(it.texte), it]));
+    for (const e of (((data && data.entries) || []))) {
+      const src = (e.source_text || "").trim(); if (!src) continue;
+      const it = byNorm.get(normTxt(src)); if (!it) continue;
+      const elang = canonLangId(entryLang(e));
+      if (elang === mine) continue;               // on met en avant ce qu'un AUTRE a fait, ailleurs
+      chosen = it; ref = { name: (e.credit || "").trim() || null, langId: elang }; break;
+    }
+  } catch (e) { /* hors ligne : pas de référence, on garde un mot non fait */ }
+  if (!chosen) chosen = undone[Math.floor(Math.random() * undone.length)];
+  return { word: chosen.texte, ref };
+}
+function renderIncitation(pick) {
+  const bn = $("#incite-banner"); if (!bn || !pick) return;
+  const w = pick.word;
+  const langName = (currentLang() && currentLang().nom) || "";
+  let text;
+  if (pick.ref && pick.ref.name) {
+    const ln = pick.ref.langId ? _incLangName(pick.ref.langId) : "";
+    const inlang = ln ? ti("incite.inlang", { l: ln }) : "";   // « en {langue} » seulement si connue
+    text = ti("incite.msg.ref", { w, name: pick.ref.name, inlang });
+  } else {
+    text = ti("incite.msg", { w, lang: langName });
+  }
+  const msg = $("#incite-msg"); if (msg) msg.textContent = text;   // textContent = anti-injection
+  const go = $("#incite-go"); if (go) go.onclick = () => { _incMarkShown(); bn.hidden = true; startTranslateWord(w); };
+  bn.hidden = false;
+}
+function _incDismiss() { _incMarkShown(); const bn = $("#incite-banner"); if (bn) bn.hidden = true; }
+/** À appeler quand on arrive sur l'accueil : montre l'invitation si elle est due. */
+async function maybeShowIncitation() {
+  if (!incitationDue()) return;
+  let pick = null; try { pick = await pickIncitation(); } catch (e) { pick = null; }
+  if (!pick || !incitationDue()) return;          // re-vérifie après l'await (course éventuelle)
+  renderIncitation(pick);
 }
 
 function enterExplore() {
@@ -3910,6 +3976,9 @@ function initEvents() {
   const legalBack = $("#legal-back");
   if (legalBack) legalBack.addEventListener("click", () => routeTo(viewToRoute(_legalReturn) || "accueil"));
   const bugSend = $("#bug-send"); if (bugSend) bugSend.addEventListener("click", submitBug);
+  // Invitation à contribuer : « Plus tard » et « Fermer » l'écartent pour la journée.
+  const inLater = $("#incite-later"); if (inLater) inLater.addEventListener("click", _incDismiss);
+  const inClose = $("#incite-close"); if (inClose) inClose.addEventListener("click", _incDismiss);
   const upNow = $("#update-now"); if (upNow) upNow.addEventListener("click", doUpdate);
   const upLater = $("#update-later"); if (upLater) upLater.addEventListener("click", () => {
     const dep = $("#update-ver") ? $("#update-ver").textContent.trim() : "";

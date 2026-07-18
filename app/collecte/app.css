@@ -1610,6 +1610,33 @@ body.kb-docked { padding-bottom: var(--kb-h, 50vh); }
   .update-dot, .update-btn { animation: none; }
 }
 
+/* Invitation à contribuer (nudge quotidien) : carte flottante douce en bas. Entrée
+   animée UNE fois (pas d'animation continue → conforme à la politique perf). */
+.incite-banner[hidden] { display: none !important; }
+.incite-banner {
+  position: fixed; z-index: 2147483500; right: 18px; bottom: 18px;
+  width: min(380px, calc(100vw - 32px));
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 16px 40px 16px 18px; border-radius: 18px;
+  background: radial-gradient(120% 100% at 0% 0%, color-mix(in srgb, var(--cyan) 12%, transparent), transparent 60%), var(--card-bg);
+  border: 1.5px solid color-mix(in srgb, var(--cyan) 55%, var(--border));
+  box-shadow: 0 18px 50px rgba(0,0,0,.42), 0 0 30px -6px var(--cyan), inset 0 1px 0 var(--card-sheen);
+  animation: updIn .45s cubic-bezier(.2,.8,.2,1) both;
+}
+.incite-ico { flex: 0 0 auto; font-size: 1.6rem; line-height: 1.2; filter: drop-shadow(0 2px 5px rgba(0,0,0,.3)); }
+.incite-body { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.incite-msg { margin: 0; font-size: .92rem; line-height: 1.5; color: var(--text); }
+.incite-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.incite-actions .btn--primary { padding: 9px 16px; font-size: .9rem; }
+.incite-later { background: none; border: none; color: var(--muted); font: inherit; cursor: pointer; text-decoration: underline; }
+.incite-later:hover { color: var(--text); }
+.incite-close { position: absolute; top: 8px; right: 10px; width: 26px; height: 26px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--panel); color: var(--muted); cursor: pointer;
+  font-size: .8rem; line-height: 1; display: grid; place-items: center; transition: color .14s, border-color .14s; }
+.incite-close:hover { color: var(--text); border-color: var(--cyan); }
+@media (max-width: 560px) { .incite-banner { right: 12px; left: 12px; bottom: 12px; width: auto; } }
+@media (prefers-reduced-motion: reduce) { .incite-banner { animation: updIn .3s ease both; } }
+
 /* ---- Visite guidée (projecteur + bulle « Étape N sur N ») ---- */
 .tour { position: fixed; inset: 0; z-index: 9998; }
 .tour[hidden] { display: none; }
