@@ -288,18 +288,26 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 @media (max-width: 560px) {
   .brand-mark { width: 42px; height: 42px; }
   .brand-txt h1 { font-size: 1.62rem; white-space: nowrap; }
-  /* Nav TÉLÉPHONE : boutons franchement resserrés pour que les 4 boutons texte
-     (Accueil, langue, À propos, Aide) + la cloche tiennent sur la 1re ligne
-     jusqu'aux petits écrans (~320px). La cloche garde son épaisseur ~1.2×. */
-  .chips-nav { gap: 4px 4px; justify-content: space-between; }
-  .chip { font-size: .66rem; padding: 4px 5px; }
-  .chip--btn { padding: 4px 5px; gap: 3px; }
-  .chip--btn .chip-ico { width: 13px; height: 13px; }
-  .chip--icon { padding: 5px 6px; }
-  .chip--icon .chip-ico { width: 16px; height: 16px; }
-  /* Garde-fou : un nom de langue long (déclaré par l'utilisateur) est tronqué
-     par « … » plutôt que de repousser la cloche à la 2e ligne. */
-  #lang-chip-name { display: inline-block; max-width: 66px; overflow: hidden;
+  /* Nav TÉLÉPHONE : boutons HAUTS et confortables. Les 4 boutons texte de la 1re
+     ligne grandissent ET rétrécissent (flex 1 1) pour remplir EXACTEMENT la
+     largeur, contenu centré : aucun vide, aucun bouton minuscule. La cloche
+     (icône seule) garde sa taille et se cale en bout, épaisseur ~1.2×. */
+  .chips-nav { gap: 6px 7px; }
+  .chip { font-size: .74rem; padding: 9px 8px; }
+  .chip--btn { padding: 9px 8px; gap: 5px; }
+  .chip--btn .chip-ico { width: 16px; height: 16px; }
+  .chip--icon { padding: 11px 12px; }
+  .chip--icon .chip-ico { width: 19px; height: 19px; }
+  #home-link, #lang-chip, #about-link, #help-btn { flex: 1 1 auto; min-width: 0;
+    justify-content: center; }
+  /* Icône retirée des 4 boutons texte sur téléphone : 5 boutons partagent une
+     ligne étroite, l'icône rognerait le libellé (« Ngiemboon » → « Ngie… »).
+     Le texte, seul, reste pleinement lisible ET remplit la largeur. La cloche
+     (bouton icône) garde évidemment son icône. */
+  #home-link .chip-ico, #lang-chip .chip-ico, #about-link .chip-ico, #help-btn .chip-ico { display: none; }
+  /* Garde-fou : un nom de langue TRÈS long est tronqué par « … » ; « Ngiemboon »
+     et les noms usuels s'affichent en entier. */
+  #lang-chip-name { display: inline-block; max-width: 100px; overflow: hidden;
     text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; }
   .chips-meta { gap: 4px; }
   #net, #srv { font-size: .5rem; padding: 2px 6px; line-height: 1.15; }
@@ -321,13 +329,12 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   .brand-txt h1 { font-size: 1.08rem; }
   #net, #srv { font-size: .48rem; padding: 2px 5px; }
   #net.chip--on::before, #srv.chip--on::before { margin-right: 3px; width: 4px; height: 4px; }
-  /* Très petits écrans : dernier cran de resserrement pour garder la cloche ligne 1. */
-  .chip { font-size: .62rem; padding: 3px 4px; }
-  .chip--btn { padding: 3px 4px; gap: 3px; }
-  .chip--btn .chip-ico { width: 12px; height: 12px; }
-  .chip--icon { padding: 4px 5px; }
-  .chip--icon .chip-ico { width: 15px; height: 15px; }
-  #lang-chip-name { max-width: 58px; }
+  /* Très petits écrans : les boutons restent HAUTS (flex gère le remplissage en
+     largeur, ils se rétrécissent d'eux-mêmes) ; on abaisse juste la police d'un
+     cran et on serre le nom de langue pour garder la cloche sur la 1re ligne. */
+  .chip { font-size: .68rem; padding: 8px 5px; }
+  .chip--btn { padding: 8px 5px; gap: 4px; }
+  #lang-chip-name { max-width: 62px; }
 }
 
 /* --- Cartes --- */
