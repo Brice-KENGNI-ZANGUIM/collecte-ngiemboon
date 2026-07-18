@@ -230,10 +230,13 @@ body {
 .chip--ghost { border-style: dashed; }
 /* Étiquettes techniques (version) en mono, cohérent avec le logo */
 #app-ver { font-family: var(--font-mono); letter-spacing: -.02em; }
-.chip--btn { cursor: pointer; font: inherit; font-size: .82rem; line-height: 1.1;
+.chip--btn { cursor: pointer; font: inherit; font-size: .75rem; line-height: 1.1;
   padding: 5px 10px; background-color: var(--panel); color: var(--text); text-decoration: none;
   display: inline-flex; align-items: center;
   transition: color .16s ease, border-color .16s ease, box-shadow .16s ease, transform .1s ease; }
+/* Chip ICÔNE SEULE (ex. la cloche des notifications) : pas de texte, plus compacte. */
+.chip--icon { padding: 5px 9px; }
+.chip--icon .chip-ico { width: 20px; height: 20px; }
 a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weight: 600; }
 .chip--btn:hover { color: var(--cyan); border-color: var(--cyan);
   box-shadow: inset 0 1px 0 var(--card-sheen), 0 0 16px -2px rgba(34,211,238,.45); transform: translateY(-1px); }
@@ -381,6 +384,8 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 /* Chaque onglet porte SA couleur d'activité (comme l'accueil et le mode présentation). */
 #tab-traduire  { --acc: var(--green); }
 #tab-transcrire { --acc: #a78bfa; }
+#tab-explorer  { --acc: var(--gold); }
+#tab-demander  { --acc: var(--cyan); }
 #tab-explorer  { --acc: var(--gold); }
 .nav-tab:hover { color: var(--text);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acc) 42%, transparent),
@@ -1742,6 +1747,14 @@ body.kb-docked { padding-bottom: var(--kb-h, 50vh); }
 .req-answer-box[hidden] { display: none; }
 .req-answer-input { flex: 1 1 220px; min-width: 0; }
 @media (max-width: 520px) { .req-answer-input { flex-basis: 100%; } .req-count { margin-left: 0; } }
+/* Déclaration LÉGÈRE d'une langue absente, depuis le formulaire Demander. */
+.req-newlang { padding: 12px 14px; border-radius: 12px;
+  border: 1px dashed color-mix(in srgb, var(--cyan) 45%, var(--border));
+  background: color-mix(in srgb, var(--cyan) 6%, var(--panel2)); }
+.req-newlang[hidden] { display: none; }
+.req-newlang > span { font-size: .82rem; color: var(--muted); font-weight: 600; }
+.req-newlang-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; align-items: center; }
+.req-newlang-grid input { flex: 1 1 150px; min-width: 0; }
 
 /* ---- Visite guidée (projecteur + bulle « Étape N sur N ») ---- */
 .tour { position: fixed; inset: 0; z-index: 9998; }

@@ -91,6 +91,18 @@ export function knownLanguages() {
 export function getLang(id) {
   return knownLanguages().find((l) => l.id === id) || SEED_LANGUAGES[0];
 }
+/** Ajoute une langue au registre LOCAL (cache) sans passer par le fetch distant.
+    Sert à la déclaration LÉGÈRE depuis la porte « Demander » (le demandeur n'est pas
+    forcément locuteur : pas d'amorce). Idempotent par id. */
+export function addKnownLanguage(rec) {
+  if (!rec || !rec.id || !rec.nom) return;
+  let remote = [];
+  try { remote = JSON.parse(localStorage.getItem(LS_REGISTRY) || "[]"); } catch { remote = []; }
+  if (SEED_LANGUAGES.some((l) => l.id === rec.id) || remote.some((l) => l.id === rec.id)) return;
+  remote.push(rec);
+  try { localStorage.setItem(LS_REGISTRY, JSON.stringify(remote)); } catch { /* quota */ }
+  _cache = null;
+}
 export function currentLang() {
   return getLang(getCurrentLangId());
 }

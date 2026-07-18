@@ -3,7 +3,9 @@
   "changelog": {
     "v213": [
       "Nouvelle porte « Demander » sur l'accueil : tu peux demander à la communauté la traduction ou la prononciation d'un mot ou d'une phrase dans une langue précise (avec le pays, la région et un peu de contexte). Les personnes qui parlent cette langue sont prévenues et peuvent t'aider ; les autres peuvent relayer ta demande autour d'eux avec un message tout prêt à partager",
-      "Répondre à une demande se fait en un geste : ta réponse aide la personne, rejoint la bibliothèque Explorer et prévient le demandeur. LANGA devient un vrai outil d'entraide où chacun peut aider chacun"
+      "Répondre à une demande se fait en un geste : ta réponse aide la personne, rejoint la bibliothèque Explorer et prévient le demandeur. LANGA devient un vrai outil d'entraide où chacun peut aider chacun",
+      "Si la langue que tu cherches n'est pas encore dans la liste, tu peux la déclarer directement depuis la page « Demander » (juste son nom et sa région), puis lancer ta demande, même si tu ne la parles pas toi-même",
+      "Le menu du haut de l'application est plus compact : « Mon profil » devient « Profil », les notifications sont représentées par une simple cloche, et les 4 espaces (Transcrire, Traduire, Explorer, Demander) sont accessibles d'un onglet sur toutes les pages d'activité"
     ],
     "v212": [
       "Sur ordinateur, l'application occupe désormais une bien plus grande largeur d'écran : les grandes marges vides sur les côtés sont fortement réduites, pour un affichage plus généreux et plus confortable (l'affichage sur téléphone est inchangé)",

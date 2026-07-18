@@ -29,7 +29,7 @@ export const STR = {
   "chip.about": { fr: "À propos", en: "About" },
   "chip.help": { fr: "Aide", en: "Help" },
   "chip.bugs": { fr: "Bugs", en: "Bugs" },
-  "chip.profile": { fr: "Mon profil", en: "My profile" },
+  "chip.profile": { fr: "Profil", en: "Profile" },
   "chip.ui": { fr: "EN", en: "FR" },                 // ce que propose la bascule (l'AUTRE langue)
   "chip.ui.title": { fr: "Switch to English", en: "Passer en français" },
   "chip.home.title": { fr: "Retour à l'accueil", en: "Back to home" },
@@ -310,6 +310,7 @@ export const STR = {
   "nav.translate": { fr: "Traduire", en: "Translate" },
   "nav.transcribe": { fr: "Transcrire", en: "Transcribe" },
   "nav.explore": { fr: "Explorer", en: "Explore" },
+  "nav.demander": { fr: "Demander", en: "Ask" },
 
   // — Espace de travail (Traduire / Transcrire) —
   "work.mode.proposed": { fr: "Se faire proposer un mot", en: "Get a word to work on" },
@@ -559,6 +560,15 @@ export const STR = {
   "req.share": { fr: "🔗 Partager", en: "🔗 Share" },
   "req.share.msg": { fr: "Quelqu'un cherche à savoir comment on dit « {w} » en {lang}. Tu connais quelqu'un qui parle cette langue ? Aide sur LANGA : {url}", en: "Someone wants to know how to say “{w}” in {lang}. Do you know someone who speaks it? Help on LANGA: {url}" },
   "req.share.copied": { fr: "Message copié : colle-le où tu veux pour relayer la demande.", en: "Message copied: paste it anywhere to relay the request." },
+  "req.newlang.opt": { fr: "Déclarer une nouvelle langue…", en: "Declare a new language…" },
+  "req.newlang.h": { fr: "Déclarer la langue (elle n'est pas dans la liste)", en: "Declare the language (it's not in the list)" },
+  "req.newlang.nom": { fr: "Nom de la langue (ex. Ghomala)", en: "Language name (e.g. Ghomala)" },
+  "req.newlang.region": { fr: "Région / localité", en: "Region / area" },
+  "req.newlang.pays": { fr: "Pays", en: "Country" },
+  "req.newlang.declare": { fr: "Déclarer et choisir", en: "Declare and select" },
+  "req.newlang.err": { fr: "Indique au moins le nom et la région de la langue.", en: "Enter at least the language name and region." },
+  "req.newlang.ok": { fr: "{nom} est déclarée : tu peux maintenant lancer ta demande.", en: "{nom} is declared: you can now post your request." },
+  "req.newlang.first": { fr: "Choisis une langue, ou déclare-la d'abord ci-dessous.", en: "Choose a language, or declare it below first." },
   "incite.aria": { fr: "Invitation à contribuer", en: "Invitation to contribute" },
   "incite.cta": { fr: "Le dire dans ma langue →", en: "Say it in my language →" },
   "incite.listen": { fr: "🔊 Écouter", en: "🔊 Listen" },

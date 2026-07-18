@@ -14,7 +14,7 @@ import { PROPOSITIONS } from "./propositions.js";
 import { BUGS } from "./bugs.js";
 import { CONFIG } from "./config.js";
 import { currentLang, getCurrentLangId, setCurrentLangId, usesDedicatedKeyboard,
-  hasChosenLang, knownLanguages, cacheRemoteLanguages, langAlphabet, langLexicon } from "./languages.js";
+  hasChosenLang, knownLanguages, cacheRemoteLanguages, langAlphabet, langLexicon, addKnownLanguage } from "./languages.js";
 import { applyI18n, getUiLang, setUiLang, t, tToast } from "./i18n.js";
 import { legalHtml, LEGAL_SECTIONS } from "./legal.js";
 import { entriesToCSV, entriesToJSON, entriesToLIFT, entriesToCLDF, entriesToELAN, exportFilename } from "./export.js";
@@ -917,7 +917,12 @@ function showView(name) {
   const dmv = $("#view-demander"); if (dmv) dmv.hidden = name !== "demander";
   const glv = $("#view-legal"); if (glv) glv.hidden = name !== "legal";
   const nav = $("#main-nav");
-  if (nav) nav.hidden = (name === "lang" || name === "amorce" || name === "profile" || name === "hub" || name === "about" || name === "bugs" || name === "notifs" || name === "demander" || name === "legal");
+  if (nav) nav.hidden = (name === "lang" || name === "amorce" || name === "profile" || name === "hub" || name === "about" || name === "bugs" || name === "notifs" || name === "legal");
+  // Onglet actif de la barre de navigation (les 4 espaces).
+  if (!nav || !nav.hidden) {
+    const active = { app: (activity === "transcribe" ? "tab-transcrire" : "tab-traduire"), explore: "tab-explorer", demander: "tab-demander" }[name];
+    ["#tab-transcrire", "#tab-traduire", "#tab-explorer", "#tab-demander"].forEach((s) => { const el = $(s); if (el) el.classList.toggle("is-active", ("#" + active) === s); });
+  }
   // « Mon profil » : visibilité conditionnée UNIQUEMENT à l'existence d'un profil.
   // Il reste donc affiché sur TOUTES les pages, y compris la vue profil elle-même
   // (il y sert de repère et n'a jamais à disparaître). Sans profil : rien à ouvrir.
@@ -2043,10 +2048,51 @@ function _fillReqLangSelects() {
   const langs = visibleLanguages(knownLanguages());
   const opts = langs.map((l) => `<option value="${escapeHtml(l.id)}">${escapeHtml(l.nom)}</option>`).join("");
   const sel = $("#req-langue");
-  if (sel) { sel.innerHTML = opts; sel.value = getCurrentLangId(); }
+  if (sel) {
+    // Option finale : déclarer une langue absente (déclaration LÉGÈRE, sans amorce,
+    // car le demandeur n'est pas forcément locuteur).
+    sel.innerHTML = opts + `<option value="__new__">➕ ${escapeHtml(t("req.newlang.opt"))}</option>`;
+    sel.value = getCurrentLangId();
+  }
   const f = $("#req-filter-lang");
   if (f) { const cur = f.value; f.innerHTML = `<option value="">${escapeHtml(t("req.filter.all"))}</option>` + opts; f.value = cur || ""; }
   refreshEnhancedSelects();
+}
+function _onReqLangueChange() {
+  const sel = $("#req-langue"), box = $("#req-newlang");
+  if (!sel || !box) return;
+  box.hidden = sel.value !== "__new__";
+  if (!box.hidden) { const n = $("#req-nl-nom"); if (n) n.focus(); }
+}
+function _slugLang(nom) {
+  const s = String(nom || "").normalize("NFD").replace(/[^a-zA-Z]+/g, "").toLowerCase();
+  return (s.slice(0, 3) || "lng") + (s.length > 3 ? s.length : "");
+}
+/** Déclaration LÉGÈRE d'une langue depuis la porte Demander : enregistre la langue
+    (nom, région, pays) SANS amorce, l'ajoute au registre local, et la sélectionne. */
+async function _declareNewLangForRequest() {
+  const nom = ($("#req-nl-nom").value || "").trim();
+  const region = ($("#req-nl-region").value || "").trim();
+  const pays = ($("#req-nl-pays").value || "").trim();
+  const err = $("#req-nl-error");
+  if (!nom || !region) { if (err) { err.hidden = false; err.textContent = t("req.newlang.err"); } return; }
+  if (err) err.hidden = true;
+  let id = _slugLang(nom);
+  const known = knownLanguages();
+  // évite une collision d'id (suffixe incrémental)
+  let base = id, k = 2; while (known.some((l) => l.id === id)) { id = base + k; k++; }
+  const rec = { id, nom, region, pays, autonyme: "", alias: [], famille: "", clavier: "defaut", statut: "active" };
+  const btn = $("#req-nl-declare"); if (btn) btn.disabled = true;
+  try {
+    declareLanguageRemote({ id, nom, region, pays, device_id: deviceId() });   // best-effort backend
+    addKnownLanguage(rec);                                                     // registre local immédiat
+    _fillReqLangSelects();
+    const sel = $("#req-langue"); if (sel) { sel.value = id; refreshEnhancedSelects(); }
+    _onReqLangueChange();
+    $("#req-nl-nom").value = ""; $("#req-nl-region").value = ""; $("#req-nl-pays").value = "";
+    toast(ti("req.newlang.ok", { nom }), "ok");
+  } catch (e) { toast(t("req.fail"), "warn"); }
+  finally { if (btn) btn.disabled = false; }
 }
 function enterDemander() {
   if (!requireProfile(t("req.needprofile"))) return;
@@ -2093,6 +2139,7 @@ async function submitRequest() {
   const texte = ($("#req-texte").value || "").trim();
   const langue = ($("#req-langue").value || "").trim();
   const err = $("#req-error");
+  if (langue === "__new__") { if (err) { err.hidden = false; err.textContent = t("req.newlang.first"); } return; }
   if (!texte || !langue) { if (err) { err.hidden = false; err.textContent = t("req.err.fields"); } return; }
   if (err) err.hidden = true;
   const btn = $("#req-send"); if (btn) btn.disabled = true;
@@ -4435,6 +4482,7 @@ function initEvents() {
   const nt = $("#tab-traduire"); if (nt) nt.addEventListener("click", () => enterWork("translate"));
   const nx = $("#tab-transcrire"); if (nx) nx.addEventListener("click", () => enterWork("transcribe"));
   const ne = $("#tab-explorer"); if (ne) ne.addEventListener("click", enterExplore);
+  const nd = $("#tab-demander"); if (nd) nd.addEventListener("click", enterDemander);
   const eCsv = $("#export-csv"); if (eCsv) eCsv.addEventListener("click", () => downloadDict("csv"));
   const eJson = $("#export-json"); if (eJson) eJson.addEventListener("click", () => downloadDict("json"));
   const eLift = $("#export-lift"); if (eLift) eLift.addEventListener("click", () => downloadDict("lift"));
@@ -4471,6 +4519,8 @@ function initEvents() {
   const rBack = $("#req-back"); if (rBack) rBack.addEventListener("click", () => showView(_reqReturn || "hub"));
   const rFilt = $("#req-filter-lang"); if (rFilt) rFilt.addEventListener("change", renderRequests);
   const rList = $("#req-list"); if (rList) rList.addEventListener("click", onReqListClick);
+  const rLang = $("#req-langue"); if (rLang) rLang.addEventListener("change", _onReqLangueChange);
+  const rNl = $("#req-nl-declare"); if (rNl) rNl.addEventListener("click", _declareNewLangForRequest);
   const upNow = $("#update-now"); if (upNow) upNow.addEventListener("click", doUpdate);
   const upLater = $("#update-later"); if (upLater) upLater.addEventListener("click", () => {
     const dep = $("#update-ver") ? $("#update-ver").textContent.trim() : "";

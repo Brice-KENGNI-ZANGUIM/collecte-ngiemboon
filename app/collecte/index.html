@@ -65,9 +65,9 @@
               title="Visite guidée de cette page" aria-label="Visite guidée"><img class="chip-ico" src="icons/ui/hi-help.png" alt="" aria-hidden="true"><span data-i18n="chip.help">Aide</span></button>
       <button id="bugs-link" class="chip chip--btn" type="button" data-i18n-title="chip.bugs.title"
               title="Suivi des bugs" aria-label="Suivi des bugs"><img class="chip-ico" src="icons/ui/hi-bug.png" alt="" aria-hidden="true"><span data-i18n="chip.bugs">Bugs</span></button>
-      <button id="btn-notifs" class="chip chip--btn chip--notif" type="button" hidden data-i18n-title="chip.notifs.title"
-              title="Mes notifications" aria-label="Mes notifications"><img class="chip-ico" src="icons/ui/hi-notif.png" alt="" aria-hidden="true"><span data-i18n="chip.notifs">Notifications</span><span id="notif-badge" class="notif-badge" hidden aria-hidden="true">0</span></button>
-      <button id="btn-open-profile" class="chip chip--btn" type="button" hidden><img class="chip-ico" src="icons/ui/hi-profile.png" alt="" aria-hidden="true"><span data-i18n="chip.profile">Mon profil</span></button>
+      <button id="btn-open-profile" class="chip chip--btn" type="button" hidden><img class="chip-ico" src="icons/ui/hi-profile.png" alt="" aria-hidden="true"><span data-i18n="chip.profile">Profil</span></button>
+      <button id="btn-notifs" class="chip chip--btn chip--notif chip--icon" type="button" hidden data-i18n-title="chip.notifs.title"
+              title="Mes notifications" aria-label="Mes notifications"><img class="chip-ico" src="icons/ui/hi-notif.png" alt="" aria-hidden="true"><span id="notif-badge" class="notif-badge" hidden aria-hidden="true">0</span></button>
       <!-- Outils (version + langue d'interface + thème) : poussés À DROITE de la ligne
            de nav (margin-left:auto). Ils basculent proprement à la ligne suivante,
            toujours alignés à droite, quand la nav déborde. -->
@@ -93,6 +93,7 @@
         <button id="tab-transcrire" class="nav-tab" type="button"><img class="nav-ico" src="icons/mic-real.png" alt="" aria-hidden="true"><span data-i18n="nav.transcribe">Transcrire</span></button>
         <button id="tab-traduire" class="nav-tab" type="button"><img class="nav-ico" src="icons/act-translate.svg" alt="" aria-hidden="true"><span data-i18n="nav.translate">Traduire</span></button>
         <button id="tab-explorer" class="nav-tab" type="button"><img class="nav-ico" src="icons/act-explore.svg" alt="" aria-hidden="true"><span data-i18n="nav.explore">Explorer</span></button>
+        <button id="tab-demander" class="nav-tab" type="button"><img class="nav-ico" src="icons/act-request.png" alt="" aria-hidden="true"><span data-i18n="nav.demander">Demander</span></button>
       </div>
       <div class="nav-right">
         <span class="welcome" id="welcome-user"></span>
@@ -711,6 +712,16 @@
           <label class="field field--wide"><span data-i18n="req.f.note">Contexte (facultatif)</span>
             <input id="req-note" type="text" maxlength="280" data-i18n-ph="req.f.note.ph" placeholder="ex. ma grand-mère m'a dit ce mot, je n'ai pas compris" autocomplete="off" />
           </label>
+          <div id="req-newlang" class="field field--wide req-newlang" hidden>
+            <span data-i18n="req.newlang.h">Déclarer la langue (elle n'est pas dans la liste)</span>
+            <div class="req-newlang-grid">
+              <input id="req-nl-nom" type="text" maxlength="40" data-i18n-ph="req.newlang.nom" placeholder="Nom de la langue (ex. Ghomala)" autocomplete="off" />
+              <input id="req-nl-region" type="text" maxlength="80" data-i18n-ph="req.newlang.region" placeholder="Région / localité" autocomplete="off" />
+              <input id="req-nl-pays" type="text" maxlength="40" data-i18n-ph="req.newlang.pays" placeholder="Pays" autocomplete="off" />
+              <button id="req-nl-declare" class="btn btn--sm btn--primary" type="button" data-i18n="req.newlang.declare">Déclarer et choisir</button>
+            </div>
+            <p id="req-nl-error" class="lock-hint" hidden></p>
+          </div>
         </div>
         <div class="actions">
           <button id="req-send" class="btn btn--primary" type="button" data-i18n="req.form.send">Publier ma demande →</button>
