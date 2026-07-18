@@ -171,8 +171,8 @@ export const STR = {
 
   // — Amorce sonore (premières voix d'une langue créée) —
   "amorce.title.pre": { fr: "Donne voix à", en: "Give voice to" },
-  "amorce.intro": { fr: "Pour créer ta langue, donne-lui d'abord au moins <b id=\"amorce-min\">5</b> voix : enregistre-toi en prononçant quelques mots de base à voix haute. C'est ta <b>voix</b> qui compte, pas l'écriture. Tant que les <b>5</b> premières voix ne sont pas enregistrées, la langue n'est pas encore créée.",
-                  en: "To create your language, first give it at least <b id=\"amorce-min\">5</b> voices: record yourself saying a few basic words aloud. It's your <b>voice</b> that matters, not writing. Until those first <b>5</b> voices are recorded, the language is not created yet." },
+  "amorce.intro": { fr: "Donne à ta langue au moins <b id=\"amorce-min\">5</b> voix pour la rendre complète : enregistre-toi en prononçant quelques mots de base à voix haute. C'est ta <b>voix</b> qui compte, pas l'écriture. Tu peux t'arrêter avant : ce que tu enregistres est <b>gardé</b> et tu pourras compléter ta langue plus tard.",
+                  en: "Give your language at least <b id=\"amorce-min\">5</b> voices to make it complete: record yourself saying a few basic words aloud. It's your <b>voice</b> that matters, not writing. You can stop earlier: what you record is <b>kept</b> and you can complete your language later." },
   "amorce.done.sep": { fr: "/", en: "/" },
   "amorce.done.min": { fr: "minimum", en: "minimum" },
   "amorce.word.hint": { fr: "Prononce ce mot à voix haute dans ta langue", en: "Say this word aloud in your language" },
@@ -183,7 +183,7 @@ export const STR = {
   "amorce.validate": { fr: "Valider & suivant →", en: "Save & next →" },
   "amorce.finish": { fr: "J'ai terminé", en: "I'm done" },
   "amorce.create": { fr: "Créer ma langue ✓", en: "Create my language ✓" },
-  "amorce.abort": { fr: "Abandonner la création", en: "Cancel creation" },
+  "amorce.stoplater": { fr: "M'arrêter pour l'instant", en: "Stop for now" },
   "amorce.reached": { fr: "Bravo, tu as les 5 voix ! Tu peux créer ta langue, ou en enregistrer d'autres.", en: "Well done, you have the 5 voices! You can create your language, or record more." },
   "amorce.allwords": { fr: "Tu as parcouru tous les mots, merci ! 🎉", en: "You've gone through every word, thank you! 🎉" },
 
@@ -426,7 +426,7 @@ export const STR = {
 
   // — Amorce (premières voix) —
   "amorce.mic.denied": { fr: "Autorisation micro refusée. Autorise le micro pour ce site, puis réessaie.", en: "Microphone permission denied. Allow the microphone for this site, then try again." },
-  "amorce.abort.confirm": { fr: "Tu as enregistré {n} voix sur les {min} nécessaires. Sans au moins {min}, ta langue « {lang} » ne sera pas créée et ces enregistrements seront perdus. Abandonner la création ?", en: "You've recorded {n} voice(s) out of the {min} required. Without at least {min}, your language “{lang}” won't be created and these recordings will be lost. Cancel creation?" },
+  "amorce.stop.confirm": { fr: "Tu as enregistré {n} voix sur {min}. Ta langue « {lang} » sera gardée telle quelle (marquée à compléter) et tout ce que tu as enregistré est conservé. Tu pourras la compléter plus tard. T'arrêter maintenant ?", en: "You've recorded {n} of {min} voices. Your language “{lang}” will be kept as is (marked to complete) and everything you recorded is saved. You can complete it later. Stop now?" },
 
   // — Explorer (cartes, détail, propositions) —
   "exp.loading": { fr: "Chargement de la bibliothèque…", en: "Loading the library…" },

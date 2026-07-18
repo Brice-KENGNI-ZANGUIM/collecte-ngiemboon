@@ -1529,8 +1529,8 @@ function renderAmorce() {
   if (fin) {
     const ok = _amorceDone >= AMORCE_MIN;
     fin.classList.toggle("btn--go", ok);
-    fin.classList.toggle("amorce-abort", !ok);
-    fin.textContent = ok ? t("amorce.create") : t("amorce.abort");
+    fin.classList.toggle("amorce-stop", !ok);
+    fin.textContent = ok ? t("amorce.create") : t("amorce.stoplater");
   }
   _amResetRecUiOnly();
 }
@@ -1599,44 +1599,32 @@ function amorceSkip() {
 }
 function amorceFinish() {
   if (_amRec && _amRec.state === "recording") amorceStopRec();
-  if (_amorceDone < AMORCE_MIN) {
-    // Sous le seuil : la création NE PEUT PAS aboutir (règle : ≥ AMORCE_MIN transcriptions).
-    // Le bouton propose donc d'ABANDONNER la création (la langue ne sera pas créée).
-    const msg = ti("amorce.abort.confirm", { n: _amorceDone, min: AMORCE_MIN, lang: (_amorceLang && _amorceLang.nom) || "" });
+  const complete = _amorceDone >= AMORCE_MIN;
+  if (!complete) {
+    // Sous le seuil : on ne jette RIEN. La langue est gardée en « provisoire » (à compléter
+    // plus tard) et ce qui a été enregistré est conservé. On confirme simplement l'arrêt.
+    const msg = ti("amorce.stop.confirm", { n: _amorceDone, min: AMORCE_MIN, lang: (_amorceLang && _amorceLang.nom) || "" });
     if (!window.confirm(msg)) return;
-    _amorceAbort();
-    return;
   }
-  _amorceFinalize();
+  _amorceEnd(complete);
 }
-/** ≥ AMORCE_MIN atteint : la langue est RÉELLEMENT créée (déclarée aux autres, ajoutée aux
-    langues d'appartenance) et les transcriptions tamponnées sont versées dans la base + envoyées. */
-async function _amorceFinalize() {
+/** Fin de l'amorce : on VERSE toujours dans la base ce qui a été enregistré (jamais jeté) et on
+    garde la langue. Complète (≥ AMORCE_MIN) → statut « active » ; sinon → « provisoire » (la langue
+    existe et pourra être complétée plus tard, par son auteur ou par d'autres locuteurs). */
+async function _amorceEnd(complete) {
   const desc = _amorceLang; if (!desc) return;
   for (const rec of _amorceBuffer) { try { await DB.put(rec); markDoneText(rec.source_text); } catch (e) { /* ignore */ } }
-  // La langue passe de « provisoire » à « active » dans le registre local, puis on la déclare.
-  const others = knownLanguages().filter((l) => !l.graine).map((l) => l.id === desc.id ? Object.assign({}, l, { statut: "active" }) : l);
+  const statut = complete ? "active" : "provisoire";
+  const others = knownLanguages().filter((l) => !l.graine).map((l) => l.id === desc.id ? Object.assign({}, l, { statut }) : l);
   cacheRemoteLanguages(others);
-  declareLanguageRemote(Object.assign({ note: _amorcePendingNote || "" }, desc, { statut: "active" }));
-  addProfileLangue(desc.id);            // devient une langue d'appartenance (une fois créée pour de bon)
+  declareLanguageRemote(Object.assign({ note: _amorcePendingNote || "" }, desc, { statut }));
+  addProfileLangue(desc.id);            // la langue (même provisoire) devient une langue d'appartenance
   _amorceBuffer = []; _amorcePendingNote = "";
   try { kickReconcile(); } catch (e) { /* le boot renverra de toute façon */ }
-  // Elle devient la langue courante ; on recharge pour tout reconstruire (corpus, clavier,
+  // La langue devient la langue courante ; on recharge pour tout reconstruire (corpus, clavier,
   // Explorer). Retour au profil si la déclaration en venait, sinon l'accueil.
   setCurrentLangId(desc.id);
   const target = _declareCtx === "profile" ? "#/profil" : "#/accueil";
-  _declareCtx = null;
-  try { history.replaceState(null, "", target); } catch (e) { /* ok */ }
-  location.reload();
-}
-/** Abandon avant le seuil : la langue provisoire est retirée du registre local et les
-    transcriptions tamponnées sont jetées (rien n'a été persisté ni envoyé). */
-function _amorceAbort() {
-  const id = _amorceLang && _amorceLang.id;
-  const others = knownLanguages().filter((l) => !l.graine && l.id !== id);
-  cacheRemoteLanguages(others);
-  _amorceBuffer = []; _amorcePendingNote = "";
-  const target = _declareCtx === "profile" ? "#/profil" : "#/langue";
   _declareCtx = null;
   try { history.replaceState(null, "", target); } catch (e) { /* ok */ }
   location.reload();

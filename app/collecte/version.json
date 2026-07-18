@@ -3,7 +3,7 @@
   "changelog": {
     "v201": [
       "Déclarer une nouvelle langue depuis « Mon profil », sans changer de page : le formulaire s'ouvre directement dans le profil",
-      "Pour créer une langue, il faut d'abord lui donner au moins 5 voix (enregistrer 5 mots de base à l'oral) : c'est la voix qui compte, pas l'écriture, car beaucoup parlent leur langue sans l'écrire. Tant que les 5 voix ne sont pas enregistrées, la langue n'est pas créée ; si tu abandonnes avant, rien n'est créé"
+      "Créer une langue, c'est d'abord lui donner de la voix : enregistre des mots de base à l'oral (5 pour qu'elle soit complète), car c'est la voix qui compte, pas l'écriture (beaucoup parlent leur langue sans l'écrire). Tu peux t'arrêter avant 5 : ta langue est gardée, marquée « à compléter », et tout ce que tu as enregistré est conservé pour être repris plus tard, par toi ou par d'autres locuteurs"
     ],
     "v200": [
       "Décor beaucoup plus vivant partout : les cartes d'activité, de langue et de mots ont une bordure lumineuse à la couleur de leur activité, avec des reflets qui passent au survol, un halo qui respire et une onde au clic ; l'en-tête et les boutons brillent davantage (effets allégés sur téléphone et respectant le réglage « animations réduites »)",
