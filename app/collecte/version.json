@@ -1,6 +1,9 @@
 {
-  "version": "v197",
+  "version": "v198",
   "changelog": {
+    "v198": [
+      "Décor plus premium : les cartes gagnent une matière plus profonde (reflet, relief, halo de lumière à la couleur de l'activité) et l'en-tête un léger effet lumineux derrière le nom LANGA"
+    ],
     "v197": [
       "Beaucoup plus de contenu à traduire : près de deux fois plus de mots (plus de 3200) et plus de deux fois plus de phrases d'exemple (plus de 3100), tous affichés aussi en anglais"
     ],
