@@ -151,16 +151,17 @@ body {
 /* En-tête cinématique : aurore douce (cyan↔vert) qui dérive derrière la marque, posée
    entre le verre et le texte. Purement décorative, gelée sur mobile + prefers-reduced-motion. */
 .brand::before {
-  content: ""; position: absolute; z-index: -1; inset: -12px -34px -16px -22px; pointer-events: none;
+  content: ""; position: absolute; z-index: -1; inset: -16px -44px -20px -28px; pointer-events: none;
   background:
-    radial-gradient(58% 130% at 20% 50%, color-mix(in srgb, var(--cyan) 30%, transparent), transparent 70%),
-    radial-gradient(52% 130% at 58% 42%, color-mix(in srgb, var(--green) 22%, transparent), transparent 72%);
-  filter: blur(15px); opacity: .55; border-radius: 40px;
-  animation: ngBrandAurora 9s ease-in-out infinite;
+    radial-gradient(58% 140% at 18% 50%, color-mix(in srgb, var(--cyan) 46%, transparent), transparent 70%),
+    radial-gradient(54% 140% at 52% 42%, color-mix(in srgb, var(--green) 36%, transparent), transparent 72%),
+    radial-gradient(48% 130% at 82% 58%, color-mix(in srgb, var(--gold) 26%, transparent), transparent 74%);
+  filter: blur(17px); opacity: .7; border-radius: 44px;
+  animation: ngBrandAurora 8s ease-in-out infinite;
 }
 @keyframes ngBrandAurora {
-  0%, 100% { transform: translateX(0) scale(1);       opacity: .5; }
-  50%      { transform: translateX(12px) scale(1.07); opacity: .85; }
+  0%, 100% { transform: translateX(-6px) scale(1);     opacity: .55; }
+  50%      { transform: translateX(16px) scale(1.12);  opacity: 1; }
 }
 .chips-meta { grid-column: 3; grid-row: 1; justify-self: end; }
 .chips-nav  { grid-column: 1 / -1; grid-row: 2; }
@@ -397,45 +398,66 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 @media (max-width: 720px) { .hub-cards { grid-template-columns: 1fr; } }
 /* Chaque porte porte SA couleur d'identité (assortie à son icône et au mode
    présentation) : Traduire → vert, Transcrire → violet, Explorer → or. */
+/* Angle enregistré (animable) pour la bordure conique tournante des cartes du hub. */
+@property --ng-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
 .hub-card { --acc: var(--cyan);
   display: flex; flex-direction: column; align-items: flex-start; gap: 8px; text-align: left;
   padding: 22px 20px; border-radius: 18px; cursor: pointer; font: inherit; position: relative; overflow: hidden;
   /* lavis de couleur discret en haut de carte, posé sur le fond de carte */
-  background: radial-gradient(130% 78% at 50% -14%, color-mix(in srgb, var(--acc) 13%, transparent), transparent 62%), var(--card-bg);
-  border: 1px solid color-mix(in srgb, var(--acc) 34%, var(--border));
+  background: radial-gradient(130% 78% at 50% -14%, color-mix(in srgb, var(--acc) 16%, transparent), transparent 62%), var(--card-bg);
+  border: 1px solid color-mix(in srgb, var(--acc) 20%, var(--border));
   /* Matière + halo d'ambiance (couleur d'activité) + reflet de verre + relief interne. */
   box-shadow: 0 0 34px -18px var(--acc), var(--shadow-card), inset 0 1px 0 var(--card-sheen), inset 0 -1px 0 var(--card-inner);
   transition: transform .18s ease, box-shadow .2s ease, border-color .2s ease;
   animation: ngCardBreath 6s ease-in-out infinite; }
 /* Halo d'ambiance qui « respire » doucement (gelé sur mobile et prefers-reduced-motion). */
 @keyframes ngCardBreath {
-  0%, 100% { box-shadow: 0 0 30px -20px var(--acc), var(--shadow-card), inset 0 1px 0 var(--card-sheen), inset 0 -1px 0 var(--card-inner); }
-  50%      { box-shadow: 0 0 46px -16px var(--acc), var(--shadow-card), inset 0 1px 0 var(--card-sheen), inset 0 -1px 0 var(--card-inner); }
+  0%, 100% { box-shadow: 0 0 40px -14px var(--acc), var(--shadow-card), inset 0 1px 0 var(--card-sheen), inset 0 -1px 0 var(--card-inner); }
+  50%      { box-shadow: 0 0 78px -6px var(--acc), 0 0 22px -4px var(--acc), var(--shadow-card), inset 0 1px 0 var(--card-sheen), inset 0 -1px 0 var(--card-inner); }
 }
 .hub-card:nth-child(1) { --acc: var(--green); }
 .hub-card:nth-child(2) { --acc: #a78bfa; }
 .hub-card:nth-child(3) { --acc: var(--gold); }
-.hub-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-  background: linear-gradient(90deg, var(--cyan), var(--green), var(--gold), var(--green), var(--cyan));
-  background-size: 200% 100%;
-  box-shadow: 0 0 12px -1px var(--acc);
-  animation: barSheen 7s linear infinite; }
-@keyframes barSheen { from { background-position: 0 0; } to { background-position: -200% 0; } }
-/* Fleuron de coin (losange Ndop) en bas à droite de chaque carte du hub */
-.hub-card::after { content: ""; position: absolute; right: 12px; bottom: 12px;
-  width: 16px; height: 16px; transform: rotate(45deg);
-  border: 1.5px solid var(--acc); opacity: .32; pointer-events: none;
-  transition: opacity .2s ease, box-shadow .2s ease; }
-.hub-card:hover { transform: translateY(-4px); border-color: var(--acc); animation-play-state: paused;
-  box-shadow: 0 22px 50px -12px var(--acc),
-    0 0 0 1.5px color-mix(in srgb, var(--acc) 58%, transparent),   /* liseré lumineux net */
-    0 0 30px -12px var(--acc), var(--shadow-card), inset 0 1px 0 var(--card-sheen); }
-.hub-card:hover::after { opacity: .8; box-shadow: 0 0 12px -2px var(--acc); }
+/* Bordure vive et PLEINE de la couleur d'activité (bien lisible à l'arrêt) SURMONTÉE d'une
+   comète blanche large qui fait le tour, rapide. Anneau réalisé au masque → reste dans la boîte. */
+.hub-card::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 3px;
+  pointer-events: none; z-index: 2;
+  background:
+    conic-gradient(from var(--ng-angle), transparent 0%,
+      color-mix(in srgb, #fff 88%, var(--acc)) 7%, color-mix(in srgb, var(--acc) 70%, transparent) 17%, transparent 30%),
+    linear-gradient(var(--acc), var(--acc));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--acc) 70%, transparent));
+  animation: ngBorderSpin 4s linear infinite; }
+@keyframes ngBorderSpin { to { --ng-angle: 360deg; } }
+/* Balayage « shimmer » : une lumière traverse la carte en diagonale au survol. */
+.hub-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: 1; pointer-events: none;
+  background: linear-gradient(115deg, transparent 26%, color-mix(in srgb, var(--acc) 55%, #fff) 50%, transparent 74%);
+  opacity: 0; transform: translateX(-120%); }
+.hub-card:hover { transform: translateY(-6px); border-color: var(--acc); animation-play-state: paused;
+  box-shadow: 0 32px 68px -12px var(--acc),
+    0 0 0 2.5px color-mix(in srgb, var(--acc) 70%, transparent),   /* liseré lumineux net */
+    0 0 56px -6px var(--acc), var(--shadow-card), inset 0 1px 0 var(--card-sheen); }
+.hub-card:hover::after { animation: ngShimmer 760ms ease; }
+@keyframes ngShimmer { 0% { opacity: 0; transform: translateX(-120%); } 18% { opacity: .92; } 100% { opacity: 0; transform: translateX(120%); } }
+/* Onde (ripple) au clic : disque lumineux injecté en JS (attachRipple). */
+.hub-ripple { position: absolute; border-radius: 50%; pointer-events: none; z-index: 3;
+  background: radial-gradient(circle, color-mix(in srgb, var(--acc) 45%, #fff) 0%, transparent 70%);
+  transform: translate(-50%, -50%) scale(0); opacity: .7; }
+.hub-card.is-rippling .hub-ripple { animation: ngRipple 620ms ease-out forwards; }
+@keyframes ngRipple { to { transform: translate(-50%, -50%) scale(1); opacity: 0; } }
 /* En-tête de carte : icône À GAUCHE, titre à sa droite, centré sur l'icône
    (gain de hauteur ; on occupe l'espace horizontal libre, surtout sur mobile). */
 .hub-card-head { display: flex; align-items: center; gap: 15px; width: 100%; }
 .hub-ico { width: 60px; height: 60px; line-height: 1; display: block; flex: 0 0 auto;
-  filter: drop-shadow(0 0 15px color-mix(in srgb, var(--acc) 62%, transparent)); }
+  filter: drop-shadow(0 0 15px color-mix(in srgb, var(--acc) 62%, transparent));
+  animation: ngIcoGlow 3.4s ease-in-out infinite; }
+/* Glow pulsé de l'icône d'activité (gelé sur mobile + prefers-reduced-motion). */
+@keyframes ngIcoGlow {
+  0%, 100% { filter: drop-shadow(0 0 14px color-mix(in srgb, var(--acc) 62%, transparent)); }
+  50%      { filter: drop-shadow(0 0 34px color-mix(in srgb, var(--acc) 100%, transparent)) drop-shadow(0 0 12px color-mix(in srgb, var(--acc) 70%, transparent)); }
+}
 /* Onglets de nav : icône + libellé alignés */
 .nav-tab { display: inline-flex; align-items: center; gap: 7px; }
 .nav-ico { width: 26px; height: 26px; flex: 0 0 auto; }
@@ -516,15 +538,25 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 #trim-audio { display: none; }
 .lang-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; margin-top: 6px; }
 .lang-card[hidden] { display: none; }
-.lang-card { position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start;
+.lang-card { --acc: var(--cyan); position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: flex-start;
   gap: 4px; text-align: left; padding: 16px 16px; border-radius: 16px; cursor: pointer; font: inherit;
-  background: var(--card-bg); border: 1px solid var(--border); box-shadow: var(--shadow-card);
-  transition: transform .16s ease, box-shadow .2s ease, border-color .2s ease; }
-.lang-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--cyan), var(--green), var(--gold)); }
-.lang-card:hover, .lang-card:focus-visible { transform: translateY(-3px); border-color: var(--cyan);
-  box-shadow: 0 16px 36px -14px var(--cyan), var(--shadow-card); outline: none; }
-.lang-card.is-current { border-color: var(--green); box-shadow: 0 0 0 1px var(--green) inset, var(--shadow-card); }
+  background: var(--card-bg); border: 1.5px solid transparent; box-shadow: 0 0 26px -20px var(--acc), var(--shadow-card);
+  transition: transform .16s ease, box-shadow .2s ease; }
+/* Bordure en dégradé vif tout autour (tri-couleur, statique → perf), avec halo. Anneau au masque. */
+.lang-card::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; z-index: 2; pointer-events: none;
+  background: linear-gradient(135deg, var(--cyan), var(--green) 45%, var(--gold));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--acc) 45%, transparent)); }
+/* Balayage shimmer au survol. */
+.lang-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: 1; pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, color-mix(in srgb, var(--acc) 40%, #fff) 50%, transparent 70%);
+  opacity: 0; transform: translateX(-120%); }
+.lang-card:hover, .lang-card:focus-visible { transform: translateY(-4px);
+  box-shadow: 0 22px 46px -14px var(--acc), 0 0 34px -10px var(--acc), var(--shadow-card); outline: none; }
+.lang-card:hover::after, .lang-card:focus-visible::after { animation: ngShimmer 820ms ease; }
+.lang-card.is-current { --acc: var(--green); box-shadow: 0 0 0 1px var(--green) inset, 0 0 32px -12px var(--green), var(--shadow-card); }
+.lang-card.is-current::before { background: linear-gradient(135deg, var(--green), var(--cyan) 55%, var(--green)); filter: drop-shadow(0 0 6px color-mix(in srgb, var(--green) 60%, transparent)); }
 /* 1re ligne : emblème + nom alignés à la même hauteur. */
 .lang-head { display: flex; align-items: center; gap: 10px; width: 100%; }
 .lang-emblem { flex: none; width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center;
@@ -759,10 +791,17 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
    nette : mot source = bleu, traduction = vert, voix = violet. Le libellé (plus grand,
    coloré) coiffe SA zone et colle au champ → on voit à quoi il se rapporte. */
 .zone { --acc: var(--cyan); position: relative;
-  border: 1px solid color-mix(in srgb, var(--acc) 34%, var(--border));
+  border: 1px solid color-mix(in srgb, var(--acc) 42%, var(--border));
   border-left: 4px solid var(--acc); border-radius: 14px; padding: 13px 16px 15px;
-  background: color-mix(in srgb, var(--acc) 6%, var(--card-bg));
-  box-shadow: inset 0 1px 0 var(--card-sheen), inset 0 -1px 0 var(--card-inner); }
+  background: color-mix(in srgb, var(--acc) 7%, var(--card-bg));
+  box-shadow: 0 0 28px -20px var(--acc), inset 0 1px 0 var(--card-sheen), inset 0 -1px 0 var(--card-inner);
+  transition: box-shadow .2s ease, border-color .2s ease; }
+/* Liseré gauche lumineux + intensification quand on écrit dans la zone (interactif, pas d'animation continue = perf de frappe préservée). */
+.zone::before { content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 4px; border-radius: 4px;
+  box-shadow: 0 0 14px 0 var(--acc); opacity: .55; pointer-events: none; }
+.zone:focus-within { border-color: color-mix(in srgb, var(--acc) 62%, var(--border));
+  box-shadow: 0 0 40px -12px var(--acc), inset 0 1px 0 var(--card-sheen), inset 0 -1px 0 var(--card-inner); }
+.zone:focus-within::before { opacity: 1; }
 .zone--source { --acc: var(--blue); }
 .zone--target { --acc: var(--green); }
 .zone--audio  { --acc: var(--violet); }
@@ -803,19 +842,26 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 .explore-detail { display: block; }
 /* Explorer = OR : accent doré (liseré gauche + lavis + halo au survol) ; le cyan
    reste réservé aux liens/données pour l'affordance. */
-.grp-card { position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 9px;
-  background: radial-gradient(130% 62% at 0% 0%, color-mix(in srgb, var(--gold) 9%, transparent), transparent 56%), var(--card-bg);
-  border: 1px solid color-mix(in srgb, var(--gold) 24%, var(--border)); border-radius: 14px;
+.grp-card { --acc: var(--gold); position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 9px;
+  background: radial-gradient(130% 62% at 0% 0%, color-mix(in srgb, var(--gold) 11%, transparent), transparent 56%), var(--card-bg);
+  border: 1.5px solid transparent; border-radius: 14px;
   padding: 13px 15px 13px 17px; cursor: pointer;
-  box-shadow: var(--shadow-card), inset 0 1px 0 var(--card-sheen), inset 0 -1px 0 var(--card-inner);
-  transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease; }
-.grp-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-  background: linear-gradient(180deg, var(--gold), color-mix(in srgb, var(--gold) 35%, transparent));
-  opacity: .75; transition: opacity .16s ease, box-shadow .16s ease; }
-.grp-card:hover, .grp-card:focus-visible { border-color: color-mix(in srgb, var(--gold) 68%, var(--border));
-  box-shadow: 0 16px 40px -14px var(--gold), 0 0 0 1px color-mix(in srgb, var(--gold) 45%, transparent),
-    var(--shadow-card), inset 0 1px 0 var(--card-sheen); transform: translateY(-3px); outline: none; }
-.grp-card:hover::before, .grp-card:focus-visible::before { opacity: 1; box-shadow: 0 0 10px 0 var(--gold); }
+  box-shadow: 0 0 24px -18px var(--gold), var(--shadow-card), inset 0 1px 0 var(--card-sheen), inset 0 -1px 0 var(--card-inner);
+  transition: box-shadow .16s ease, transform .16s ease; }
+/* Bordure or vive tout autour (statique → perf), avec halo. Anneau au masque. */
+.grp-card::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; z-index: 2; pointer-events: none;
+  background: linear-gradient(140deg, var(--gold), color-mix(in srgb, var(--gold) 35%, var(--cyan)) 70%, var(--gold));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--gold) 48%, transparent)); }
+/* Balayage shimmer au survol. */
+.grp-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: 1; pointer-events: none;
+  background: linear-gradient(115deg, transparent 30%, color-mix(in srgb, var(--gold) 42%, #fff) 50%, transparent 70%);
+  opacity: 0; transform: translateX(-120%); }
+.grp-card:hover, .grp-card:focus-visible {
+  box-shadow: 0 20px 46px -14px var(--gold), 0 0 38px -10px var(--gold), 0 0 0 1.5px color-mix(in srgb, var(--gold) 55%, transparent),
+    var(--shadow-card), inset 0 1px 0 var(--card-sheen); transform: translateY(-4px); outline: none; }
+.grp-card:hover::after, .grp-card:focus-visible::after { animation: ngShimmer 820ms ease; }
 .grp-head { display: flex; align-items: center; gap: 10px; }
 .grp-word { font-size: 1.16rem; font-weight: 700; color: var(--text); overflow-wrap: anywhere; }
 .grp-head .badge-dir { margin-left: auto; }
@@ -1385,7 +1431,7 @@ body.kb-docked { padding-bottom: var(--kb-h, 50vh); }
   box-shadow: 0 8px 20px -10px var(--cyan);
 }
 .btn--primary:hover, .btn--send:not(:disabled):hover, .btn--next:hover {
-  box-shadow: 0 0 22px -6px var(--cyan), 0 8px 20px -10px var(--cyan);
+  box-shadow: 0 0 34px -4px var(--cyan), 0 0 12px -2px var(--cyan), 0 8px 20px -10px var(--cyan);
 }
 .actions { margin-top: 18px; }
 
@@ -1412,8 +1458,8 @@ body.kb-docked { padding-bottom: var(--kb-h, 50vh); }
 /* Halo « respirant » sur les CTAs principaux (attire l'œil sans bruit) : via
    filter:drop-shadow, indépendant du box-shadow → aucun conflit avec le survol.
    Chaque CTA respire dans sa couleur. Coupé en prefers-reduced-motion (plus bas). */
-@keyframes ngCtaGlow { 0%, 100% { filter: drop-shadow(0 0 2px var(--cta-g)); }
-  50% { filter: drop-shadow(0 0 11px var(--cta-g)); } }
+@keyframes ngCtaGlow { 0%, 100% { filter: drop-shadow(0 0 3px var(--cta-g)); }
+  50% { filter: drop-shadow(0 0 17px var(--cta-g)) drop-shadow(0 0 6px var(--cta-g)); } }
 .btn--primary, .btn--next, .btn--send:not(:disabled),
 .lang-search-btn, .corr-submit, .tour-next {
   --cta-g: rgba(34,211,238,.55); animation: ngCtaGlow 2.8s ease-in-out infinite; }
@@ -1755,7 +1801,7 @@ body::after {
   .view-title::after, .view-title::before, .card, .card::after,
   .btn--primary, .btn--next, .btn--send, .lang-search-btn, .lang-declare-cta, .corr-submit, .tour-next,
   #btn-mic-test, .tr-guide-open,
-  .hub-card, .hub-card::before, .brand::before, .ndop-sep i, .ndop-sep::before, .ndop-sep::after { animation: none; }
+  .hub-card, .hub-card::before, .hub-card::after, .hub-ico, .brand::before, .ndop-sep i, .ndop-sep::before, .ndop-sep::after { animation: none; }
   .btn--primary, .btn--next, .btn--send, .lang-search-btn, .lang-declare-cta, .corr-submit, .tour-next,
   #btn-mic-test, .tr-guide-open { filter: none; }
   .card { transition: none; }
@@ -1773,7 +1819,11 @@ body::after {
   .topbar::after { animation: none; background: linear-gradient(90deg, transparent, var(--cyan), var(--green), transparent); }
   .brand-mark::after { animation: none; opacity: .7; }
   .chip--on { animation: none; }
-  .hub-card { animation: none; }   /* halo respirant gelé sur mobile (le look statique reste) */
+  /* Sur mobile on gèle les animations CONTINUES des cartes du hub (halo respirant,
+     bordure conique tournante, glow pulsé de l'icône = repeints par frame) : le look
+     statique reste riche (dégradé de bordure figé, glow, halo). Le shimmer ne se
+     déclenche qu'au survol (absent au tactile) → aucun coût continu. */
+  .hub-card, .hub-card::before, .hub-ico { animation: none; }
   .brand::before { animation: none; opacity: .5; }   /* aurore d'en-tête figée sur mobile */
   /* Les balayages de brillance des boutons RESTENT animés sur mobile (petits éléments
      composités, loin du clavier → aucun impact sur la frappe ; Brice les veut vivants). */

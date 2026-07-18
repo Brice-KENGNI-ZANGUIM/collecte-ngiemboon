@@ -1,6 +1,11 @@
 {
-  "version": "v199",
+  "version": "v200",
   "changelog": {
+    "v200": [
+      "Décor beaucoup plus vivant partout : les cartes d'activité, de langue et de mots ont une bordure lumineuse à la couleur de leur activité, avec des reflets qui passent au survol, un halo qui respire et une onde au clic ; l'en-tête et les boutons brillent davantage (effets allégés sur téléphone et respectant le réglage « animations réduites »)",
+      "Écran des langues : présentation plus compacte de chaque langue (le nom et la pastille de contributions tiennent sur moins de lignes), plus lisible sur téléphone",
+      "L'indicateur en haut à droite affiche « DB » (base de données)"
+    ],
     "v199": [
       "Écran des langues : chaque langue affiche désormais son nombre de contributions déjà faites (son degré d'enrichissement)",
       "Explorer : la page d'une langue montre ses principaux contributeurs, avec le nombre de contributions de chacun"

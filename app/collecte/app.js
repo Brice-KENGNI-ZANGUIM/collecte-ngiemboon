@@ -28,7 +28,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v199";
+const APP_VERSION = "v200";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -2806,7 +2806,7 @@ async function reconcileTick() {
   if (c1.pending === 0) {
     setStatus("");
     if (!_lastToastAllOk) {
-      toast(modeGoogle() ? "Tout est confirmé dans ta Drive ✅"
+      toast(modeGoogle() ? "Tout est confirmé dans la base ✅"
                          : "Tout est confirmé sur la machine ✅", "ok");
       _lastToastAllOk = true;
     }
@@ -2852,7 +2852,7 @@ async function updateServerBadge() {
   try { srv = await checkServer(); } catch (e) { srv = false; }
   const g = modeGoogle();
   $("#srv").textContent = g
-    ? (srv ? "Drive : prêt" : "hors ligne")
+    ? (srv ? "DB" : "hors ligne")
     : (srv ? "serveur : connecté" : "serveur : hors d'atteinte");
   $("#srv").className = "chip " + (srv ? "chip--on" : "chip--off");
   $("#srv-stats").textContent = "";
@@ -2863,6 +2863,27 @@ async function updateServerBadge() {
       $("#srv-stats").textContent = n + " enregistrement(s) · " + (st && st.stores ? st.stores.length : 0) + " copies";
     } catch (e) { /* ignore */ }
   }
+}
+
+/** Onde lumineuse au clic sur une carte du hub (façon Material) : disque qui se dilate
+    depuis le point cliqué. Purement décorative → gelée en prefers-reduced-motion, jamais
+    bloquante (try/catch), auto-nettoyée. */
+function spawnRipple(card, ev) {
+  try {
+    if (window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const r = card.getBoundingClientRect();
+    const x = (ev && ev.clientX ? ev.clientX : r.left + r.width / 2) - r.left;
+    const y = (ev && ev.clientY ? ev.clientY : r.top + r.height / 2) - r.top;
+    const d = Math.max(r.width, r.height) * 1.7;
+    const old = card.querySelector(".hub-ripple"); if (old) old.remove();
+    const span = document.createElement("span");
+    span.className = "hub-ripple";
+    span.style.width = span.style.height = d + "px";
+    span.style.left = x + "px"; span.style.top = y + "px";
+    card.appendChild(span);
+    card.classList.add("is-rippling");
+    setTimeout(() => { span.remove(); card.classList.remove("is-rippling"); }, 660);
+  } catch (e) { /* décoratif : jamais bloquant */ }
 }
 
 // --- Divers --------------------------------------------------------------
@@ -3802,9 +3823,10 @@ function initEvents() {
     if (profileComplete()) enterHub(); else openLangChoice();
   });
   $("#btn-open-profile").addEventListener("click", () => openProfile(true));
-  // Cartes de l'accueil
+  // Cartes de l'accueil : onde (ripple) lumineuse au clic + navigation
   document.querySelectorAll(".hub-card").forEach((card) =>
-    card.addEventListener("click", () => {
+    card.addEventListener("click", (ev) => {
+      spawnRipple(card, ev);
       const go = card.dataset.go;
       if (go === "explore") enterExplore(); else enterWork(go);
     })
