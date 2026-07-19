@@ -29,7 +29,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v216";
+const APP_VERSION = "v217";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1987,6 +1987,9 @@ async function pickIncitation() {
 }
 function renderIncitation(pick) {
   const bn = $("#incite-banner"); if (!bn || !pick) return;
+  // Type visuel du popup (couleur + icône) : « rate » = évaluer/voter (or), sinon
+  // « contribute » = on t'invite à donner un mot dans ta langue (vert). Voir CSS data-ptype.
+  const _setIco = (e) => { const i = bn.querySelector(".incite-ico"); if (i) i.textContent = e; };
   const w = pick.word;                                  // mot CANONIQUE (français) pour l'action
   // BUG corrigé : en mode anglais, on AFFICHE le mot dans la langue de l'interface
   // (jamais de mot français à un anglophone). `wordInUiLang` interroge d'abord la base
@@ -1996,12 +1999,14 @@ function renderIncitation(pick) {
   const go = $("#incite-go"), lis = $("#incite-listen");
   // Variante « noter » : on invite à donner son avis sur une proposition non jugée.
   if (pick.kind === "rate") {
+    bn.dataset.ptype = "rate"; _setIco("🗳️");
     const m = $("#incite-msg"); if (m) m.textContent = ti("incite.rate.msg", { w: wShow, lang: langName });
     if (lis) { lis.hidden = true; lis.onclick = null; }
     if (go) { go.textContent = t("incite.rate.cta"); go.onclick = () => { _incMarkShown(); _incStopAudio(); bn.hidden = true; startRateWord(pick.word, pick.dir); }; }
     bn.hidden = false;
     return;
   }
+  bn.dataset.ptype = "contribute"; _setIco("💬");
   if (go) go.textContent = t("incite.cta");   // rétablit le libellé « traduire » (peut avoir été changé)
   let text;
   if (pick.ref && pick.ref.name) {
@@ -2155,6 +2160,11 @@ async function maybeShowNotifPopup() {
   const pop = $("#notif-popup"), msg = $("#notif-popup-msg");
   if (!pop || !msg) return;
   msg.textContent = notifText(n);
+  // Couleur + icône selon le TYPE : « request » = une demande de la communauté (cyan, 📣),
+  // sinon « activity » = un retour sur TES contributions (violet, 🔔). Voir CSS data-ptype.
+  const isReq = (n.type === "request" || n.type === "request_answered");
+  pop.dataset.ptype = isReq ? "request" : "activity";
+  const _ico = pop.querySelector(".incite-ico"); if (_ico) _ico.textContent = isReq ? "📣" : "🔔";
   pop.hidden = false;
   try { localStorage.setItem(NOTIF_POPUP_KEY, String(n.ts || Date.now())); } catch (e) { /* ok */ }
 }

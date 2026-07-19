@@ -1,6 +1,9 @@
 {
-  "version": "v216",
+  "version": "v217",
   "changelog": {
+    "v217": [
+      "Les fenêtres d'information (popups) ont désormais une couleur et une icône selon leur type, pour reconnaître d'un coup d'œil de quoi il s'agit avant même de lire : bleu pour une mise à jour de l'application, vert pour une invitation à ajouter un mot dans ta langue, or pour une invitation à donner ton avis sur une proposition, violet pour une activité concernant tes contributions (une note, une amélioration, un cap franchi), cyan pour une demande venue de la communauté"
+    ],
     "v216": [
       "Les quatre onglets (Transcrire, Traduire, Explorer, Demander), présents en haut de toutes les pages, ont désormais les mêmes effets lumineux que les cartes de l'accueil : bordure vive qui chatoie, halo qui respire et icône qui brille, chacun à la couleur de son activité ; leurs libellés sont agrandis et entièrement lisibles, les icônes équilibrées et centrées, y compris sur les petits écrans",
       "Le sélecteur de langue devient une capsule à deux couleurs (FR | EN) où la langue active ressort en vert, et le bouton clair/sombre une capsule ☀ | 🌙 dont la couleur suit le mode",
