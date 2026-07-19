@@ -258,7 +258,7 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
    seule rendait les boutons peu clairs) ; « en ligne », « Drive », version et « EN »
    repoussés EN DERNIER (2e ligne), les deux pastilles clignotantes réduites. */
 @media (max-width: 900px) {
-  .topbar { padding: 10px 14px 6px; gap: 14px 8px; }       /* boutons descendus + près du bas */
+  .topbar { padding: 8px 14px 5px; gap: 7px 8px; }         /* header compact : peu d'espace vertical */
   .brand { gap: 11px; }
   .brand-mark { width: 48px; height: 48px; border-radius: 13px; }
   .brand-mark img { border-radius: 13px; }
@@ -291,29 +291,17 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 @media (max-width: 560px) {
   .brand-mark { width: 42px; height: 42px; }
   .brand-txt h1 { font-size: 1.62rem; white-space: nowrap; }
-  /* Nav TÉLÉPHONE : boutons HAUTS et confortables. Les 4 boutons texte de la 1re
-     ligne grandissent ET rétrécissent (flex 1 1) pour remplir EXACTEMENT la
-     largeur, contenu centré : aucun vide, aucun bouton minuscule. La cloche
-     (icône seule) garde sa taille et se cale en bout, épaisseur ~1.2×. */
-  .chips-nav { gap: 6px 7px; }
-  /* Téléphone : la cloche est le dernier bouton de la 1re ligne, Bugs/Profil/outils
-     passent en 2e ligne (saut de ligne réactivé ici seulement). */
-  .chips-break { display: block; flex-basis: 100%; width: 100%; height: 0; }
-  .chip { font-size: .74rem; padding: 9px 8px; }
-  .chip--btn { padding: 9px 8px; gap: 5px; }
-  .chip--btn .chip-ico { width: 16px; height: 16px; }
-  .chip--icon { padding: 11px 12px; }
-  .chip--icon .chip-ico { width: 19px; height: 19px; }
-  #home-link, #lang-chip, #about-link, #help-btn { flex: 1 1 auto; min-width: 0;
-    justify-content: center; }
-  /* Icône retirée des 4 boutons texte sur téléphone : 5 boutons partagent une
-     ligne étroite, l'icône rognerait le libellé (« Ngiemboon » → « Ngie… »).
-     Le texte, seul, reste pleinement lisible ET remplit la largeur. La cloche
-     (bouton icône) garde évidemment son icône. */
-  #home-link .chip-ico, #lang-chip .chip-ico, #about-link .chip-ico, #help-btn .chip-ico { display: none; }
-  /* Garde-fou : un nom de langue TRÈS long est tronqué par « … » ; « Ngiemboon »
-     et les noms usuels s'affichent en entier. */
-  #lang-chip-name { display: inline-block; max-width: 100px; overflow: hidden;
+  /* Nav TÉLÉPHONE : boutons COMPACTS, taille naturelle, AVEC leur icône (ni géants
+     ni minuscules). La cloche reste le dernier bouton de la 1re ligne ; Bugs, Profil
+     et les outils passent en 2e ligne via le saut de ligne. */
+  .chips-nav { gap: 4px 6px; }
+  .chip { font-size: .7rem; padding: 3px 8px; }
+  .chip--btn { padding: 3px 8px; gap: 5px; }
+  .chip--btn .chip-ico { width: 15px; height: 15px; }
+  .chip--icon { padding: 4px 8px; }
+  .chip--icon .chip-ico { width: 16px; height: 16px; }
+  /* Nom de langue tronqué seulement s'il est vraiment très long. */
+  #lang-chip-name { display: inline-block; max-width: 140px; overflow: hidden;
     text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; }
   .chips-meta { gap: 4px; }
   #net, #srv { font-size: .5rem; padding: 2px 6px; line-height: 1.15; }
@@ -335,12 +323,9 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   .brand-txt h1 { font-size: 1.08rem; }
   #net, #srv { font-size: .48rem; padding: 2px 5px; }
   #net.chip--on::before, #srv.chip--on::before { margin-right: 3px; width: 4px; height: 4px; }
-  /* Très petits écrans : les boutons restent HAUTS (flex gère le remplissage en
-     largeur, ils se rétrécissent d'eux-mêmes) ; on abaisse juste la police d'un
-     cran et on serre le nom de langue pour garder la cloche sur la 1re ligne. */
-  .chip { font-size: .68rem; padding: 8px 5px; }
-  .chip--btn { padding: 8px 5px; gap: 4px; }
-  #lang-chip-name { max-width: 62px; }
+  /* Très petits écrans : boutons un cran plus compacts (icônes conservées). */
+  .chip { font-size: .66rem; padding: 4px 6px; }
+  .chip--btn { padding: 4px 6px; gap: 4px; }
 }
 
 /* --- Cartes --- */
