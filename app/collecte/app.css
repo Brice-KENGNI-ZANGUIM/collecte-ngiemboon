@@ -301,7 +301,7 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   /* Cloche : MÊME hauteur que les autres boutons de la ligne (padding vertical = 4px,
      icône 15px qui s'insère sans déborder) ; seule son ÉPAISSEUR (horizontal) est
      augmentée de ~x1.08 (8→9px). */
-  .chip--icon { padding: 4px 9px; }
+  .chip--icon { padding: 4px 10px; }   /* cloche : épaisseur (horizontal) x1.1, hauteur inchangée */
   .chip--icon .chip-ico { width: 15px; height: 15px; }
   /* Nom de langue tronqué seulement s'il est vraiment très long. */
   #lang-chip-name { display: inline-block; max-width: 140px; overflow: hidden;
@@ -311,7 +311,7 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   #net.chip--on::before, #srv.chip--on::before { margin-right: 4px; width: 5px; height: 5px; }
   #app-ver { font-size: .58rem; padding: 3px 7px; }
   #ui-lang-toggle { padding: 4px 8px; }
-  #theme-toggle { padding: 6px; }
+  #theme-toggle { padding: 6px 7px; }   /* thème clair/sombre : épaisseur (horizontal) x1.15, hauteur inchangée */
 }
 /* Petits téléphones (≤ 389px) : le nom se réduit d'un cran pour que « LANGA · Collecte »
    ET les deux pastilles d'état tiennent sur la même ligne, sans scroll. Dès 390px le nom
@@ -1724,7 +1724,7 @@ body.kb-docked { padding-bottom: var(--kb-h, 50vh); }
 }
 .incite-ico { flex: 0 0 auto; font-size: 1.6rem; line-height: 1.2; filter: drop-shadow(0 2px 5px rgba(0,0,0,.3)); }
 .incite-body { min-width: 0; display: flex; flex-direction: column; gap: 10px; }
-.incite-msg { margin: 0; font-size: .92rem; line-height: 1.5; color: var(--text); }
+.incite-msg { margin: 0; font-size: .92rem; line-height: 1.5; color: var(--text); white-space: pre-line; }
 .incite-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .incite-actions .btn--primary { padding: 9px 16px; font-size: .9rem; }
 .incite-later { background: none; border: none; color: var(--muted); font: inherit; cursor: pointer; text-decoration: underline; }

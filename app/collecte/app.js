@@ -9,7 +9,7 @@ import { reconcile, checkServer, serverStats, modeGoogle, browseLibrary,
   fetchSuggestions, postSuggestion, postVote, postBug, fetchBugs,
   fetchLanguages, declareLanguage, declareUser, fetchDriveAudio,
   proposeMerge, respondMerge, mergesForDevice, fetchNotifications,
-  fetchRequests, fetchRequestsToTranslate, postRequest, postAnswer } from "./sync.js";
+  fetchRequests, fetchRequestsToTranslate, postRequest, postAnswer, translateWord } from "./sync.js";
 import { PROPOSITIONS } from "./propositions.js";
 import { BUGS } from "./bugs.js";
 import { CONFIG } from "./config.js";
@@ -353,7 +353,33 @@ function loadProposition() {
     (aucune invention). Le mot canonique stocké reste le français, cf. loadProposition. */
 function sourceDisplay(fr) {
   if (getUiLang() !== "en") return fr;
-  return sourceEn(fr) || fr;
+  return sourceEn(fr) || _wordEnCache.get(String(fr || "").trim().toLowerCase()) || fr;
+}
+// Cache de SESSION des équivalents anglais résolus par le backend (base puis DeepL),
+// pour ne jamais réafficher un mot français à un anglophone après une 1re résolution.
+const _wordEnCache = new Map();   // fr(lower) -> en
+/** Mot à AFFICHER dans la langue d'interface. En anglais : équivalent connu (base
+    source_en) ou déjà résolu (cache) ; repli = le mot d'origine (jamais d'invention).
+    Version SYNCHRONE (pour un rendu immédiat). */
+function wordInUiLang(fr) {
+  const s = String(fr || "").trim();
+  if (getUiLang() !== "en" || !s) return s;
+  return sourceEn(s) || _wordEnCache.get(s.toLowerCase()) || s;
+}
+/** Résout l'équivalent anglais AVANT affichage : base locale d'abord, puis le backend
+    (qui cherche en base, sinon DeepL, et MÉMORISE à jamais). Met en cache de session. */
+async function resolveWordUi(fr) {
+  const s = String(fr || "").trim();
+  if (getUiLang() !== "en" || !s) return s;
+  const known = sourceEn(s); if (known) return known;
+  const low = s.toLowerCase();
+  if (_wordEnCache.has(low)) return _wordEnCache.get(low);
+  try {
+    const r = await translateWord(s, "en");
+    const en = (r && r.text) ? String(r.text).trim() : "";
+    if (en) { _wordEnCache.set(low, en); return en; }
+  } catch (e) { /* hors ligne : repli */ }
+  return s;
 }
 function applyMode() {
   const proposer = mode === "proposer";
@@ -1961,12 +1987,16 @@ async function pickIncitation() {
 }
 function renderIncitation(pick) {
   const bn = $("#incite-banner"); if (!bn || !pick) return;
-  const w = pick.word;
+  const w = pick.word;                                  // mot CANONIQUE (français) pour l'action
+  // BUG corrigé : en mode anglais, on AFFICHE le mot dans la langue de l'interface
+  // (jamais de mot français à un anglophone). `wordInUiLang` interroge d'abord la base
+  // (corpus source_en), puis le cache DeepL déjà résolu ; sinon repli sûr.
+  const wShow = pick.wordUi || wordInUiLang(w);
   const langName = (currentLang() && currentLang().nom) || "";
   const go = $("#incite-go"), lis = $("#incite-listen");
   // Variante « noter » : on invite à donner son avis sur une proposition non jugée.
   if (pick.kind === "rate") {
-    const m = $("#incite-msg"); if (m) m.textContent = ti("incite.rate.msg", { w, lang: langName });
+    const m = $("#incite-msg"); if (m) m.textContent = ti("incite.rate.msg", { w: wShow, lang: langName });
     if (lis) { lis.hidden = true; lis.onclick = null; }
     if (go) { go.textContent = t("incite.rate.cta"); go.onclick = () => { _incMarkShown(); _incStopAudio(); bn.hidden = true; startRateWord(pick.word, pick.dir); }; }
     bn.hidden = false;
@@ -1977,9 +2007,9 @@ function renderIncitation(pick) {
   if (pick.ref && pick.ref.name) {
     const ln = pick.ref.langId ? _incLangName(pick.ref.langId) : "";
     const inlang = ln ? ti("incite.inlang", { l: ln }) : "";   // « en {langue} » seulement si connue
-    text = ti("incite.msg.ref", { w, name: pick.ref.name, inlang });
+    text = ti("incite.msg.ref", { w: wShow, name: pick.ref.name, inlang });
   } else {
-    text = ti("incite.msg", { w, lang: langName });
+    text = ti("incite.msg", { w: wShow, lang: langName });
   }
   const msg = $("#incite-msg"); if (msg) msg.textContent = text;   // textContent = anti-injection
   if (go) go.onclick = () => { _incMarkShown(); _incStopAudio(); bn.hidden = true; startTranslateWord(w); };
@@ -2012,6 +2042,8 @@ async function maybeShowIncitation() {
   let pick = null; try { pick = await pickIncitation(); } catch (e) { pick = null; }
   if (!pick || !incitationDue()) return;          // re-vérifie après l'await (course éventuelle)
   if (($("#notif-popup") || {}).hidden === false) return;   // ne pas empiler sur un popup de notif
+  // Résout l'équivalent dans la langue de l'UI AVANT d'afficher (jamais de FR à un anglophone).
+  try { pick.wordUi = await resolveWordUi(pick.word); } catch (e) { /* repli sync */ }
   renderIncitation(pick);
 }
 
@@ -2052,7 +2084,12 @@ function updateNotifBadge(n) {
 function notifText(n) {
   const d = n.data || {};
   const who = (d.actor || "").trim() || t("notif.someone");
-  const mot = (d.mot || "").trim();
+  const rawMot = (d.mot || d.texte || "").trim();
+  // ADAPTATIF : le mot est affiché dans la langue du DESTINATAIRE. En anglais on
+  // préfère l'équivalent fourni par le backend (base d'abord, sinon DeepL mémorisé),
+  // sinon la base locale ; en français, le mot d'origine.
+  const motEn = (d.mot_en || d.texte_en || "").trim();
+  const mot = (getUiLang() === "en") ? (motEn || wordInUiLang(rawMot)) : rawMot;
   const ln = d.langue ? _incLangName(d.langue) : "";
   if (n.type === "vote") {
     const kindK = { ok: "notif.kind.ok", doubt: "notif.kind.doubt", no: "notif.kind.no" }[d.kind] || "notif.kind.ok";

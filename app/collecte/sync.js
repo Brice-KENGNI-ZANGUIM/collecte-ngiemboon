@@ -241,6 +241,24 @@ export async function fetchRequestsToTranslate(deviceId, langues) {
     return data;
   } catch (e) { return null; }
 }
+/** Traduit un mot via le moteur : le backend cherche D'ABORD en base (corpus), sinon
+    appelle DeepL et MÉMORISE le résultat à jamais. `to` = "en" (FR->EN) ou "fr" (EN->FR).
+    Retourne { ok, text } ; text vide si indisponible (repli côté client). */
+export async function translateWord(word, to) {
+  const w = String(word || "").trim();
+  if (!w) return { ok: true, text: "" };
+  const base = endpoint();
+  const q = "word=" + encodeURIComponent(w) + "&to=" + encodeURIComponent(to || "en");
+  const url = isGoogle()
+    ? `${base}?action=translate&${q}`
+    : `${base || ""}/api/translate?${q}`;
+  try {
+    const r = await fetch(url, { cache: "no-store" });
+    if (!r.ok) return { ok: false, text: "" };
+    const data = await r.json();
+    return { ok: !!(data && data.ok !== false), text: (data && data.text) || "" };
+  } catch (e) { return { ok: false, text: "" }; }
+}
 /** Publie une demande de traduction/transcription à la communauté. */
 export function postRequest(r) { return postOp(Object.assign({ op: "request" }, r)); }
 /** Répond à une demande : devient une contribution (alimente Explorer) + notifie le demandeur. */
