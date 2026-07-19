@@ -3385,7 +3385,7 @@ function applyTheme(mode) {
   try { localStorage.setItem("ng-theme", mode); } catch (e) { /* stockage indispo */ }
   const btn = $("#theme-toggle");
   if (btn) {
-    // L'icône (soleil+lune) est statique = « basculer le thème » ; on n'ajuste que le libellé.
+    btn.dataset.active = mode;   // capsule ☀|🌙 : la moitié du mode actif est colorée
     const lbl = mode === "dark" ? t("theme.toLight") : t("theme.toDark");
     btn.setAttribute("aria-label", lbl); btn.title = lbl;
   }
