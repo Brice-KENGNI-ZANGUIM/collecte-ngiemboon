@@ -582,13 +582,17 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 /* Illustration africaine en FOND de carte, sous un filtre assombrissant (dégradé vers la
    couleur de carte, plus fort en bas) pour que l'icône, le titre et le texte restent
    parfaitement lisibles par-dessus, dans les deux thèmes. --card-illus posé en HTML. */
-/* Illustration africaine posée en HAUT-DROITE (Nord-Est), image carrée entière, qui se fond
-   progressivement vers le BAS-GAUCHE (Sud-Ouest) via un masque en dégradé : le coin est
-   illustré, la zone de texte reste dégagée. Même esprit que les popups. */
-.hub-illus { position: absolute; inset: -22px -20px; width: calc(100% + 40px); height: calc(100% + 44px);
-  object-fit: cover; object-position: 72% center; z-index: 0; pointer-events: none;
-  -webkit-mask-image: linear-gradient(to bottom left, #000 20%, rgba(0,0,0,.4) 52%, transparent 82%);
-          mask-image: linear-gradient(to bottom left, #000 20%, rgba(0,0,0,.4) 52%, transparent 82%); }
+/* Image RÉALISTE ENTIÈRE (jamais recadrée), réduite à 70 % de la hauteur du cadre et
+   COLLÉE au coin NORD-EST (haut-droite, jusqu'aux bords haut/droite du cadre). width:auto
+   → l'image garde ses proportions, rien n'est coupé. Elle se fond vers le SUD-OUEST via un
+   masque en dégradé : le coin est illustré, la zone de texte (bas-gauche) reste dégagée. */
+.hub-illus { position: absolute; top: -22px; right: -20px;
+  height: 70%; width: auto; max-width: none;
+  object-fit: contain; object-position: top right; z-index: 0; pointer-events: none;
+  /* Fondu RADIAL centré sur le coin NORD-EST (100% 0%) : le coin reste plein, la transparence
+     rayonne vers le SUD-OUEST → les bords gauche ET bas de l'image se fondent sans arête. */
+  -webkit-mask-image: radial-gradient(125% 125% at 100% 0%, #000 40%, rgba(0,0,0,.42) 66%, transparent 88%);
+          mask-image: radial-gradient(125% 125% at 100% 0%, #000 40%, rgba(0,0,0,.42) 66%, transparent 88%); }
 /* Le texte passe au-dessus de l'image, avec une ombre portée pour un contraste garanti. */
 .hub-card--illus .hub-card-head, .hub-card--illus .hub-desc, .hub-card--illus .hub-go { position: relative; z-index: 2; }
 .hub-card--illus .hub-name, .hub-card--illus .hub-desc, .hub-card--illus .hub-go {
