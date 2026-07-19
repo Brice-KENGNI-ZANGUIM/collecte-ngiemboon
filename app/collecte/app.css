@@ -458,14 +458,37 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
    (fini le vide dans le header). */
 .nav-tabs { display: flex; flex: 1 1 auto; gap: 8px; padding: 0; background: transparent;
   border: none; flex-wrap: nowrap; }
+/* Onglets = MÊMES effets que les cartes de l'accueil : lavis de couleur d'activité,
+   halo d'ambiance qui « respire », bordure comète blanche qui tourne, shimmer au survol
+   et glow d'icône pulsé. Bien mis en évidence. */
 .nav-tab { --acc: var(--cyan); flex: 1 1 0; min-width: 0; justify-content: center;
-  border: 1px solid color-mix(in srgb, var(--acc) 50%, var(--border));
-  background: color-mix(in srgb, var(--acc) 12%, var(--panel)); color: var(--text);
-  padding: 11px 18px; border-radius: 12px; cursor: pointer; font: inherit; font-size: 1.02rem;
-  font-weight: 700; display: inline-flex; align-items: center; gap: 8px;
-  box-shadow: inset 0 1px 0 var(--card-sheen), 0 2px 8px -4px rgba(0,0,0,.28);
-  transition: color .15s ease, background .15s ease, box-shadow .15s ease, transform .1s ease; }
-.nav-tab:hover { transform: translateY(-1px); }
+  position: relative; overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--acc) 40%, var(--border));
+  background: radial-gradient(130% 80% at 50% -20%, color-mix(in srgb, var(--acc) 18%, transparent), transparent 62%),
+    color-mix(in srgb, var(--acc) 10%, var(--panel)); color: var(--text);
+  padding: 11px 18px; border-radius: 12px; cursor: pointer; font: inherit; font-size: 1.12rem;
+  font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  box-shadow: 0 0 26px -14px var(--acc), inset 0 1px 0 var(--card-sheen), 0 2px 8px -4px rgba(0,0,0,.28);
+  transition: color .15s ease, background .15s ease, box-shadow .2s ease, border-color .2s ease, transform .12s ease;
+  animation: ngCardBreath 6s ease-in-out infinite; }
+.nav-tab > * { position: relative; z-index: 3; }   /* icône + libellé au-dessus des effets */
+.nav-tab::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 2px;
+  pointer-events: none; z-index: 2;
+  background:
+    conic-gradient(from var(--ng-angle), transparent 0%,
+      color-mix(in srgb, #fff 88%, var(--acc)) 7%, color-mix(in srgb, var(--acc) 70%, transparent) 17%, transparent 30%),
+    linear-gradient(var(--acc), var(--acc));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--acc) 70%, transparent));
+  animation: ngBorderSpin 4s linear infinite; }
+.nav-tab::after { content: ""; position: absolute; inset: 0; border-radius: inherit; z-index: 1; pointer-events: none;
+  background: linear-gradient(115deg, transparent 26%, color-mix(in srgb, var(--acc) 55%, #fff) 50%, transparent 74%);
+  opacity: 0; transform: translateX(-120%); }
+.nav-tab:hover { transform: translateY(-2px); animation-play-state: paused;
+  box-shadow: 0 18px 40px -14px var(--acc), 0 0 0 2px color-mix(in srgb, var(--acc) 65%, transparent),
+    0 0 40px -8px var(--acc), inset 0 1px 0 var(--card-sheen); }
+.nav-tab:hover::after { animation: ngShimmer 760ms ease; }
 /* Chaque onglet porte SA couleur d'activité (comme l'accueil et le mode présentation). */
 #tab-traduire  { --acc: var(--green); }
 #tab-transcrire { --acc: #a78bfa; }
@@ -475,9 +498,20 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 .nav-tab:hover { color: var(--text);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--acc) 42%, transparent),
     0 0 14px -6px var(--acc); }
-.nav-tab .nav-ico { transition: filter .15s ease; }
+/* Icône : boîte carrée + object-fit contain (jamais de débordement, jamais de distorsion) ;
+   glow pulsé de la couleur d'activité, comme les icônes des cartes de l'accueil. */
+.nav-tab .nav-ico { width: 30px; height: 30px; flex: none; object-fit: contain;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--acc) 55%, transparent));
+  animation: ngIcoGlow 3.4s ease-in-out infinite;
+  transition: filter .15s ease; }
+/* Normalisation VISUELLE par icône (sources d'aspects différents) : chaque glyphe est
+   calibré pour occuper la même hauteur apparente dans son cadre, sans déborder. */
+#tab-transcrire .nav-ico { width: 26px; height: 30px; }   /* micro : haut et étroit */
+#tab-traduire  .nav-ico { width: 31px; height: 31px; }
+#tab-explorer  .nav-ico { width: 30px; height: 30px; }
+#tab-demander  .nav-ico { width: 31px; height: 31px; }
 .nav-tab:hover .nav-ico, .nav-tab.is-active .nav-ico {
-  filter: drop-shadow(0 0 7px color-mix(in srgb, var(--acc) 70%, transparent)); }
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--acc) 78%, transparent)); }
 .nav-tab.is-active { color: var(--bg);
   background: var(--acc); border-color: var(--acc);   /* couleur d'activité UNIE (sans dégradé) */
   box-shadow: 0 0 20px -3px var(--acc); }
@@ -491,16 +525,29 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
      côte. Chaque onglet est un vrai bouton visible (contour + fond teinté de sa
      couleur d'activité). Icône et texte un peu agrandis pour remplir le bouton. */
   .nav-tabs { width: 100%; flex-wrap: nowrap; gap: 4px; padding: 0; background: transparent; border: none; }
-  /* Icône décalée VERS LA GAUCHE (justify flex-start + petit padding gauche) : le
-     libellé récupère la place à droite → icône ET texte plus GRANDS sans débordement. */
-  .nav-tab { flex: 1 1 0; min-width: 0; justify-content: flex-start;
-    gap: 3px; padding: 8px 1px; font-size: .56rem; border-radius: 11px;
-    border: 1px solid color-mix(in srgb, var(--acc) 50%, var(--border));
-    background: color-mix(in srgb, var(--acc) 12%, var(--panel));
-    box-shadow: inset 0 1px 0 var(--card-sheen), 0 1px 3px -1px rgba(0,0,0,.25); }
+  /* Ensemble icône + libellé CENTRÉ dans chaque cadre ; icône et texte agrandis.
+     Gap et marges resserrés pour laisser toute la place au libellé (aucune troncature). */
+  .nav-tab { flex: 1 1 0; min-width: 0; justify-content: center;
+    gap: 2px; padding: 8px 0; font-size: .6rem; border-radius: 11px; }
   .nav-tab span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-  .nav-tab .nav-ico { width: 25px; height: 25px; flex: none; }
+  /* Icônes calibrées une à une pour une même hauteur apparente, sans débordement.
+     Les glyphes larges (mégaphone) sont resserrés pour ne pas rogner le libellé. */
+  .nav-tab .nav-ico { width: 27px; height: 27px; flex: none; }
+  #tab-transcrire .nav-ico { width: 26px; height: 28px; }
+  #tab-traduire  .nav-ico { width: 27px; height: 27px; }
+  #tab-explorer  .nav-ico { width: 27px; height: 27px; }
+  #tab-demander  .nav-ico { width: 25px; height: 27px; }
   /* Onglet actif : couleur d'activité pleine (déjà géré par .is-active) — on garde. */
+}
+/* Écrans très étroits (≤ 374 px, type 360) : on réduit d'un cran police et icônes pour
+   que « Transcrire » et « Demander » restent ENTIÈREMENT visibles, sans troncature. */
+@media (max-width: 374px) {
+  .nav-tab { gap: 2px; font-size: .54rem; }
+  .nav-tab .nav-ico { width: 24px; height: 24px; }
+  #tab-transcrire .nav-ico { width: 23px; height: 25px; }
+  #tab-traduire  .nav-ico { width: 24px; height: 24px; }
+  #tab-explorer  .nav-ico { width: 24px; height: 24px; }
+  #tab-demander  .nav-ico { width: 22px; height: 24px; }
 }
 
 /* ---- Accueil « Que veux-tu faire ? » ---- */
@@ -2119,7 +2166,8 @@ body::after {
   .view-title::after, .view-title::before, .card, .card::after,
   .btn--primary, .btn--next, .btn--send, .lang-search-btn, .lang-declare-cta, .corr-submit, .tour-next,
   #btn-mic-test, .tr-guide-open,
-  .hub-card, .hub-card::before, .hub-card::after, .hub-ico, .brand::before, .ndop-sep i, .ndop-sep::before, .ndop-sep::after { animation: none; }
+  .hub-card, .hub-card::before, .hub-card::after, .hub-ico, .brand::before, .ndop-sep i, .ndop-sep::before, .ndop-sep::after,
+  .nav-tab, .nav-tab::before, .nav-tab::after, .nav-tab .nav-ico { animation: none; }
   .btn--primary, .btn--next, .btn--send, .lang-search-btn, .lang-declare-cta, .corr-submit, .tour-next,
   #btn-mic-test, .tr-guide-open { filter: none; }
   .card { transition: none; }
@@ -2143,6 +2191,7 @@ body::after {
      continues pour garder la frappe parfaitement fluide (le clavier couvre le bas de
      l'écran, le décor n'y est de toute façon plus visible). */
   body.kb-docked .hub-card, body.kb-docked .hub-card::before, body.kb-docked .hub-ico,
+  body.kb-docked .nav-tab, body.kb-docked .nav-tab::before, body.kb-docked .nav-tab::after, body.kb-docked .nav-tab .nav-ico,
   body.kb-docked .card::after, body.kb-docked .brand::before { animation: none; }
 }
 
@@ -2461,6 +2510,9 @@ body.kb-docked .field--consent {
 .hub-card { animation-duration: 9s !important; }                              /* halo qui respire : plus doux */
 .hub-card::before { animation-duration: 9s !important; }                      /* comète : plus lente */
 .hub-ico { animation-duration: 6s !important; }                              /* glow d'icône : plus lent */
+.nav-tab { animation-duration: 9s !important; }                              /* onglets : halo plus doux */
+.nav-tab::before { animation-duration: 9s !important; }                      /* onglets : comète plus lente */
+.nav-tab .nav-ico { animation-duration: 6s !important; }                     /* onglets : glow d'icône plus lent */
 .brand::before { animation-duration: 16s !important; }                        /* aurore d'en-tête : plus lente */
 .btn--primary, .btn--next, .btn--send:not(:disabled),
 .lang-search-btn, .lang-declare-cta, .corr-submit, .tour-next,

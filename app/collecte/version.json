@@ -1,6 +1,13 @@
 {
-  "version": "v215",
+  "version": "v216",
   "changelog": {
+    "v216": [
+      "Les quatre onglets (Transcrire, Traduire, Explorer, Demander), présents en haut de toutes les pages, ont désormais les mêmes effets lumineux que les cartes de l'accueil : bordure vive qui chatoie, halo qui respire et icône qui brille, chacun à la couleur de son activité ; leurs libellés sont agrandis et entièrement lisibles, les icônes équilibrées et centrées, y compris sur les petits écrans",
+      "Le sélecteur de langue devient une capsule à deux couleurs (FR | EN) où la langue active ressort en vert, et le bouton clair/sombre une capsule ☀ | 🌙 dont la couleur suit le mode",
+      "En-tête plus net : les pastilles d'état (version, en ligne, base de données) sont à la même hauteur et plus compactes ; la pastille de version passe au vert quand l'application est à jour et au rouge si une mise à jour t'attend ; « en ligne » s'affiche bien « online » en anglais",
+      "Les mots proposés dans les invitations à contribuer et les notifications s'affichent dans ta langue d'affichage : un mot demandé arrive en anglais pour un anglophone, en français pour un francophone ; les messages passent à la ligne après la première phrase pour une lecture plus claire",
+      "Le panneau pour réunir deux langues déclarées identiques et l'encart de présentation de la plateforme sont mieux mis en évidence, avec un texte reformulé plus clair"
+    ],
     "v215": [
       "Ajustements d'affichage sur téléphone : les 4 onglets (Transcrire, Traduire, Explorer, Demander) restent sur une seule ligne, chacun bien délimité comme un bouton ; le défilement ne saute plus quand tu passes au mot suivant après un envoi ; les boutons « Revoir les consignes » et « Enregistrer l'audio » ont désormais le même aspect dans Traduire et Transcrire",
       "Le corpus de mots à traduire s'est enrichi de plusieurs centaines de mots et expressions du quotidien (nature, cuisine, marché, métiers, corps, maison, transport…), avec leur équivalent anglais"
