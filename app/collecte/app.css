@@ -1853,6 +1853,11 @@ body.kb-docked { padding-bottom: var(--kb-h, 50vh); }
 .incite-banner[data-ptype="request"]    { --pop-acc: var(--cyan); }
 .incite-ico { flex: 0 0 auto; font-size: 1.7rem; line-height: 1.2;
   filter: drop-shadow(0 2px 5px rgba(0,0,0,.3)) drop-shadow(0 0 10px color-mix(in srgb, var(--pop-acc) 60%, transparent)); }
+/* Certaines catégories utilisent une VRAIE image (photo) plutôt qu'un emoji : avatar
+   rond cerclé de la couleur du type (ex. « activité » = deux personnes qui discutent). */
+.incite-ico .pop-photo { display: block; width: 52px; height: 52px; border-radius: 50%;
+  object-fit: cover; border: 2px solid color-mix(in srgb, var(--pop-acc) 78%, transparent);
+  box-shadow: 0 0 13px -2px var(--pop-acc); }
 /* Bouton principal et bouton « Écouter » : teintés dans la couleur du type. */
 .incite-banner .btn--primary { background: var(--pop-acc); border-color: var(--pop-acc); color: var(--bg);
   box-shadow: 0 8px 22px -8px var(--pop-acc); }

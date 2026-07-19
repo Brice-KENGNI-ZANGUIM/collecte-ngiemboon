@@ -1,6 +1,9 @@
 {
-  "version": "v217",
+  "version": "v218",
   "changelog": {
+    "v218": [
+      "Le rappel d'activité sur tes contributions (quand quelqu'un note ou améliore ton travail) affiche désormais une illustration réaliste de deux personnes en train d'échanger, à la place d'une simple icône"
+    ],
     "v217": [
       "Les fenêtres d'information (popups) ont désormais une couleur et une icône selon leur type, pour reconnaître d'un coup d'œil de quoi il s'agit avant même de lire : bleu pour une mise à jour de l'application, vert pour une invitation à ajouter un mot dans ta langue, or pour une invitation à donner ton avis sur une proposition, violet pour une activité concernant tes contributions (une note, une amélioration, un cap franchi), cyan pour une demande venue de la communauté"
     ],

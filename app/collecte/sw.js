@@ -3,7 +3,7 @@
 // version quand on est connecté ; le cache ne sert que de secours hors-ligne),
 // et l'API n'est jamais mise en cache. Bumper CACHE à chaque évolution de la
 // coquille purge l'ancien cache.
-const CACHE = "collecte-nge-v217";
+const CACHE = "collecte-nge-v218";
 const SHELL = [
   "./",
   "./index.html",
@@ -47,6 +47,7 @@ const SHELL = [
   "./icons/ui/hi-theme.svg",
   "./icons/ui/hi-profile.png",
   "./icons/ui/hi-notif.png",
+  "./icons/two-talk.png",
   "../flyer/qr.png",
   "../keyboard/ngiemboon-keyboard.js",
   "../keyboard/ngiemboon-keyboard.css",

@@ -29,7 +29,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v217";
+const APP_VERSION = "v218";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -2164,7 +2164,13 @@ async function maybeShowNotifPopup() {
   // sinon « activity » = un retour sur TES contributions (violet, 🔔). Voir CSS data-ptype.
   const isReq = (n.type === "request" || n.type === "request_answered");
   pop.dataset.ptype = isReq ? "request" : "activity";
-  const _ico = pop.querySelector(".incite-ico"); if (_ico) _ico.textContent = isReq ? "📣" : "🔔";
+  const _ico = pop.querySelector(".incite-ico");
+  if (_ico) {
+    if (isReq) { _ico.textContent = "📣"; }
+    // Activité sur tes contributions : photo réaliste « deux personnes qui discutent »
+    // (avatar rond), plutôt qu'un emoji, pour un rendu premium.
+    else { _ico.innerHTML = '<img class="pop-photo" src="icons/two-talk.png" alt="" aria-hidden="true" width="52" height="52">'; }
+  }
   pop.hidden = false;
   try { localStorage.setItem(NOTIF_POPUP_KEY, String(n.ts || Date.now())); } catch (e) { /* ok */ }
 }
