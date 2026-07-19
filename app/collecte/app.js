@@ -29,7 +29,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v218";
+const APP_VERSION = "v219";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1990,6 +1990,8 @@ function renderIncitation(pick) {
   // Type visuel du popup (couleur + icône) : « rate » = évaluer/voter (or), sinon
   // « contribute » = on t'invite à donner un mot dans ta langue (vert). Voir CSS data-ptype.
   const _setIco = (e) => { const i = bn.querySelector(".incite-ico"); if (i) i.textContent = e; };
+  // Illustration réaliste (avatar rond) selon le type, plutôt qu'un emoji (préférence Brice).
+  const _setImg = (file) => { const i = bn.querySelector(".incite-ico"); if (i) i.innerHTML = '<img class="pop-photo" src="icons/' + file + '" alt="" aria-hidden="true" width="52" height="52">'; };
   const w = pick.word;                                  // mot CANONIQUE (français) pour l'action
   // BUG corrigé : en mode anglais, on AFFICHE le mot dans la langue de l'interface
   // (jamais de mot français à un anglophone). `wordInUiLang` interroge d'abord la base
@@ -1999,14 +2001,14 @@ function renderIncitation(pick) {
   const go = $("#incite-go"), lis = $("#incite-listen");
   // Variante « noter » : on invite à donner son avis sur une proposition non jugée.
   if (pick.kind === "rate") {
-    bn.dataset.ptype = "rate"; _setIco("🗳️");
+    bn.dataset.ptype = "rate"; _setImg("pop-rate.png");
     const m = $("#incite-msg"); if (m) m.textContent = ti("incite.rate.msg", { w: wShow, lang: langName });
     if (lis) { lis.hidden = true; lis.onclick = null; }
     if (go) { go.textContent = t("incite.rate.cta"); go.onclick = () => { _incMarkShown(); _incStopAudio(); bn.hidden = true; startRateWord(pick.word, pick.dir); }; }
     bn.hidden = false;
     return;
   }
-  bn.dataset.ptype = "contribute"; _setIco("💬");
+  bn.dataset.ptype = "contribute"; _setImg("pop-contribute.png");
   if (go) go.textContent = t("incite.cta");   // rétablit le libellé « traduire » (peut avoir été changé)
   let text;
   if (pick.ref && pick.ref.name) {
@@ -2166,9 +2168,9 @@ async function maybeShowNotifPopup() {
   pop.dataset.ptype = isReq ? "request" : "activity";
   const _ico = pop.querySelector(".incite-ico");
   if (_ico) {
-    if (isReq) { _ico.textContent = "📣"; }
-    // Activité sur tes contributions : photo réaliste « deux personnes qui discutent »
-    // (avatar rond), plutôt qu'un emoji, pour un rendu premium.
+    // Illustrations réalistes (avatars ronds) : demande = appel à la communauté ;
+    // activité = deux personnes qui échangent. Plutôt que des emojis (préférence Brice).
+    if (isReq) { _ico.innerHTML = '<img class="pop-photo" src="icons/pop-request.png" alt="" aria-hidden="true" width="52" height="52">'; }
     else { _ico.innerHTML = '<img class="pop-photo" src="icons/two-talk.png" alt="" aria-hidden="true" width="52" height="52">'; }
   }
   pop.hidden = false;

@@ -1,6 +1,9 @@
 {
-  "version": "v218",
+  "version": "v219",
   "changelog": {
+    "v219": [
+      "Les fenêtres d'information (popups) montrent maintenant une illustration réaliste et détaillée, aux vêtements africains, propre à chaque type de message : une demande de la communauté, une invitation à contribuer, une invitation à donner ton avis, ou une activité concernant tes contributions. Le dessin et la couleur permettent de reconnaître le type d'un coup d'œil"
+    ],
     "v218": [
       "Le rappel d'activité sur tes contributions (quand quelqu'un note ou améliore ton travail) affiche désormais une illustration réaliste de deux personnes en train d'échanger, à la place d'une simple icône"
     ],
