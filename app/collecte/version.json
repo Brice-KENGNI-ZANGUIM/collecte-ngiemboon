@@ -1,6 +1,9 @@
 {
-  "version": "v219",
+  "version": "v220",
   "changelog": {
+    "v220": [
+      "Les illustrations des fenêtres d'information (popups) sont désormais plus grandes et débordent joliment du cadre, entourées d'un halo lumineux à la couleur du message, pour un rendu plus vivant et plus premium"
+    ],
     "v219": [
       "Les fenêtres d'information (popups) montrent maintenant une illustration réaliste et détaillée, aux vêtements africains, propre à chaque type de message : une demande de la communauté, une invitation à contribuer, une invitation à donner ton avis, ou une activité concernant tes contributions. Le dessin et la couleur permettent de reconnaître le type d'un coup d'œil"
     ],
