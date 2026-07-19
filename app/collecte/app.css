@@ -718,11 +718,16 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 /* ---- En-tête d'espace + mise en avant de l'enregistrement en transcription ---- */
 .work-head { margin-bottom: 2px; }
 .work-help { color: var(--muted); font-size: .86rem; line-height: 1.55; margin: 8px 0 0; }
-/* La zone violette encadre déjà l'audio → pas de cadre interne redondant. */
-#view-app[data-act="transcribe"] .zone--audio .audio-row { padding: 0; margin-top: 0;
-  background: transparent; border: none; }
-#view-app[data-act="transcribe"] .btn--rec { border-color: rgba(8,145,178,.6);
-  box-shadow: 0 8px 22px -9px var(--cyan); font-weight: 700; }
+/* La zone encadre déjà l'audio → pas de cadre interne redondant (dans TOUS les modes,
+   pour un rendu identique Traduire/Transcrire/amorce). */
+.zone--audio .audio-row { padding: 0; margin-top: 12px; background: transparent; border: none; }
+/* « Enregistrer l'audio » : MÊME apparence PARTOUT où l'audio est utilisé (bouton
+   d'action cyan tinté, dot rouge) — plus de couleur différente selon le mode.
+   `.btn.btn--rec` pour l'emporter sur la bordure neutre de `.btn`. */
+.btn.btn--rec { border: 1.5px solid var(--cyan); color: var(--cyan);
+  background: color-mix(in srgb, var(--cyan) 10%, var(--panel));
+  box-shadow: inset 0 1px 0 var(--card-sheen), 0 8px 22px -12px var(--cyan); font-weight: 700; }
+.btn.btn--rec:hover { background: var(--cyan); color: var(--bg); border-color: var(--cyan); }
 
 /* ---- Menu « À traduire / À prononcer » (prop-cat) en ligne ---- */
 .prop-cat.combo { display: inline-block; width: auto; min-width: 150px; vertical-align: middle; }
@@ -890,11 +895,11 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 /* Transcrire : « revoir les consignes » vit sur la LIGNE du label audio, repoussé à droite.
    Traduire : il passe sur la ligne du label « Traduction » (#tr-guide-open-t) et l'autre est masqué. */
 #view-app[data-act="translate"] #tr-guide-open { display: none; }
-#view-app[data-act="translate"] #tr-guide-open-t { display: inline-flex; margin-left: auto; }
-/* Label au-dessus du cadre audio : ligne flex → titre + étiquette langue à gauche,
-   « revoir les consignes » repoussé tout à droite. */
+#view-app[data-act="translate"] #tr-guide-open-t { display: inline-flex; }
 .audio-label { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
-.audio-label .tr-guide-open { margin-left: auto; }
+/* « Revoir les consignes » : TOUJOURS sur sa PROPRE ligne (sous le label), pleine
+   largeur, texte sur une seule ligne, MÊME rendu en Traduire et en Transcrire. */
+.tr-guide-open { flex: 0 0 100%; margin-left: 0; justify-content: center; margin-top: 8px; }
 .entry-audio-alt { color: var(--cyan); font-size: .78rem; font-weight: 600; text-decoration: none; white-space: nowrap; }
 .entry-audio-alt:hover { text-decoration: underline; }
 .entry-foot { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
@@ -1165,7 +1170,7 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   animation: updIn .2s ease both; }
 .field > span, .field-label { color: var(--label); font-size: .8rem; font-weight: 500;
   letter-spacing: .01em; }
-.field-label { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.field-label { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
 .lang-tag {
   font-family: var(--font-mono);
   font-size: .66rem; font-weight: 600; letter-spacing: 0;
