@@ -621,10 +621,29 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 .merge-q { margin: 0 0 10px; color: var(--text); font-size: .92rem; line-height: 1.45; }
 .merge-q b { color: var(--cyan); }
 .merge-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.merge-item--manual { border-style: dashed; }
+/* Bloc « réunir deux langues » : callout BIEN EN ÉVIDENCE (accent doré, fond teinté,
+   halo lumineux) — action importante placée en haut de la page des langues. */
+.merge-item--manual { border: 1.5px solid color-mix(in srgb, var(--gold) 60%, var(--border));
+  background:
+    radial-gradient(130% 130% at 0% 0%, color-mix(in srgb, var(--gold) 15%, transparent), transparent 62%),
+    var(--card-bg);
+  box-shadow: inset 0 1px 0 var(--card-sheen), 0 0 26px -8px var(--gold);
+  border-radius: 16px; padding: 16px; }
+.merge-item--manual .merge-q { white-space: pre-line; font-weight: 700; font-size: 1rem;
+  line-height: 1.4; color: var(--text); }
 .merge-manual-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .merge-sel { flex: 1 1 150px; min-width: 130px; padding: 7px 10px; border-radius: 10px;
   border: 1px solid var(--border); background: var(--panel); color: var(--text); font: inherit; font-size: .86rem; }
+/* Bouton « Proposer la fusion » : action MISE EN ÉVIDENCE (cyan tinté, halo respirant). */
+#merge-manual-go, .merge-propose { border: 1.5px solid var(--cyan); color: var(--cyan);
+  background: color-mix(in srgb, var(--cyan) 12%, var(--panel)); font-weight: 800; letter-spacing: .01em;
+  border-radius: 999px; padding: 9px 18px; white-space: nowrap;
+  box-shadow: inset 0 1px 0 var(--card-sheen), 0 0 16px -5px var(--cyan);
+  --cta-g: rgba(34,211,238,.5); animation: ngCtaGlow 2.8s ease-in-out infinite;
+  transition: background .15s ease, color .15s ease, box-shadow .15s ease, transform .1s ease; }
+#merge-manual-go:hover, .merge-propose:hover { background: var(--cyan); color: var(--bg);
+  transform: translateY(-1px); box-shadow: 0 0 20px -4px var(--cyan); }
+@media (prefers-reduced-motion: reduce) { #merge-manual-go, .merge-propose { animation: none; } }
 
 /* Découpe d'un enregistrement (#47) : outil « garder une partie de l'audio ». */
 .trim-modal { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center;
