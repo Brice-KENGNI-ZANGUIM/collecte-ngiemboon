@@ -293,6 +293,18 @@ function discardWorkingInputs() {
   clearAudio();
   ["#target", "#note", "#domaine"].forEach((s) => { const el = $(s); if (el) el.value = ""; });
 }
+/** RÈGLE GLOBALE (Brice) : une action qui RESTE sur la même page (mot suivant, envoi,
+    vote, bascule…) ne doit JAMAIS déplacer le défilement, pas d'un pixel. On mémorise
+    la position et on la restaure, y compris après un focus/rendu qui tenterait de faire
+    défiler. Seule une VRAIE navigation (showView) remonte en haut de page. */
+function keepScroll(fn) {
+  const x = window.scrollX, y = window.scrollY;
+  const restore = () => { if (window.scrollX !== x || window.scrollY !== y) window.scrollTo(x, y); };
+  try { if (typeof fn === "function") fn(); } finally {
+    restore();
+    requestAnimationFrame(restore);
+  }
+}
 let _lastGroup = null;
 function loadProposition() {
   _currentReqId = null;     // item du corpus -> on ne répond plus à une demande
@@ -328,7 +340,13 @@ function loadProposition() {
   src.value = sourceDisplay(currentProp.texte);     // …et on AFFICHE dans la langue d'interface (EN si l'utilisateur y est passé)
   src.dispatchEvent(new Event("input", { bubbles: true }));
   $("#target").value = "";
-  $("#target").focus();
+  // RÈGLE GLOBALE (Brice) : « mot suivant » RESTE sur la même page → le défilement ne
+  // doit PAS bouger. On ne fait donc pas défiler vers le champ : focus SANS scroll en
+  // Traduire (pour taper directement), aucun focus en Transcrire (le champ voix est plus
+  // bas et ferait sauter la vue). keepScroll verrouille la position par sécurité.
+  keepScroll(() => {
+    if (activity !== "transcribe") { try { $("#target").focus({ preventScroll: true }); } catch (e) { /* ok */ } }
+  });
 }
 /** #48 : texte de l'item source à AFFICHER, dans la langue d'interface. En anglais, on
     montre l'équivalent connu (nombres, lettres, parenté…) ; sinon on garde le français
@@ -754,7 +772,8 @@ function resetForm() {
   $("#domaine").value = "";
   $("#note").value = "";
   clearAudio();
-  $("#source").focus();
+  // Même page → le défilement ne bouge pas (focus sans scroll).
+  keepScroll(() => { try { $("#source").focus({ preventScroll: true }); } catch (e) { /* ok */ } });
 }
 
 function villageValue() {
@@ -1808,9 +1827,10 @@ function loadRequestIntoSource(item) {
     src.readOnly = true;                               // mot imposé par la demande
     src.dispatchEvent(new Event("input", { bubbles: true }));
   }
-  const tg = $("#target"); if (tg && activity !== "transcribe") { tg.value = ""; setTimeout(() => tg.focus(), 60); }
+  // Même page (clic sur une demande du bandeau) → aucun déplacement du défilement.
+  const tg = $("#target");
+  if (tg && activity !== "transcribe") { tg.value = ""; keepScroll(() => { try { tg.focus({ preventScroll: true }); } catch (e) { /* ok */ } }); }
   toast(ti("reqx.loaded", { w: item.texte }), "ok");
-  try { $("#work-card").scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { /* ok */ }
 }
 /** #53 — « Dis-le dans ta langue » : depuis une entrée, propose le MÊME mot français dans la
     langue de l'utilisateur. Redirige vers profil (si absent), écran des langues (si aucune choisie),
@@ -1827,7 +1847,8 @@ function startTranslateWord(frWord) {
   if (direction !== "fr2nge") { direction = "fr2nge"; applyDirection(); }
   const s = $("#source");
   if (s) { delete s.dataset.canon; s.value = w; s.readOnly = false; s.dispatchEvent(new Event("input", { bubbles: true })); }
-  const tg = $("#target"); if (tg) { tg.value = ""; setTimeout(() => tg.focus(), 60); }
+  // Nouvelle page ouverte en haut (le mot pré-rempli est visible) : focus SANS re-scroll.
+  const tg = $("#target"); if (tg) { tg.value = ""; setTimeout(() => { try { tg.focus({ preventScroll: true }); } catch (e) { tg.focus(); } }, 60); }
   toast(ti("saymine.toast", { w }), "ok");
 }
 /** Ouvre Explorer sur un mot précis (via lien direct) pour que l'utilisateur NOTE
