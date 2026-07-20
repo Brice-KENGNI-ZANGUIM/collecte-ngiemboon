@@ -1,6 +1,9 @@
 {
-  "version": "v235",
+  "version": "v236",
   "changelog": {
+    "v236": [
+      "Nouvelle onde d'écoute audio : des filaments lumineux entrelacés qui ondulent en fuseau autour d'un cœur brillant, façon onde d'énergie, et qui vibrent au rythme du son pendant la lecture"
+    ],
     "v235": [
       "L'onde d'écoute audio est désormais opaque et lumineuse (plus de transparence), bien visible pendant la lecture"
     ],

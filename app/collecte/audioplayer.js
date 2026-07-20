@@ -177,45 +177,44 @@ export function mountAudioPlayer(box, audio) {
     path.arcTo(x + w, y, x + w, y + h, r); path.arcTo(x + w, y + h, x, y + h, r);
     path.arcTo(x, y + h, x, y, r); path.arcTo(x, y, x + w, y, r); path.closePath();
   }
-  // Forme d'onde = ÉGALISEUR de barres-pilules, dégradé africain cyan→vert→or (comme
-  // l'onde du téléphone de l'affiche). Barres LUES en dégradé lumineux + halo, barres
-  // à venir en sourdine ; réactives au son près du front (liveAmp) + shimmer continu.
+  // Forme d'onde = FILAMENTS néon fluides entrelacés : plusieurs courbes souples qui
+  // ondulent (fréquences/phases différentes → tressage), en FUSEAU selon l'enveloppe réelle
+  // du son, avec un CŒUR blanc lumineux et un glow. Réactif au son (liveAmp) + flux continu
+  // (wavePhase). Style « onde d'énergie » lumineuse sur fond sombre (réf. filaments).
   function draw() {
     if (!W || !H) return;
     const p = progress();
     const cyan = cssVar("--cyan", "#22d3ee");
     const green = cssVar("--green", "#34d399");
-    const gold = cssVar("--gold", "#e5c07b");
-    const muted = cssVar("--muted", "#8b97a6");
-    const px = p * W, halfH = H * 0.44;
+    const midY = H / 2, maxA = H * 0.46, px = p * W;
     ctx.clearRect(0, 0, W, H);
-    const BARS = Math.max(48, Math.min(240, Math.floor(W / 2.2)));   // traits FINS et DENSES (vraie forme d'onde)
-    const slot = W / BARS, barW = Math.max(1, slot * 0.5);
-    const played = new Path2D(), dim = new Path2D();
-    for (let i = 0; i < BARS; i++) {
-      const cx = (i + 0.5) * slot;
-      let a = envAt(cx / W);
-      a += Math.sin(cx * 0.06 + wavePhase) * 0.04;                              // shimmer spatial doux
-      const near = Math.max(0, 1 - Math.abs(cx - px) / (W * 0.16));
-      a += Math.sin(cx * 0.11 + wavePhase * 1.8) * (liveAmp * 0.6 * near);       // vibration réactive au son
-      a = Math.max(0.04, Math.min(1, a));
-      addBar(cx <= px ? played : dim, cx, a * halfH, barW);
-    }
-    // Fond local assombri (fait ressortir le néon, comme sur les références).
-    ctx.save(); ctx.fillStyle = "rgba(3,7,12,0.5)"; const bp = new Path2D();
+    // fond sombre local (contraste pour le néon)
+    ctx.save(); ctx.fillStyle = "rgba(4,9,15,0.5)"; const bp = new Path2D();
     if (bp.roundRect) bp.roundRect(0, 0, W, H, 10); else bp.rect(0, 0, W, H);
     ctx.fill(bp); ctx.restore();
-    // Dégradé futuriste RICHE cyan→turquoise→vert→lime→or.
-    const g = ctx.createLinearGradient(0, 0, W, 0);
-    g.addColorStop(0, "#2fe4ff"); g.addColorStop(0.26, cyan); g.addColorStop(0.52, "#34e6a6");
-    g.addColorStop(0.78, "#9be86a"); g.addColorStop(1, gold);
-    // 1) barres à venir : colorées et bien VISIBLES (opaques, juste un peu estompées)
-    ctx.save(); ctx.globalAlpha = 0.5; ctx.fillStyle = g; ctx.fill(dim); ctx.restore();
-    // 2) barres lues : SOLIDES + halo lumineux (aucune transparence), réactif au son
-    ctx.save(); ctx.shadowColor = cyan; ctx.shadowBlur = liveAmp > 0.02 ? 16 : 12;
-    ctx.fillStyle = g; ctx.fill(played);
-    ctx.shadowColor = "#34e6a6"; ctx.shadowBlur = 6; ctx.fill(played);
-    ctx.restore();
+    ctx.lineCap = "round";
+    const STR = 6;
+    const grad = ctx.createLinearGradient(0, 0, W, 0);
+    grad.addColorStop(0, cyan); grad.addColorStop(0.5, green); grad.addColorStop(1, "#9be86a");
+    for (let k = STR - 1; k >= 0; k--) {
+      const core = k === 0, f = 2.0 + k * 1.15, ph = wavePhase * (1 + k * 0.06) + k * 1.35, dir = k % 2 ? 1 : -1;
+      const ampS = core ? 0.66 : (0.28 + 0.5 * (1 - k / STR));
+      ctx.beginPath();
+      for (let x = 0; x <= W; x += 3) {
+        const e = envAt(x / W);
+        const near = Math.max(0, 1 - Math.abs(x - px) / (W * 0.3));
+        const live = 1 + liveAmp * 0.6 * near;
+        const y = midY + dir * Math.sin(x * 0.02 * f + ph) * maxA * ampS * e * live * (core ? 1 : 0.85);
+        if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.strokeStyle = core ? "#eafffb" : grad;
+      ctx.lineWidth = core ? 2.6 : 1.5;
+      ctx.globalAlpha = core ? 1 : 0.55;
+      ctx.shadowColor = core ? cyan : green;
+      ctx.shadowBlur = core ? 18 : 8;
+      ctx.stroke();
+      ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+    }
     // 3) front de lecture : fin trait lumineux
     if (p > 0 && p < 1) {
       ctx.save();
