@@ -29,7 +29,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v247";
+const APP_VERSION = "v248";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -871,10 +871,18 @@ function profileComplete() {
     autorisée sans profil (concession voulue) — seules les ACTIONS sont verrouillées. */
 function requireProfile(reason) {
   if (profileComplete()) return true;
-  toast(reason || "Crée d'abord ton profil : il ouvre l'accès à toutes les activités.", "warn");
-  openProfile(false);
+  openProfile(false);          // on emmène vers le profil ; le popup explicatif s'affiche par-dessus
+  showProfileGate(reason);
   return false;
 }
+/** Popup EXPLICATIF (façon « consignes ») affiché quand on redirige un nouvel arrivant sans
+    profil vers la page de profil : il dit POURQUOI et pourquoi un profil est indispensable. */
+function showProfileGate(reason) {
+  const pg = $("#profile-gate"); if (!pg) return;
+  const r = $("#pg-reason"); if (r) r.textContent = reason || t("pgate.reason.default");
+  pg.hidden = false;
+}
+function hideProfileGate() { const pg = $("#profile-gate"); if (pg) pg.hidden = true; }
 
 let profileSnapshot = null; // sauvegarde pour « Annuler » en mode édition
 
@@ -5018,6 +5026,10 @@ function initEvents() {
   // l'activité EN COURS (Transcrire ou Traduire).
   const trOk = $("#tr-guide-ok");
   if (trOk) trOk.addEventListener("click", hideGuide);
+  // Popup de redirection profil : « Créer mon profil » ferme et laisse sur le profil ;
+  // « Plus tard » ferme et revient à l'accueil.
+  const pgOk = $("#pg-ok"); if (pgOk) pgOk.addEventListener("click", hideProfileGate);
+  const pgLater = $("#pg-later"); if (pgLater) pgLater.addEventListener("click", () => { hideProfileGate(); showView("hub"); });
   // Deux boutons « Revoir les consignes » (zone audio en Transcrire, ligne du label
   // Traduction en Traduire) — un seul visible à la fois selon le mode.
   document.querySelectorAll(".tr-guide-open").forEach((el) =>

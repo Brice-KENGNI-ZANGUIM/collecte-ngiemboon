@@ -1096,6 +1096,46 @@
     </div>
   </div>
 
+  <!-- Popup EXPLICATIF de redirection profil : quand un nouvel arrivant (sans profil) clique
+       sur une activité et se voit rediriger vers la page de profil, on lui explique POURQUOI
+       et pourquoi remplir un profil est indispensable, façon « consignes ». -->
+  <div id="profile-gate" class="tr-guide" hidden role="dialog" aria-modal="true" aria-labelledby="pg-title">
+    <div class="tr-guide-card profile-gate-card">
+      <div class="tr-guide-head">
+        <div class="tr-guide-ico" aria-hidden="true">🙋</div>
+        <h2 id="pg-title" data-i18n="pgate.title">Un profil, puis c'est parti</h2>
+        <p class="tr-guide-lead" id="pg-reason"></p>
+      </div>
+      <div class="tr-guide-rules">
+        <div class="tr-guide-rule">
+          <span class="tr-guide-ri" aria-hidden="true">✍️</span>
+          <div class="tr-guide-rtext">
+            <b data-i18n="pgate.r1.t">Ta contribution t'est créditée</b>
+            <span data-i18n="pgate.r1.d">Ton nom (si tu l'autorises) accompagne ce que tu partages, et on peut te recontacter au besoin</span>
+          </div>
+        </div>
+        <div class="tr-guide-rule">
+          <span class="tr-guide-ri" aria-hidden="true">📍</span>
+          <div class="tr-guide-rtext">
+            <b data-i18n="pgate.r2.t">Ta variante est bien située</b>
+            <span data-i18n="pgate.r2.d">Ton village et ta langue situent ta façon de parler : les mots changent d'un village à l'autre</span>
+          </div>
+        </div>
+        <div class="tr-guide-rule">
+          <span class="tr-guide-ri" aria-hidden="true">🛡️</span>
+          <div class="tr-guide-rtext">
+            <b data-i18n="pgate.r3.t">Des données fiables et sans doublon</b>
+            <span data-i18n="pgate.r3.d">Un profil par personne garde la base propre et évite les répétitions : chaque voix compte une fois</span>
+          </div>
+        </div>
+      </div>
+      <div class="pg-actions">
+        <button id="pg-ok" class="btn btn--primary" type="button" data-i18n="pgate.ok">Créer mon profil →</button>
+        <button id="pg-later" class="btn btn--ghost" type="button" data-i18n="pgate.later">Plus tard</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="./app.js"></script>
 </body>
 </html>

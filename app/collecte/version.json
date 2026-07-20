@@ -1,6 +1,9 @@
 {
-  "version": "v247",
+  "version": "v248",
   "changelog": {
+    "v248": [
+      "Quand une activit\u00e9 demande un profil et te redirige, un message clair (style \u00ab consignes \u00bb) explique d\u00e9sormais POURQUOI : cr\u00e9diter ta contribution, situer ta variante de village, garder des donn\u00e9es fiables et sans doublon"
+    ],
     "v247": [
       "En arrivant sur Traduire ou Transcrire, le mode \u00ab Se faire proposer un mot \u00bb est de nouveau s\u00e9lectionn\u00e9 par d\u00e9faut (tu peux toujours basculer sur \u00ab \u00c9crire moi-m\u00eame \u00bb)",
       "Fiabilit\u00e9 des profils : plus de doublon d'utilisateur pour un m\u00eame appareil (une seule fiche par appareil, mise \u00e0 jour en place)"

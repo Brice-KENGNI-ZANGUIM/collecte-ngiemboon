@@ -1798,6 +1798,10 @@ body.kb-docked { padding-bottom: var(--kb-h, 50vh); }
 .say-by { display: flex; flex-direction: column; gap: 1px; padding-left: 6px; }
 .say-name { color: var(--gold); font-weight: 700; font-size: .9rem; }
 .say-meta { color: var(--muted); font-size: .78rem; }
+/* Popup de redirection profil : rangée de boutons (réutilise le cadre .tr-guide/.tr-guide-card). */
+.pg-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.pg-actions .btn { flex: 1 1 auto; }
+.pg-actions .btn--ghost { flex: 0 1 auto; }
 /* CONVENTION boutons du CORPS du site (hors header, hors boutons neutres) —
    couleur UNIE, jamais de dégradé ; texte = var(--bg) (toujours à l'opposé de la
    couleur du bouton → lisible en clair ET en sombre) :
