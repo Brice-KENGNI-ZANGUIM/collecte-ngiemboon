@@ -405,10 +405,9 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 /* Vues (profil / app) */
 .view { display: flex; flex-direction: column; gap: 18px; }
 .view[hidden] { display: none; }
-/* TITRE DE PAGE = PLAQUE ENCADRÉE : la frieze africaine tapisse le fond du titre,
-   par-dessus un voile teinté de la couleur d'activité (--acc), avec le MÊME halo et
-   la MÊME bordure-comète lumineuse que les 4 onglets du haut. Le titre (icône + texte)
-   s'insère dans ce cadre. */
+/* TITRE DE PAGE = PLAQUE ENCADRÉE (sans motif) : voile teinté de la couleur d'activité
+   (--acc), avec le MÊME halo et la MÊME bordure-comète lumineuse que les 4 onglets du haut.
+   Le titre (icône + texte) s'insère dans ce cadre. */
 .view-title { --acc: var(--gold); margin: 0 0 16px; position: relative; overflow: hidden;
   display: inline-flex; align-items: center; gap: 10px; max-width: 100%;
   font-family: var(--font-display); font-weight: 700; letter-spacing: -.015em; font-size: 1.4rem; color: var(--text);
