@@ -1160,11 +1160,9 @@ function enterHub() {
     n'est pas encore complet, l'accueil obligatoire reste la vue Profil (aucun
     contournement de l'onboarding). Branché sur le logo + le nom (header ET footer). */
 function goHome() {
-  // Parcours verrouillé : d'abord CHOISIR sa langue (autorisé sans profil), puis
-  // CRÉER son profil (obligatoire) — ensuite seulement l'accueil des trois portes.
-  if (!hasChosenLang()) openLangChoice();
-  else if (!profileComplete()) openProfile(false);
-  else enterHub();
+  // « Accueil » ramène TOUJOURS au hub (les 4 portes). Le profil (et la langue, qu'il inclut)
+  // n'est exigé qu'au moment d'une action qui écrit des données, via requireProfile.
+  enterHub();
 }
 
 // --- Choix / déclaration de LANGUE (plateforme communautaire) --------------
@@ -2355,7 +2353,8 @@ function onReqListClick(e) {
 function enterExplore() {
   // Capture le lien direct AVANT que showView n'aligne l'URL sur « #/explorer » (sans requête).
   const w = hashParam("w"); if (w) { _deepWord = w; _deepDir = hashParam("d"); }
-  if (!requireProfile("Crée ton profil pour explorer la bibliothèque de la communauté.")) return;
+  // Explorer = LECTURE seule, ouvert à tous SANS profil. Les ACTIONS qui écrivent (voter,
+  // proposer une amélioration) restent verrouillées par requireProfile dans leurs handlers.
   ["#tab-traduire", "#tab-transcrire"].forEach((s) => { const el = $(s); if (el) el.classList.remove("is-active"); });
   const te = $("#tab-explorer"); if (te) te.classList.add("is-active");
   showView("explore");
@@ -4810,12 +4809,11 @@ async function main() {
   // ACTIONS (Traduire/Transcrire/Explorer/déclarer), via requireProfile ; routeTo() renvoie
   // donc au profil seulement si la route demandée est une action réservée.
   _replayingHistory = true;
-  if (!hasChosenLang()) {
-    openLangChoice();
-  } else {
-    const route = hashToRoute();   // ex. #/apropos, #/explorer → on restaure cette page
-    if (route) routeTo(route); else enterHub();
-  }
+  // Nouveau parcours d'accueil : on atterrit TOUJOURS sur le hub (les 4 portes), jamais sur
+  // l'écran des langues. La langue et le profil ne sont demandés qu'au MOMENT d'une action qui
+  // écrit des données (via requireProfile). Un lien profond restaure sa page.
+  const route = hashToRoute();   // ex. #/apropos, #/explorer → on restaure cette page
+  if (route) routeTo(route); else enterHub();
   _replayingHistory = false;
   hideAppLoader();      // 1re vue affichée → on lève le voile (les rafraîchissements ci-dessous suivent en fond)
   refreshLanguages();   // best-effort : récupère les langues déclarées par la communauté
