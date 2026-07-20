@@ -1,6 +1,9 @@
 {
-  "version": "v221",
+  "version": "v222",
   "changelog": {
+    "v222": [
+      "L'accueil se pare de nouvelles illustrations : chaque porte (Transcrire, Traduire, Explorer, Demander) s'ouvre sur un dessin aux couleurs de son activité, avec son icône en médaillon, une image qui s'appuie au bas du cadre et une mise en page qui s'adapte à ton écran pour rester lisible partout. Un écran de chargement animé accompagne l'ouverture de l'application, le curseur de saisie prend la couleur de l'activité en cours, et les boutons du haut reprennent l'illustration de chaque espace"
+    ],
     "v221": [
       "L'accueil et la page « À propos » s'illustrent : chaque porte (Transcrire, Traduire, Explorer, Demander) s'ouvre sur une photo réaliste, aux vêtements africains, intégrée dans le cadre et fondue vers le texte pour rester lisible ; « À propos » s'ouvre sur une grande image de communauté qui transmet sa langue"
     ],
