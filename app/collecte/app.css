@@ -415,9 +415,7 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   border: 1px solid color-mix(in srgb, var(--acc) 42%, var(--border));
   background:
     radial-gradient(130% 90% at 50% -25%, color-mix(in srgb, var(--acc) 20%, transparent), transparent 60%),
-    url("icons/tiles/frieze-soft.png") center / 150px auto repeat,
     color-mix(in srgb, var(--acc) 13%, var(--panel));
-  background-blend-mode: normal, normal, normal;
   box-shadow: 0 0 26px -14px var(--acc), inset 0 1px 0 var(--card-sheen), 0 3px 10px -5px rgba(0,0,0,.34);
   animation: ngCardBreath 6s ease-in-out infinite; }
 .view-title > * { position: relative; z-index: 3; }   /* icône + texte au-dessus du décor */
