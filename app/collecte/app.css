@@ -153,13 +153,15 @@ body {
   gap: 18px 12px;
   padding: 12px clamp(14px, 4vw, 36px) 6px;
   border-bottom: 1px solid var(--border);
-  /* Header en verre : flou marqué (~80 %) + fond semi-transparent pour laisser
-     voir le flou. */
-  background: var(--header-bg);
+  /* Header en verre : fond SEMI-TRANSPARENT posé sur son PROPRE motif (plus dense que le
+     body → le header se distingue) + flou marqué. Variante sombre plus bas. */
+  background: var(--header-bg), url("icons/bg-pattern-light.jpg") center top / 240px auto repeat;
   backdrop-filter: blur(18px) saturate(1.3);
   -webkit-backdrop-filter: blur(18px) saturate(1.3);
   position: sticky; top: 0; z-index: 20;
 }
+:root[data-theme="dark"] .topbar { background: var(--header-bg), url("icons/bg-pattern-dark.jpg") center top / 240px auto repeat; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .topbar { background: var(--header-bg), url("icons/bg-pattern-dark.jpg") center top / 240px auto repeat; } }
 .brand { grid-column: 1; grid-row: 1; display: flex; align-items: center; gap: 14px; position: relative; }
 /* En-tête cinématique : aurore douce (cyan↔vert) qui dérive derrière la marque, posée
    entre le verre et le texte. Purement décorative, gelée sur mobile + prefers-reduced-motion. */
