@@ -29,7 +29,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v254";
+const APP_VERSION = "v255";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -3704,6 +3704,18 @@ function updateGate() {
 }
 
 // --- Liste des contributions : DEUX groupes (envoyés ✅ / à renvoyer ⟳) -----
+/** Filtre les listes de contributions (envoyées / à renvoyer) selon la recherche, masque les
+    groupes sans résultat et affiche un message si aucune contribution ne correspond. */
+function filterSendLists() {
+  const q = normSearch(($("#send-search") && $("#send-search").value) || "");
+  const all = [...document.querySelectorAll("#list-pending .item, #list-sent .item")];
+  all.forEach((li) => { li.hidden = q && !(li.dataset.q || "").includes(q); });
+  [["#grp-pending", "#list-pending"], ["#grp-sent", "#list-sent"]].forEach(([g, l]) => {
+    const grp = $(g); if (grp) grp.hidden = ![...document.querySelectorAll(l + " .item")].some((li) => !li.hidden);
+  });
+  const shown = all.filter((li) => !li.hidden).length;
+  const nr = $("#send-noresult"); if (nr) nr.hidden = !(q && all.length > 0 && shown === 0);
+}
 function itemHtml(it, confirmed) {
   const fr2nge = it.direction === "fr2nge";
   const kind = it.audioMeta && it.audioMeta.present
@@ -3750,12 +3762,16 @@ async function refresh() {
     for (const it of arr) {
       const li = document.createElement("li");
       li.className = "item item--" + (confirmed ? "sent" : "local");
+      li.dataset.q = normSearch((it.source_text || "") + " " + (it.target_text || ""));   // texte cherchable
       li.innerHTML = itemHtml(it, confirmed);
       ul.appendChild(li);
     }
   };
   fill("#list-pending", pending, false);
   fill("#list-sent", sent, true);
+  // Champ de recherche : visible dès qu'il y a des contributions ; on ré-applique le filtre courant.
+  const ssw = $("#send-search-wrap"); if (ssw) ssw.hidden = items.length === 0;
+  filterSendLists();
 
   document.querySelectorAll("[data-resend]").forEach((b) =>
     b.addEventListener("click", () => { kickReconcile(true); toast(t("toast.resend"), "ok"); })
@@ -4892,6 +4908,7 @@ function initEvents() {
   const addAu = $("#add-transcription"); if (addAu) addAu.addEventListener("click", () => _revealOptional("#audio-wrap", "#add-transcription", null));
   $("#btn-save").addEventListener("click", saveContribution);
   $("#btn-send").addEventListener("click", send);
+  const sSearch = $("#send-search"); if (sSearch) sSearch.addEventListener("input", () => keepScroll(filterSendLists));
   const rs = $("#btn-resend"); if (rs) rs.addEventListener("click", () => { kickReconcile(); toast(t("toast.resend"), "ok"); });
   window.addEventListener("online", () => { updateServerBadge(); kickReconcile(); });   // retour réseau → renvoi auto
   window.addEventListener("offline", updateServerBadge);

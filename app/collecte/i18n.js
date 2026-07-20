@@ -570,6 +570,8 @@ export const STR = {
   "toast.upd.uptodate": { fr: "Application à jour ({v}) ✓", en: "App up to date ({v}) ✓" },
   "toast.upd.manual": { fr: "Mise à jour automatique impossible, recharge la page (Ctrl+Maj+R).", en: "Automatic update failed, reload the page (Ctrl+Shift+R)." },
   "toast.upd.finalizing": { fr: "Finalisation de la mise à jour…", en: "Finalising the update…" },
+  "send.search.ph": { fr: "🔎 Chercher un mot ou une phrase dans tes contributions…", en: "🔎 Search a word or phrase in your contributions…" },
+  "send.noresult": { fr: "Aucune de tes contributions ne correspond à cette recherche.", en: "None of your contributions match this search." },
   "notif.request_answered": { fr: "{who} a répondu à ta demande de traduction de « {mot} » 🎉", en: "{who} answered your translation request for “{mot}” 🎉" },
   // --- Porte « Demander » (entraide) ---
   "hub.card.demander": { fr: "Demander", en: "Ask" },

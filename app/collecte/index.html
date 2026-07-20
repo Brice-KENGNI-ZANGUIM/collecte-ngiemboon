@@ -520,6 +520,13 @@
         contribution est renvoyée jusqu'à ce qu'elle soit <b>confirmée présente dans la base</b>.
         Hors connexion, tout reste en sécurité sur l'appareil.</p>
 
+      <!-- Recherche dans TES contributions (utile pour vérifier si un mot est déjà fait/envoyé). -->
+      <div class="send-search-wrap" id="send-search-wrap" hidden>
+        <input id="send-search" type="text" class="send-search" data-i18n-ph="send.search.ph"
+               placeholder="🔎 Chercher un mot ou une phrase dans tes contributions…" autocomplete="off" />
+      </div>
+      <p class="send-noresult" id="send-noresult" hidden data-i18n="send.noresult">Aucune de tes contributions ne correspond à cette recherche.</p>
+
       <!-- Groupe À RENVOYER : non encore confirmés dans la base distante -->
       <div id="grp-pending" class="sendgrp sendgrp--todo" hidden>
         <div class="sendgrp-head">
