@@ -1,6 +1,9 @@
 {
-  "version": "v258",
+  "version": "v259",
   "changelog": {
+    "v259": [
+      "Banni\u00e8res illustr\u00e9es sur Traduire et Transcrire, et nouvelles images de la communaut\u00e9 int\u00e9gr\u00e9es partout (hub, popups, \u00e9tats vides), toutes recompress\u00e9es pour rester l\u00e9g\u00e8res et fluides"
+    ],
     "v258": [
       "Visite guid\u00e9e compl\u00e9t\u00e9e : la porte Demander et le centre de notifications ont d\u00e9sormais leur propre visite ; nouvelles \u00e9tapes pour la cloche de notifications, le bandeau des demandes, les boutons Ajouter une traduction ou une voix, et la recherche dans tes contributions envoy\u00e9es"
     ],

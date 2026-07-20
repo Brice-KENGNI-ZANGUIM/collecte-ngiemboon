@@ -717,6 +717,10 @@ export const STR = {
   "pb.explore.title": { fr: "Explore, écoute, apprends", en: "Explore, listen, learn" },
   "pb.demander.eye": { fr: "Entraide", en: "Mutual help" },
   "pb.demander.title": { fr: "Demande à la communauté", en: "Ask the community" },
+  "pb.translate.eye": { fr: "Traduire", en: "Translate" },
+  "pb.translate.title": { fr: "Donne du sens à chaque mot", en: "Give meaning to every word" },
+  "pb.transcribe.eye": { fr: "Transcrire", en: "Transcribe" },
+  "pb.transcribe.title": { fr: "Prête ta voix à ta langue", en: "Lend your voice to your language" },
 };
 
 // Messages éphémères (toasts) : table FR → EN. On garde le FR comme source dans les

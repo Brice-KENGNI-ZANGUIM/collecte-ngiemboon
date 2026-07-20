@@ -29,7 +29,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v258";
+const APP_VERSION = "v259";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1863,6 +1863,9 @@ function setActivity(act) {
   const isT = activity === "transcribe";
   const t2 = $("#work-title"); if (t2) t2.textContent = isT ? t("work.title.transcribe") : t("work.title.translate");
   const wico = $("#work-ico"); if (wico) wico.src = isT ? "icons/mic-real.png" : "icons/act-translate.svg";
+  const bimg = $("#work-banner-img"); if (bimg) bimg.src = isT ? "icons/banner-transcribe.jpg" : "icons/banner-translate.jpg";
+  const beye = $("#work-banner-eye"); if (beye) beye.textContent = isT ? t("pb.transcribe.eye") : t("pb.translate.eye");
+  const btit = $("#work-banner-title"); if (btit) btit.textContent = isT ? t("pb.transcribe.title") : t("pb.translate.title");
   const h = $("#work-help");
   if (h) h.innerHTML = isT ? t("work.help.transcribe") : t("work.help.translate");
   const la = $("#lbl-audio"); if (la) la.textContent = isT ? t("work.audio.transcribe") : t("work.audio.translate");
