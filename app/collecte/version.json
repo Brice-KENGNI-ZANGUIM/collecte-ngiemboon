@@ -1,6 +1,9 @@
 {
-  "version": "v226",
+  "version": "v227",
   "changelog": {
+    "v227": [
+      "Correction majeure du chargement sur le nouveau site : l'application est désormais entièrement autonome (le clavier et ses données sont intégrés), ce qui supprime l'écran de chargement qui restait bloqué. Ouverture rapide et propre"
+    ],
     "v226": [
       "Chargement bien plus rapide, surtout sur téléphone : les illustrations de l'accueil et de la page à propos ont été fortement allégées (mêmes images, poids divisé par ~8), pour un affichage quasi immédiat"
     ],

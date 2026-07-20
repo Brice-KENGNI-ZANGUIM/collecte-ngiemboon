@@ -1,5 +1,5 @@
 // Application de collecte Nguiemboo — logique principale.
-import { NgiemboonKeyboard } from "../keyboard/ngiemboon-keyboard.js";
+import { NgiemboonKeyboard } from "./keyboard/ngiemboon-keyboard.js";
 import { Predict } from "./predict.js";
 import { mountAudioPlayer } from "./audioplayer.js";
 import { sliceSamples, encodeWavBytes, detectSilenceBounds, samplesDuration } from "./audiotrim.js";
@@ -29,7 +29,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v226";
+const APP_VERSION = "v227";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -3834,7 +3834,7 @@ async function presentPosterCanvas() {
 
   const qz = 560;
   try {
-    const qr = await loadImage("../flyer/qr.png");
+    const qr = await loadImage("./flyer/qr.png");
     g.save(); g.shadowColor = hexToRgba(cyan, dark ? 0.85 : 0.55); g.shadowBlur = dark ? 88 : 64;
     g.drawImage(qr, W / 2 - qz / 2, pY + 170, qz, qz);
     // 2e passe : halo plus dense au ras du cadre

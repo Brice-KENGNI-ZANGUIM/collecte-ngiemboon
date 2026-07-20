@@ -14,8 +14,8 @@
 //
 // Auteur : Brice Kengni Zanguim.
 
-import { NGIEMBOON } from "../keyboard/alphabet.data.js";
-import { ALPHABETS_AFRIQUE } from "../keyboard/alphabets_afrique.js";
+import { NGIEMBOON } from "./keyboard/alphabet.data.js";
+import { ALPHABETS_AFRIQUE } from "./keyboard/alphabets_afrique.js";
 import { LEXIQUE_NGE } from "./lexique.data.js";
 
 // Registre des packs, indexé par id de langue. Le ngiemboon a un alphabet ET un
