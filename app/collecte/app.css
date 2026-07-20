@@ -600,11 +600,17 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
    chevauche peu le texte. Fondu vers la GAUCHE pour dégager la zone de texte. Contour de la
    COULEUR DU CADRE tracé autour de l'image (silhouette pour les illustrations, bord net pour
    les photos). Identique PC et mobile. */
-.hub-illus { position: absolute; bottom: 0; top: auto; right: -20px;
-  height: 99%; width: auto; max-width: 42%;   /* jamais plus de 42% de la LARGEUR (responsive) :
-     l'image reste pleine hauteur tant que la place le permet, et se réduit d'elle-même sur
-     carte étroite (contain) → elle ne déborde jamais dans la zone de texte. */
-  object-fit: contain; object-position: right bottom; z-index: 0; pointer-events: none;
+/* Carte = deux colonnes flex : TEXTE à gauche (prend la place restante, jamais recouvert) et
+   IMAGE à droite en COLONNE propre, pleine hauteur du cadre, calée en bas. Aucun chevauchement
+   possible quelle que soit la largeur d'écran (le texte se réduit tout seul). */
+.hub-card--illus { flex-direction: row; align-items: stretch; gap: 0; padding: 0; }
+.hub-card--illus .hub-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center; gap: 8px; padding: 20px 6px 20px 20px; }
+/* L'image : colonne de droite, hauteur = hauteur du cadre (align-self stretch), largeur = son
+   carré (auto) → toujours pleine hauteur, calée en bas, jamais recadrée. Plafond 55% pour
+   garder un minimum de texte lisible sur les cas extrêmes. */
+.hub-illus { flex: 0 0 48%; align-self: stretch; width: 48%; height: auto;
+  object-fit: contain; object-position: right bottom; pointer-events: none;
   -webkit-mask-image: linear-gradient(to left, #000 50%, rgba(0,0,0,.5) 80%, transparent 100%);
           mask-image: linear-gradient(to left, #000 50%, rgba(0,0,0,.5) 80%, transparent 100%);
   filter: drop-shadow(1.4px 0 0 var(--acc)) drop-shadow(-1.4px 0 0 var(--acc))
@@ -615,11 +621,6 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   text-shadow: 0 1px 10px var(--panel), 0 0 6px var(--panel), 0 0 2px var(--panel); }
 /* Le texte n'occupe que ~70% à gauche : il passe à la ligne AVANT d'atteindre l'image ;
    les 30% de droite restent réservés à l'image. */
-/* Le texte n'occupe que le complément à gauche (l'image est plafonnée à 42%) : ~56% max,
-   il passe à la ligne AVANT l'image quelle que soit la taille d'écran. */
-.hub-card--illus .hub-card-head,
-.hub-card--illus .hub-desc,
-.hub-card--illus .hub-go { max-width: 56%; }
 /* Texte AGRANDI (PC) ; titre = plus gros glyphe devant l'icône. */
 .hub-card--illus .hub-name { font-size: 2.05rem; }
 .hub-card--illus .hub-desc { font-size: 1rem; line-height: 1.55; }
@@ -630,11 +631,17 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   border: 2.5px solid var(--acc); object-fit: contain;
   background: radial-gradient(circle at 50% 32%, color-mix(in srgb, var(--acc) 18%, var(--panel)), var(--panel));
   box-shadow: 0 0 17px -7px var(--acc), inset 0 1px 0 var(--card-sheen); }
-/* MOBILE étroit : on réduit icône + titre pour que tout tienne sans déborder. */
+/* MOBILE étroit : cartes ~2× plus basses (×0.5), contenu compacté pour tenir dans cette
+   hauteur réduite ; l'image reste pleine hauteur (plus courte donc plus étroite → laisse
+   d'autant plus de place au texte). */
 @media (max-width: 560px) {
-  .hub-card--illus .hub-name { font-size: 1.55rem; }
-  .hub-card--illus .hub-desc { font-size: .9rem; }
-  .hub-card--illus .hub-ico { width: 66px; height: 66px; padding: 9px; }
+  .hub-card { min-height: 113px; }
+  .hub-card--illus .hub-text { padding: 10px 4px 10px 14px; gap: 4px; justify-content: center; }
+  .hub-card--illus .hub-name { font-size: 1.28rem; }
+  .hub-card--illus .hub-desc { font-size: .8rem; line-height: 1.35; }
+  .hub-card--illus .hub-go { font-size: .86rem; }
+  .hub-card--illus .hub-ico { width: 48px; height: 48px; padding: 7px; }
+  .hub-card-head { gap: 10px; }
 }
 /* Bordure vive et PLEINE de la couleur d'activité (bien lisible à l'arrêt) SURMONTÉE d'une
    comète blanche large qui fait le tour, rapide. Anneau réalisé au masque → reste dans la boîte. */
