@@ -1,6 +1,9 @@
 {
-  "version": "v231",
+  "version": "v232",
   "changelog": {
+    "v232": [
+      "L'image de la page « À propos » devient une belle photo réaliste de trois générations qui transmettent leur langue. Nouveau curseur : sur les éléments cliquables, il prend une forme de main cyan entourée d'un léger halo lumineux qui le met en évidence"
+    ],
     "v231": [
       "Pied de page enrichi : des raccourcis vers les espaces (Transcrire, Traduire, Explorer, Demander) et les pages du projet (Accueil, À propos, Bugs), et un sous-titre sur deux lignes mieux présenté"
     ],
