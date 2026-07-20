@@ -29,7 +29,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v248";
+const APP_VERSION = "v249";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -2177,8 +2177,13 @@ function notifText(n) {
   }
   if (n.type === "suggestion") return ti("notif.sugg", { who, mot: mot || t("notif.your") });
   if (n.type === "milestone") return ti("notif.milestone", { lang: ln || t("notif.yourlang"), count: d.count || 0 });
-  if (n.type === "request") return ti("notif.request", { who, mot: mot || "…", lang: ln || _langNameById(d.langue) || t("notif.yourlang") });
-  if (n.type === "request_share") return ti("notif.request_share", { mot: mot || "…", lang: ln || _langNameById(d.langue) || t("notif.yourlang") });
+  if (n.type === "request" || n.type === "request_share") {
+    // Sens PRÉCIS selon la nature de la demande : traduction, prononciation, ou les deux.
+    const act = d.kind === "transcription" ? t("notif.req.act.transc")
+      : d.kind === "les_deux" ? t("notif.req.act.both") : t("notif.req.act.trad");
+    const lang = ln || _langNameById(d.langue) || t("notif.yourlang");
+    return ti(n.type === "request" ? "notif.request" : "notif.request_share", { who, act, mot: mot || "…", lang });
+  }
   if (n.type === "request_answered") return ti("notif.request_answered", { who, mot: mot || t("notif.your") });
   return String(d.text || "");   // announce / types futurs porteurs d'un texte
 }
