@@ -94,6 +94,13 @@
   --aurora-c: rgba(229,192,123,.16);
 }
 * { box-sizing: border-box; }
+/* Motif africain en fond global (couche fixe, derrière tout le contenu), très discret.
+   Variante claire par défaut, plus marquée en sombre (où il se marie mieux). */
+.bg-motif { position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: url("icons/bg-pattern-light.jpg") center center / cover no-repeat fixed; opacity: .09; }
+:root[data-theme="dark"] .bg-motif { background-image: url("icons/bg-pattern-dark.jpg"); opacity: .16; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bg-motif { background-image: url("icons/bg-pattern-dark.jpg"); opacity: .16; } }
+
 body {
   margin: 0;
   /* Motif Ndop IDENTIQUE au cadre du QR (losange laiton + losange cyan + points)
