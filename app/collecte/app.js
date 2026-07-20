@@ -2731,7 +2731,7 @@ async function loadLibrary() {
   } catch (e) {
     _exploreEntries = [];
     if (status) status.textContent = "";
-    if (list) list.innerHTML = `<div class="explore-empty">${t("exp.loadfail")}</div>`;
+    if (list) list.innerHTML = `<div class="explore-empty"><img class="empty-illus" src="icons/state-offline.png" alt="" aria-hidden="true"><div class="empty-msg">${t("exp.loadfail")}</div></div>`;
   }
   applyExploreDeepLink();   // lien direct #/explorer?w=…&d=… → ouvre l'entrée visée
 }
@@ -2886,9 +2886,10 @@ function renderExplore() {
   if (status) status.textContent = ti(groups.length > 1 ? "exp.count.many" : "exp.count.one", { n: groups.length }) +
     (groups.length !== _exploreGroups.length ? ti("exp.count.of", { t: _exploreGroups.length }) : "");
   if (groups.length === 0) {
-    list.innerHTML = `<div class="explore-empty">${_exploreEntries.length === 0
-      ? ti("exp.empty.lang", { lang: escapeHtml(currentLang().nom) })
-      : t("exp.empty.search")}</div>`;
+    const emsg = _exploreEntries.length === 0
+      ? (currentLang() ? ti("exp.empty.lang", { lang: escapeHtml(currentLang().nom) }) : t("exp.empty.search"))
+      : t("exp.empty.search");
+    list.innerHTML = `<div class="explore-empty"><img class="empty-illus" src="icons/empty-explore.png" alt="" aria-hidden="true"><div class="empty-msg">${emsg}</div></div>`;
     return;
   }
   list.className = "explore-groups";
@@ -3650,6 +3651,13 @@ function celebrate(originEl) {
     const halo = document.createElement("div");
     halo.className = "halo"; halo.style.left = cx + "px"; halo.style.top = cy + "px";
     layer.appendChild(halo);
+    // Illustration « merci » qui apparaît brièvement (uniquement sur une action de l'utilisateur).
+    if (originEl) {
+      const thanks = document.createElement("img");
+      thanks.className = "celebrate-illus"; thanks.src = "icons/celebrate-thanks.png"; thanks.alt = "";
+      thanks.style.left = cx + "px"; thanks.style.top = cy + "px";
+      layer.appendChild(thanks);
+    }
     const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!reduce) {
       const cols = ["var(--cyan)", "var(--green)", "var(--gold)"];

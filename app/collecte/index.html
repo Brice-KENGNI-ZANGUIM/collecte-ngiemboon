@@ -799,8 +799,11 @@
         </label>
       </div>
       <ul id="req-list" class="req-list" aria-live="polite"></ul>
-      <p id="req-empty" class="notif-empty" hidden data-i18n="req.empty">Aucune demande en attente pour l'instant. Sois le premier
-        à demander de l'aide à la communauté.</p>
+      <div id="req-empty" class="empty-state" hidden>
+        <img class="empty-illus" src="icons/empty-explore.png" alt="" aria-hidden="true">
+        <p class="notif-empty" data-i18n="req.empty">Aucune demande en attente pour l'instant. Sois le premier
+          à demander de l'aide à la communauté.</p>
+      </div>
 
       <div class="about-cta">
         <button class="btn btn--ghost" id="req-back" type="button" data-i18n="btn.back">← Retour</button>
