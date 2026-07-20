@@ -1,6 +1,9 @@
 {
-  "version": "v228",
+  "version": "v229",
   "changelog": {
+    "v229": [
+      "Pied de page revu : le nom LANGIAL y est désormais coloré et stylisé comme dans l'en-tête, aligné avec le logo ; les mentions légales et le copyright sont réunis sur une seule ligne bien rangée"
+    ],
     "v228": [
       "Images encore allégées sans perte de qualité (illustrations et popups convertis dans un format moderne plus compact), pour une application plus légère et plus rapide"
     ],

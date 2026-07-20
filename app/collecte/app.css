@@ -1298,13 +1298,18 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 }
 .foot-brand { display: flex; align-items: center; gap: 13px; }
 .foot-mark {
-  width: 46px; height: 46px; display: block; border-radius: 13px;
+  width: 52px; height: 52px; display: block; border-radius: 14px;
   box-shadow: 0 6px 16px -4px rgba(0,0,0,.4);   /* l'aura ::before/::after fournit la lueur cyan */
 }
 .foot-mark img { width: 100%; height: 100%; display: block; border-radius: 13px; }
-.foot-title { font-family: var(--font-mono); font-weight: 600; letter-spacing: -.02em; color: var(--text); }
-.foot-title span { color: var(--cyan); }
-.foot-sub { color: var(--muted); font-size: .78rem; margin-top: 2px; }
+/* Nom du footer : MÊME traitement que le header (dégradé clair→cyan→vert en text-clip),
+   agrandi et aligné avec le logo (plus de blanc plat). */
+.foot-title { font-family: var(--font-mono); font-weight: 600; letter-spacing: -.02em;
+  font-size: 1.55rem; line-height: 1.03;
+  background: linear-gradient(100deg, #eafcff 0%, var(--cyan) 45%, var(--green) 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: var(--cyan); }
+.foot-title span { -webkit-text-fill-color: var(--green); color: var(--green); font-weight: 700; font-size: .5em; }
+.foot-sub { color: var(--muted); font-size: .82rem; margin-top: 3px; }
 /* Logo + nom cliquables → accueil (header et footer). Affordance sobre : curseur,
    soulignement du nom au survol, contour net au focus clavier (pas de dégradé
    qui ferait fondre l'élément dans le fond). */
@@ -1318,18 +1323,19 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 .foot-contact { margin: 0; color: var(--muted); font-size: .82rem; }
 .foot-contact a { color: var(--cyan); text-decoration: none; font-weight: 600; }
 .foot-contact a:hover { text-decoration: underline; }
-.foot-copy {
-  max-width: var(--wrap-max); margin: 16px auto 0; color: var(--muted); font-size: .72rem;
-  text-align: center; border-top: 1px solid var(--hairline); padding-top: 12px;
+/* Barre du bas : liens légaux à gauche, copyright à droite, sur une seule ligne. */
+.foot-bottom {
+  max-width: var(--wrap-max); margin: 16px auto 0; padding-top: 12px;
+  border-top: 1px solid var(--hairline);
+  display: flex; align-items: center; justify-content: space-between; gap: 8px 22px; flex-wrap: wrap;
 }
+.foot-copy { color: var(--muted); font-size: .72rem; }
 @media (max-width: 560px) {
   .foot-inner { flex-direction: column; align-items: flex-start; }
   .foot-info { text-align: left; }
 }
 /* Liens légaux du pied de page + page légale */
-.foot-legal { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: 6px 18px;
-  justify-content: center; max-width: var(--wrap-max); margin: 14px auto 0; padding-top: 10px;
-  border-top: 1px solid var(--hairline); }
+.foot-legal { display: flex; flex-wrap: wrap; gap: 6px 18px; }
 .foot-legal-link { color: var(--muted); font-size: .74rem; text-decoration: none;
   transition: color .14s ease; }
 .foot-legal-link:hover { color: var(--cyan); text-decoration: underline; }
@@ -2277,7 +2283,7 @@ body::after {
   background: url("icons/pattern-accent.jpg") left center / auto 100% repeat-x;
   box-shadow: 0 1px 6px -2px rgba(0,0,0,.5);
 }
-.foot-inner, .foot-copy { position: relative; z-index: 1; }
+.foot-inner, .foot-bottom { position: relative; z-index: 1; }
 
 @media (prefers-reduced-motion: reduce) {
   body::before, body::after, .topbar::after, .brand-mark::after, .brand-mark::before,
