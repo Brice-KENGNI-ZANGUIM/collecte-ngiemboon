@@ -872,14 +872,16 @@ function profileComplete() {
 function requireProfile(reason) {
   if (profileComplete()) return true;
   openProfile(false);          // on emmène vers le profil ; le popup explicatif s'affiche par-dessus
-  showProfileGate(reason);
+  showProfileGate();
   return false;
 }
 /** Popup EXPLICATIF (façon « consignes ») affiché quand on redirige un nouvel arrivant sans
-    profil vers la page de profil : il dit POURQUOI et pourquoi un profil est indispensable. */
-function showProfileGate(reason) {
+    profil vers la page de profil : il dit POURQUOI et pourquoi un profil est indispensable.
+    Le message est TOUJOURS bilingue (i18n) : on n'affiche pas la raison brute passée par les
+    appelants, qui est en français littéral (elle servait autrefois à un toast). */
+function showProfileGate() {
   const pg = $("#profile-gate"); if (!pg) return;
-  const r = $("#pg-reason"); if (r) r.textContent = reason || t("pgate.reason.default");
+  const r = $("#pg-reason"); if (r) r.textContent = t("pgate.reason.default");
   pg.hidden = false;
 }
 function hideProfileGate() { const pg = $("#profile-gate"); if (pg) pg.hidden = true; }
