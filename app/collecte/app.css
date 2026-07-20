@@ -472,14 +472,6 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   transition: color .15s ease, background .15s ease, box-shadow .2s ease, border-color .2s ease, transform .12s ease;
   animation: ngCardBreath 6s ease-in-out infinite; }
 .nav-tab > * { position: relative; z-index: 3; }   /* icône + libellé au-dessus des effets */
-/* Illustration d'activité en décor discret à DROITE de l'onglet (cohérence avec le hub) :
-   ancrée en bas-droite, fondue vers la gauche, faible opacité, SOUS le texte ; retirée sur
-   l'onglet actif (fond de couleur uni). */
-.nav-illus { position: absolute; bottom: 0; right: -4px; top: auto; height: 165%; width: auto;
-  z-index: 0 !important; pointer-events: none; opacity: .5; object-fit: contain; object-position: right bottom;
-  -webkit-mask-image: linear-gradient(to left, #000 24%, transparent 80%);
-          mask-image: linear-gradient(to left, #000 24%, transparent 80%); }
-.nav-tab.is-active .nav-illus { opacity: 0; }
 .nav-tab::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 2px;
   pointer-events: none; z-index: 2;
   background:
@@ -2314,12 +2306,26 @@ body::after {
 .about-hero { display: block; width: 100%; height: auto; border-radius: 18px; margin: 4px 0 18px;
   border: 1px solid color-mix(in srgb, var(--cyan) 22%, var(--border));
   box-shadow: var(--shadow-card), 0 0 46px -24px var(--cyan), inset 0 1px 0 var(--card-sheen); }
-/* Bannière en tête de page (Accueil, Profil, Bugs, Langue, Notifications, Explorer, Demander) :
-   image ENTIÈRE, jamais recadrée. width:100% + height:auto → la hauteur affichée est exactement
-   celle de l'image à cette largeur (ratio ~3:1 respecté), tout est visible. */
-.page-banner { display: block; width: 100%; height: auto; border-radius: 16px; margin: 2px 0 18px;
-  border: 1px solid color-mix(in srgb, var(--cyan) 20%, var(--border));
+/* Bannière en tête de page : CONTENEUR (image entière non recadrée + accroche superposée dans
+   la zone sombre de gauche). */
+.page-banner { position: relative; display: block; width: 100%; border-radius: 16px; margin: 2px 0 18px;
+  overflow: hidden; border: 1px solid color-mix(in srgb, var(--cyan) 20%, var(--border));
   box-shadow: var(--shadow-card), 0 0 44px -26px var(--cyan), inset 0 1px 0 var(--card-sheen); }
+.page-banner-img { display: block; width: 100%; height: auto; }
+/* Accroche calée à gauche (sur la zone sombre), centrée verticalement. */
+.page-banner-cap { position: absolute; left: clamp(14px, 4%, 46px); top: 50%; transform: translateY(-50%);
+  max-width: 48%; z-index: 2; display: flex; flex-direction: column; gap: clamp(3px, 1vw, 7px); text-align: left; }
+.pb-eye { font-size: clamp(.56rem, 1.5vw, .74rem); letter-spacing: .16em; text-transform: uppercase;
+  font-weight: 800; color: var(--gold); text-shadow: 0 1px 8px rgba(0,0,0,.6); }
+.pb-title { font-family: var(--font-display); font-weight: 800; line-height: 1.08;
+  font-size: clamp(1rem, 3.4vw, 2.1rem);
+  background: linear-gradient(100deg, var(--cyan), var(--green) 52%, var(--gold));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 2px 14px rgba(0,0,0,.55)); }
+/* État vide illustré (Explorer, Notifications, Demandes) : illustration + message centrés. */
+.empty-state { text-align: center; padding: 16px 10px 6px; }
+.empty-illus { display: block; width: clamp(140px, 40vw, 220px); height: auto; margin: 0 auto 12px;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,.4)); }
 /* Cadre « La vision » = HÉROS premium : fond en lavis d'accent, bordure dégradée vive tout
    autour, eyebrow, titre au dégradé de marque, filet lumineux. */
 .about-vision { position: relative; overflow: hidden; border: 1.5px solid transparent;

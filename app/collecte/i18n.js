@@ -649,6 +649,20 @@ export const STR = {
   "update.vtag": { fr: "Version {v}", en: "Version {v}" },
   "update.wip": { fr: "Mise à jour…", en: "Updating…" },
   "loader.txt": { fr: "Chargement…", en: "Loading…" },
+  "pb.home.eye": { fr: "Bienvenue", en: "Welcome" },
+  "pb.home.title": { fr: "Donne une voix à ta langue", en: "Give your language a voice" },
+  "pb.profile.eye": { fr: "Ton profil", en: "Your profile" },
+  "pb.profile.title": { fr: "Fais-toi connaître", en: "Introduce yourself" },
+  "pb.bugs.eye": { fr: "Amélioration continue", en: "Continuous improvement" },
+  "pb.bugs.title": { fr: "Signale, on corrige ensemble", en: "Report it, we fix it together" },
+  "pb.lang.eye": { fr: "Les langues", en: "Languages" },
+  "pb.lang.title": { fr: "Chaque langue compte", en: "Every language matters" },
+  "pb.notifs.eye": { fr: "Notifications", en: "Notifications" },
+  "pb.notifs.title": { fr: "L'écho de ta communauté", en: "Echoes from your community" },
+  "pb.explore.eye": { fr: "La bibliothèque", en: "The library" },
+  "pb.explore.title": { fr: "Explore, écoute, apprends", en: "Explore, listen, learn" },
+  "pb.demander.eye": { fr: "Entraide", en: "Mutual help" },
+  "pb.demander.title": { fr: "Demande à la communauté", en: "Ask the community" },
 };
 
 // Messages éphémères (toasts) : table FR → EN. On garde le FR comme source dans les

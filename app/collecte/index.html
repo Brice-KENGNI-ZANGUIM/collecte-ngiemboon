@@ -109,10 +109,10 @@
     <!-- Navigation permanente entre les espaces (masquée sur profil et accueil) -->
     <nav id="main-nav" class="main-nav" hidden>
       <div class="nav-tabs" role="tablist" aria-label="Espaces">
-        <button id="tab-transcrire" class="nav-tab" type="button"><img class="nav-illus" src="icons/hub-transcribe-ill.png" alt="" aria-hidden="true"><img class="nav-ico" src="icons/mic-real.png" alt="" aria-hidden="true"><span data-i18n="nav.transcribe">Transcrire</span></button>
-        <button id="tab-traduire" class="nav-tab" type="button"><img class="nav-illus" src="icons/hub-translate-ill.png" alt="" aria-hidden="true"><img class="nav-ico" src="icons/act-translate.svg" alt="" aria-hidden="true"><span data-i18n="nav.translate">Traduire</span></button>
-        <button id="tab-explorer" class="nav-tab" type="button"><img class="nav-illus" src="icons/hub-explore-ill.png" alt="" aria-hidden="true"><img class="nav-ico" src="icons/act-explore.svg" alt="" aria-hidden="true"><span data-i18n="nav.explore">Explorer</span></button>
-        <button id="tab-demander" class="nav-tab" type="button"><img class="nav-illus" src="icons/hub-request-ill.png" alt="" aria-hidden="true"><img class="nav-ico" src="icons/act-request.png" alt="" aria-hidden="true"><span data-i18n="nav.demander">Demander</span></button>
+        <button id="tab-transcrire" class="nav-tab" type="button"><img class="nav-ico" src="icons/mic-real.png" alt="" aria-hidden="true"><span data-i18n="nav.transcribe">Transcrire</span></button>
+        <button id="tab-traduire" class="nav-tab" type="button"><img class="nav-ico" src="icons/act-translate.svg" alt="" aria-hidden="true"><span data-i18n="nav.translate">Traduire</span></button>
+        <button id="tab-explorer" class="nav-tab" type="button"><img class="nav-ico" src="icons/act-explore.svg" alt="" aria-hidden="true"><span data-i18n="nav.explore">Explorer</span></button>
+        <button id="tab-demander" class="nav-tab" type="button"><img class="nav-ico" src="icons/act-request.png" alt="" aria-hidden="true"><span data-i18n="nav.demander">Demander</span></button>
       </div>
       <div class="nav-right">
         <span class="welcome" id="welcome-user"></span>
@@ -121,7 +121,8 @@
 
     <!-- ============= VUE 0 : CHOIX DE LA LANGUE (1er accès + à tout moment) ====== -->
     <section id="view-lang" class="view" hidden>
-      <img class="page-banner" src="icons/banner-langues.jpg" alt="" aria-hidden="true">
+      <div class="page-banner"><img class="page-banner-img" src="icons/banner-langues.jpg" alt="" aria-hidden="true">
+        <div class="page-banner-cap"><span class="pb-eye" data-i18n="pb.lang.eye">Les langues</span><span class="pb-title" data-i18n="pb.lang.title">Chaque langue compte</span></div></div>
       <div class="hub-head"><h2 class="view-title" id="lang-title" data-i18n="lang.title">Choisis ta langue 🌍</h2></div>
       <p class="hub-vision" data-i18n="lang.intro">LANGA est une plateforme communautaire où chaque langue s'enrichit
         des traductions et des voix de celles et ceux qui la parlent. Choisis la tienne, ou
@@ -218,7 +219,8 @@
 
     <!-- ================= VUE 1 : PROFIL (accueil obligatoire / édition) ========= -->
     <section id="view-profile" class="view" hidden>
-      <img class="page-banner" src="icons/banner-profile.jpg" alt="" aria-hidden="true">
+      <div class="page-banner"><img class="page-banner-img" src="icons/banner-profile.jpg" alt="" aria-hidden="true">
+        <div class="page-banner-cap"><span class="pb-eye" data-i18n="pb.profile.eye">Ton profil</span><span class="pb-title" data-i18n="pb.profile.title">Fais-toi connaître</span></div></div>
       <div class="card contrib">
         <h2 class="view-title view-title--ico"><img class="title-ico" src="icons/ui/hi-profile.png" alt="" aria-hidden="true"><span id="profile-title">Bienvenue 👋</span></h2>
         <p class="contrib-why" data-i18n-html="p.intro">Avant de commencer, renseigne ton profil. Ces informations servent
@@ -302,7 +304,8 @@
 
     <!-- ============== VUE HUB : « Que veux-tu faire ? » ==================== -->
     <section id="view-hub" class="view" hidden>
-      <img class="page-banner" src="icons/banner-home.jpg" alt="" aria-hidden="true">
+      <div class="page-banner"><img class="page-banner-img" src="icons/banner-home.jpg" alt="" aria-hidden="true">
+        <div class="page-banner-cap"><span class="pb-eye" data-i18n="pb.home.eye">Bienvenue</span><span class="pb-title" data-i18n="pb.home.title">Donne une voix à ta langue</span></div></div>
       <div class="hub-head">
         <h2 class="view-title view-title--ico"><img class="title-ico" src="icons/ui/hi-home.png" alt="" aria-hidden="true"><span id="hub-title">Que veux-tu faire ? 👋</span></h2>
         <p class="contrib-why" data-i18n="hub.choose">Choisis une activité pour commencer. Tu passeras de l'une à l'autre
@@ -530,7 +533,8 @@
 
     <!-- ============== VUE EXPLORER (bibliothèque communautaire) =========== -->
     <section id="view-explore" class="view" hidden>
-      <img class="page-banner" src="icons/banner-explore.jpg" alt="" aria-hidden="true">
+      <div class="page-banner"><img class="page-banner-img" src="icons/banner-explore.jpg" alt="" aria-hidden="true">
+        <div class="page-banner-cap"><span class="pb-eye" data-i18n="pb.explore.eye">La bibliothèque</span><span class="pb-title" data-i18n="pb.explore.title">Explore, écoute, apprends</span></div></div>
       <div class="card">
         <h2 class="view-title view-title--ico"><img class="title-ico" src="icons/act-explore.svg" alt="" aria-hidden="true"><span data-i18n="exp.title">Explorer la bibliothèque</span></h2>
         <p class="contrib-why" data-i18n="exp.intro">Consulte les traductions et transcriptions déjà partagées par la
@@ -653,7 +657,8 @@
 
     <!-- ============== VUE SUIVI DES BUGS ================================== -->
     <section id="view-bugs" class="view" hidden>
-      <img class="page-banner" src="icons/banner-bugs.jpg" alt="" aria-hidden="true">
+      <div class="page-banner"><img class="page-banner-img" src="icons/banner-bugs.jpg" alt="" aria-hidden="true">
+        <div class="page-banner-cap"><span class="pb-eye" data-i18n="pb.bugs.eye">Amélioration continue</span><span class="pb-title" data-i18n="pb.bugs.title">Signale, on corrige ensemble</span></div></div>
       <div class="about-head">
         <h2 class="view-title view-title--ico"><img class="title-ico" src="icons/ui/hi-bug.png" alt="" aria-hidden="true"><span data-i18n="bugs.title">Suivi des bugs</span></h2>
         <p class="contrib-why" data-i18n-html="bugs.intro">Chaque bug est <b>identifié</b>, décrit, daté et suivi jusqu'à sa
@@ -713,7 +718,8 @@
 
     <!-- ============== VUE NOTIFICATIONS =================================== -->
     <section id="view-notifs" class="view" hidden>
-      <img class="page-banner" src="icons/banner-notifs.jpg" alt="" aria-hidden="true">
+      <div class="page-banner"><img class="page-banner-img" src="icons/banner-notifs.jpg" alt="" aria-hidden="true">
+        <div class="page-banner-cap"><span class="pb-eye" data-i18n="pb.notifs.eye">Notifications</span><span class="pb-title" data-i18n="pb.notifs.title">L'écho de ta communauté</span></div></div>
       <div class="about-head">
         <h2 class="view-title view-title--ico"><img class="title-ico" src="icons/ui/hi-notif.png" alt="" aria-hidden="true"><span data-i18n="notif.title">Mes notifications</span></h2>
         <p class="contrib-why" data-i18n-html="notif.intro">Tu es tenu au courant de <b>tout ce qui se passe autour de tes
@@ -724,8 +730,11 @@
         <button id="notif-markall" class="btn btn--ghost" type="button" data-i18n="notif.markall">Tout marquer comme lu</button>
       </div>
       <ul id="notif-feed" class="notif-feed" aria-live="polite"></ul>
-      <p id="notif-empty" class="notif-empty" hidden data-i18n="notif.empty">Aucune notification pour l'instant. Contribue et
-        échange avec la communauté : tu seras prévenu ici dès qu'il se passe quelque chose autour de tes contributions.</p>
+      <div id="notif-empty" class="empty-state" hidden>
+        <img class="empty-illus" src="icons/empty-notifs.png" alt="" aria-hidden="true">
+        <p class="notif-empty" data-i18n="notif.empty">Aucune notification pour l'instant. Contribue et
+          échange avec la communauté : tu seras prévenu ici dès qu'il se passe quelque chose autour de tes contributions.</p>
+      </div>
       <div class="about-cta">
         <button class="btn btn--ghost" id="notif-back" type="button" data-i18n="btn.back">← Retour</button>
       </div>
@@ -733,7 +742,8 @@
 
     <!-- ============== VUE DEMANDER (axe social : entraide traduction) ======= -->
     <section id="view-demander" class="view" hidden>
-      <img class="page-banner" src="icons/banner-demander.jpg" alt="" aria-hidden="true">
+      <div class="page-banner"><img class="page-banner-img" src="icons/banner-demander.jpg" alt="" aria-hidden="true">
+        <div class="page-banner-cap"><span class="pb-eye" data-i18n="pb.demander.eye">Entraide</span><span class="pb-title" data-i18n="pb.demander.title">Demande à la communauté</span></div></div>
       <div class="about-head">
         <h2 class="view-title view-title--ico"><img class="title-ico" src="icons/act-request.png" alt="" aria-hidden="true"><span data-i18n="req.title">Demander une traduction</span></h2>
         <p class="contrib-why" data-i18n-html="req.intro">Demande à la communauté la <b>traduction</b> ou la <b>prononciation</b>
