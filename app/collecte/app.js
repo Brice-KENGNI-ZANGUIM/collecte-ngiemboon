@@ -29,7 +29,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v243";
+const APP_VERSION = "v244";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1160,7 +1160,7 @@ function enterHub() {
   if (_currentView === "profile") collectContributeur();
   const c = loadContributeur();
   const nom = c.prenom || c.nom || "";
-  $("#welcome-user").textContent = nom ? `${t("hub.greeting.hello")} ${nom} 👋` : "";
+  const wu = $("#welcome-user"); if (wu) wu.textContent = nom ? `${t("hub.greeting.hello")} ${nom} 👋` : "";
   const ht = $("#hub-title");
   if (ht) ht.textContent = nom ? `${t("hub.greeting.hello")} ${nom} 👋` : t("hub.greeting.solo");
   showView("hub");

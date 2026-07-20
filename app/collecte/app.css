@@ -468,8 +468,8 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 
 /* ---- Navigation entre espaces (Traduire / Transcrire / Explorer) ---- */
 /* Barre des 4 onglets REMONTÉE près du header (comble ~80% de l'espace vide). */
-.main-nav { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-  margin-top: -14px; }
+/* Barre des 4 espaces : 3e rangée du header (intégrée au header, pleine largeur). */
+.main-nav { grid-column: 1 / -1; grid-row: 3; display: flex; align-items: center; gap: 12px; margin: 2px 0 0; }
 .main-nav[hidden] { display: none; }
 /* Onglets : chaque bouton porte SA couleur d'activité (contour + fond teinté + halo),
    IDENTIQUE sur PC et téléphone. Sur PC ils s'étirent pour remplir la largeur dédiée
@@ -2372,9 +2372,16 @@ body::after {
   box-shadow: var(--shadow-card), 0 0 46px -24px var(--cyan), inset 0 1px 0 var(--card-sheen); }
 /* Bannière en tête de page : CONTENEUR (image entière non recadrée + accroche superposée dans
    la zone sombre de gauche). */
-.page-banner { position: relative; display: block; width: 100%; border-radius: 16px; margin: 2px 0 18px;
-  overflow: hidden; border: 1px solid color-mix(in srgb, var(--cyan) 20%, var(--border));
-  box-shadow: var(--shadow-card), 0 0 44px -26px var(--cyan), inset 0 1px 0 var(--card-sheen); }
+/* BANNIÈRE SOUDÉE AU HEADER (2026-07-20) : pleine largeur (déborde des marges du .wrap),
+   collée au bas du header (annule le padding haut du .wrap), SANS coins arrondis ni bordure
+   sur les 3 côtés : seule la bordure INFÉRIEURE est visible. Elle fait ainsi corps avec le
+   header et le décor, comme une bande intégrée et non une image « posée ». */
+.page-banner { position: relative; display: block; overflow: hidden;
+  width: 100vw; margin-left: calc(50% - 50vw); margin-right: calc(50% - 50vw);
+  margin-top: -22px; margin-bottom: 20px;           /* soudée sous le header */
+  border: 0; border-radius: 0;
+  border-bottom: 2px solid color-mix(in srgb, var(--cyan) 52%, var(--gold));
+  box-shadow: 0 14px 28px -22px rgba(0,0,0,.6); }
 .page-banner-img { display: block; width: 100%; height: auto; }
 /* Accroche calée à gauche (sur la zone sombre), centrée verticalement. */
 .page-banner-cap { position: absolute; left: clamp(12px, 3.5%, 40px); top: 50%; transform: translateY(-50%);

@@ -106,10 +106,8 @@
       <span id="net" class="chip">…</span>
       <span id="srv" class="chip">…</span>
     </div>
-  </header>
-
-  <main class="wrap">
-    <!-- Navigation permanente entre les espaces (masquée sur profil et accueil) -->
+    <!-- Barre des 4 ESPACES, intégrée au header (3e rangée). Masquée sur l'accueil, où les
+         grandes portes du hub jouent déjà ce rôle. -->
     <nav id="main-nav" class="main-nav" hidden>
       <div class="nav-tabs" role="tablist" aria-label="Espaces">
         <button id="tab-transcrire" class="nav-tab" type="button"><img class="nav-ico" src="icons/mic-real.png" alt="" aria-hidden="true"><span data-i18n="nav.transcribe">Transcrire</span></button>
@@ -117,11 +115,10 @@
         <button id="tab-explorer" class="nav-tab" type="button"><img class="nav-ico" src="icons/act-explore.svg" alt="" aria-hidden="true"><span data-i18n="nav.explore">Explorer</span></button>
         <button id="tab-demander" class="nav-tab" type="button"><img class="nav-ico" src="icons/act-request.png" alt="" aria-hidden="true"><span data-i18n="nav.demander">Demander</span></button>
       </div>
-      <div class="nav-right">
-        <span class="welcome" id="welcome-user"></span>
-      </div>
     </nav>
+  </header>
 
+  <main class="wrap">
     <!-- ============= VUE 0 : CHOIX DE LA LANGUE (1er accès + à tout moment) ====== -->
     <section id="view-lang" class="view" hidden>
       <div class="page-banner"><img class="page-banner-img" src="icons/banner-langues.jpg" alt="" aria-hidden="true">
