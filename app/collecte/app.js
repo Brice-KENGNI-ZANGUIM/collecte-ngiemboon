@@ -1336,6 +1336,7 @@ async function onManualMerge() {
 }
 
 async function respondToMerge(pid, valeur) {
+  if (!requireProfile("Crée ton profil pour confirmer un jumelage de langues.")) return;
   if (!pid) return;
   let r = null;
   try { r = await respondMerge({ id_prop: pid, device_id: deviceId(), valeur: valeur }); } catch (e) { r = null; }
@@ -1349,6 +1350,7 @@ async function respondToMerge(pid, valeur) {
   }
 }
 async function proposeToMerge(otherId, canonId) {
+  if (!requireProfile("Crée ton profil pour proposer un jumelage de langues.")) return;
   if (!otherId || !canonId) return;
   let r = null;
   try { r = await proposeMerge({ id_a: otherId, id_b: canonId, id_canonique: canonId, device_id: deviceId() }); } catch (e) { r = null; }
@@ -2284,6 +2286,7 @@ async function renderRequests() {
   if (empty) empty.hidden = _requests.length > 0;
 }
 async function submitRequest() {
+  if (!requireProfile(t("req.needprofile"))) return;   // écrire une demande = profil exigé
   const texte = ($("#req-texte").value || "").trim();
   const langue = ($("#req-langue").value || "").trim();
   const kind = ($("#req-kind").value || "").trim();
