@@ -1,6 +1,9 @@
 {
-  "version": "v238",
+  "version": "v239",
   "changelog": {
+    "v239": [
+      "Application plus fluide sur téléphone (les animations décoratives les plus lourdes sont allégées sur petit écran) ; le mode présentation reprend le fond du site en clair comme en sombre"
+    ],
     "v238": [
       "Le QR code (À propos, mode présentation, partages) pointe désormais vers https://www.langial.com"
     ],

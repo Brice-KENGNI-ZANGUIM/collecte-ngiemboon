@@ -2454,13 +2454,19 @@ body::after {
 .vmap-svg { width: 100%; height: auto; max-height: 320px; display: block; overflow: visible; }
 
 /* ── Mode présentation (plein écran, événements/réunions) ──────────────────── */
-.present { position: fixed; inset: 0; z-index: 10000; background: var(--bg);
-  background-image: var(--lattice-img); overflow-y: auto; overflow-x: hidden;
+.present { position: fixed; inset: 0; z-index: 10000; background-color: var(--bg);
+  /* MÊME FOND QUE LE SITE : motif Ndop (bg-pattern) sous un voile de la couleur de fond
+     pour rester discret, en clair ET sombre. */
+  background-image: linear-gradient(color-mix(in srgb, var(--bg) 72%, transparent), color-mix(in srgb, var(--bg) 72%, transparent)), url("icons/bg-pattern-light.jpg");
+  background-size: auto, 480px auto; background-repeat: no-repeat, repeat;
+  overflow-y: auto; overflow-x: hidden;
   /* Centrage SANS coupure : on NE met PAS align/justify-center (qui, quand le contenu
      dépasse la hauteur, rogne le haut et le rend inaccessible sur les petits écrans).
      On centre via `margin:auto` sur l'enfant → défilement propre depuis le haut. */
   display: flex; padding: 3vmin; }
 .present[hidden] { display: none; }
+:root[data-theme="dark"] .present { background-image: linear-gradient(color-mix(in srgb, var(--bg) 60%, transparent), color-mix(in srgb, var(--bg) 60%, transparent)), url("icons/bg-pattern-dark.jpg"); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .present { background-image: linear-gradient(color-mix(in srgb, var(--bg) 60%, transparent), color-mix(in srgb, var(--bg) 60%, transparent)), url("icons/bg-pattern-dark.jpg"); } }
 /* Effet « TORCHE » : halos radiaux (cyan haut-gauche, vert bas-droite, reflet or
    au-dessus du logo) en fusion « screen » → la lumière s'ADDITIONNE au fond, comme
    l'aurore de l'app. Fixé derrière le contenu (z-index 0 < .present-inner z-index 1). */
@@ -2703,6 +2709,17 @@ body.kb-docked .field--consent {
 .app-loader-txt { color: var(--muted); font-size: .9rem; letter-spacing: .03em; }
 @keyframes loaderSpin { to { transform: rotate(360deg); } }
 @keyframes loaderPulse { 0%, 100% { transform: scale(1); opacity: .92; } 50% { transform: scale(1.07); opacity: 1; } }
+/* PERF TÉLÉPHONE : sur petit écran, on FIGE les animations décoratives les plus coûteuses
+   (bordures-comètes coniques + « respiration » des box-shadow, qui repeignent en continu).
+   Les bordures et halos restent (statiques) → rendu premium préservé, fluidité retrouvée. */
+@media (max-width: 768px) {
+  .nav-tab::before, .hub-card::before, .hub-card::after, .view-title::before,
+  .nav-tab, .hub-card, .view-title, .ndop-sep i,
+  .btn--primary::after, .btn--next::after, .btn--send::after,
+  .lang-card::before, .lang-search-btn::after, .corr-submit::after, .tour-next::after {
+    animation: none !important;
+  }
+}
 /* Curseur « occupé » pendant une attente pilotée (rechargement, fetch long). */
 body.is-busy, body.is-busy * { cursor: progress !important; }
 /* Curseur de MARQUE (PC) : flèche cyan->vert comme curseur par défaut partout où l'on
