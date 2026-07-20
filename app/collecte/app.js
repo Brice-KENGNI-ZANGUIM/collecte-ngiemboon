@@ -2712,14 +2712,17 @@ async function loadLibrary() {
     // sans bouton audio/traduction (BUG-U-mrmae78s-7670).
     // Langue courante et langue de chaque entrée résolues vers leur CANONIQUE : les
     // contributions d'une langue fusionnée apparaissent sous celle qui l'a absorbée.
-    const lid = canonLangId(getCurrentLangId());
+    // Si l'utilisateur N'A PAS déclaré de langue (profil non créé), on NE présume PAS le
+    // ngiemboon : Explorer montre alors TOUTES les langues. Dès qu'une langue est choisie,
+    // Explorer se scope dessus (canonique, pour absorber les langues fusionnées).
+    const lid = hasChosenLang() ? canonLangId(getCurrentLangId()) : null;
     _exploreEntries = (((data && data.entries) || []))
-      .filter((e) => canonLangId(entryLang(e)) === lid)
+      .filter((e) => !lid || canonLangId(entryLang(e)) === lid)
       .filter((e) => (e.source_text && e.source_text.trim()) ||
                      (e.target_text && e.target_text.trim()) || isPlayable(e.audio_url));
     // Le clavier prédictif APPREND des contributions réelles (mots + fréquences),
     // pour toute langue à clavier dédié (le moteur est générique, cf. langpacks).
-    if (predict && usesDedicatedKeyboard(lid)) predict.learnFromEntries(_exploreEntries, lid);
+    if (predict && lid && usesDedicatedKeyboard(lid)) predict.learnFromEntries(_exploreEntries, lid);
     populateExploreFilters();
     renderExplore();
   } catch (e) {
@@ -3341,6 +3344,7 @@ function applyCorrType(panel) {
 // --- Mini-enregistreur pour les corrections (indépendant du principal) ---
 let _corrRec = null, _corrChunks = [], _corrTimerInt = null, _corrStartTs = 0;
 async function onCorrRec(btn) {
+  if (!requireProfile("Crée ton profil pour proposer une prononciation.")) return;   // écrire = profil exigé
   const panel = btn.closest(".entry-corr");
   if (_corrRec && _corrRec.state === "recording") { _corrRec.stop(); return; }
   try {
