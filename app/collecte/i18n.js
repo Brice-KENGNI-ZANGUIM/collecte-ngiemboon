@@ -410,6 +410,7 @@ export const STR = {
   "rec.unsupported": { fr: "Enregistrement non supporté par ce navigateur", en: "Recording not supported by this browser" },
   "rec.stop": { fr: "Arrêter l'enregistrement", en: "Stop recording" },
   "rec.start": { fr: "Enregistrer l'audio", en: "Record audio" },
+  "rec.savelocked": { fr: "Arrête d'abord l'enregistrement en cours", en: "Stop the current recording first" },
   "mic.err.denied": { fr: "Autorisation micro refusée. Autorise le micro pour ce site (icône 🔒/🎙 dans la barre d'adresse), puis réessaie.", en: "Microphone permission denied. Allow the microphone for this site (🔒/🎙 icon in the address bar), then try again." },
   "mic.err.busy": { fr: "Micro occupé par une autre application (visio, enregistreur…). Ferme-la, puis réessaie.", en: "Microphone busy with another app (video call, recorder…). Close it, then try again." },
   "mic.err.none": { fr: "Aucun micro détecté. Vérifie qu'un micro est branché/activé (et non coupé par le système), puis réessaie.", en: "No microphone detected. Check that one is plugged in/enabled (and not muted by the system), then try again." },

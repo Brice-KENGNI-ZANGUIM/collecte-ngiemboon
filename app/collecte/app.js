@@ -29,7 +29,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v242";
+const APP_VERSION = "v243";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -464,6 +464,7 @@ async function startRecording() {
     $("#btn-rec").classList.add("is-recording");
     const sp = $("#btn-rec").querySelector("span"); if (sp) sp.textContent = t("rec.stop");
     rs.textContent = "";
+    _lockSaveWhileRecording(true);   // pendant l'enregistrement, « Enregistrer » est grisé (évite la confusion)
     startRecTimer();
   } catch (e) {
     const msg = e.name === "NotAllowedError" || e.name === "SecurityError"
@@ -483,7 +484,17 @@ function stopRecording() {
   $("#btn-rec").classList.remove("is-recording");
   const sp = $("#btn-rec").querySelector("span"); if (sp) sp.textContent = t("rec.start");
   $("#rec-state").textContent = "";
+  _lockSaveWhileRecording(false);   // enregistrement arrêté → « Enregistrer » redevient actionnable
   stopRecTimer();
+}
+/** Grise le bouton « Enregistrer la contribution » TANT QUE l'enregistrement n'est pas arrêté :
+    on ne peut pas enregistrer une capture encore en cours, et cela lève la confusion entre le
+    bouton « Arrêter » (rouge, actif) et « Enregistrer » (qui restaient d'aspect trop proche). */
+function _lockSaveWhileRecording(locked) {
+  const s = $("#btn-save"); if (!s) return;
+  s.disabled = !!locked;
+  s.classList.toggle("is-rec-locked", !!locked);
+  if (locked) s.title = t("rec.savelocked"); else s.removeAttribute("title");
 }
 /** Timer d'enregistrement : temps écoulé mis à jour ~4×/s, masqué à l'arrêt. */
 function fmtRec(ms) {
