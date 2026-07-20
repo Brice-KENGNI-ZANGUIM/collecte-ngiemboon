@@ -2709,14 +2709,9 @@ body.is-busy, body.is-busy * { cursor: progress !important; }
    navigue. `cursor` étant hérité, on rétablit explicitement le curseur TEXTE sur les champs
    de saisie ; les éléments cliquables gardent leur `pointer` (main système = affordance). */
 body { cursor: url("icons/cur-pointer.png") 2 1, auto; }
-/* Sur tout élément cliquable : curseur MAIN cyan avec HALO lumineux (bien mis en évidence).
-   !important pour primer sur les nombreux `cursor: pointer` locaux. */
-a[href], button:not([disabled]), [role="button"], [role="link"], summary, select,
-[tabindex]:not([tabindex="-1"]), label.switch-row, input[type="range"], input[type="checkbox"], input[type="radio"],
-.chip, .btn, .nav-tab, .hub-card, .lang-btn, .lang-card, .mini-profile,
-.share-ico, .share-btn--native, .foot-nav a, .foot-legal-link, .aplayer-play, .aplayer-mute {
-  cursor: url("icons/cur-hand.png") 16 3, pointer !important;
-}
+/* Sur les éléments cliquables : curseur MAIN système normal (le doigt du navigateur),
+   via le `cursor: pointer` déjà présent sur chaque bouton/lien. Le curseur cyan reste
+   sur le reste de la page. */
 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="button"]):not([type="submit"]),
 textarea, [contenteditable="true"] { cursor: text; }
 @media (prefers-reduced-motion: reduce) {

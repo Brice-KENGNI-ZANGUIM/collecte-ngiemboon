@@ -1,6 +1,9 @@
 {
-  "version": "v233",
+  "version": "v234",
   "changelog": {
+    "v234": [
+      "Le curseur revient au comportement classique : curseur coloré cyan sur la page, et main du navigateur au survol des éléments cliquables"
+    ],
     "v233": [
       "La zone d'écoute audio devient futuriste : cadre sombre épuré (sans photo) et onde sonore fine, dense et lumineuse en dégradé cyan-vert-or qui vibre au rythme du son"
     ],
