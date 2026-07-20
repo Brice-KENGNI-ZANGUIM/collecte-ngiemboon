@@ -97,7 +97,7 @@
 /* Motif africain en fond global (couche fixe, derrière tout le contenu), très discret.
    Variante claire par défaut, plus marquée en sombre (où il se marie mieux). */
 .bg-motif { position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background: url("icons/bg-pattern-light.jpg") center top / 520px auto repeat fixed; opacity: .22; }
+  background: url("icons/bg-pattern-light.jpg") center top / 520px auto repeat fixed; opacity: .13; }
 :root[data-theme="dark"] .bg-motif { background-image: url("icons/bg-pattern-dark.jpg"); opacity: .34; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bg-motif { background-image: url("icons/bg-pattern-dark.jpg"); opacity: .34; } }
 
@@ -2253,12 +2253,10 @@ body::after {
 }
 
 /* Pied de page : filet identitaire en haut */
-/* Image d'ambiance en FOND de l'élément footer (derrière TOUT le contenu, jamais en surcouche) :
-   un léger voile sombre par-dessus l'image garantit la lisibilité des liens/texte. */
+/* Image en FOND de l'élément footer (derrière TOUT le contenu), COMPLÈTEMENT OPAQUE (aucun voile).
+   ⏳ Mode clair : remplacer par footer-bg-light.jpg dès que Brice l'aura généré. */
 .site-footer { position: relative; overflow: hidden;
-  background:
-    linear-gradient(color-mix(in srgb, var(--bg) 52%, transparent), color-mix(in srgb, var(--bg) 74%, transparent)),
-    url("icons/footer-bg.jpg") center / cover no-repeat; }
+  background: url("icons/footer-bg.jpg") center / cover no-repeat; }
 .site-footer::before {
   content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; z-index: 2;
   background: linear-gradient(90deg, transparent, rgba(34,211,238,.4), rgba(52,211,153,.4), transparent);
