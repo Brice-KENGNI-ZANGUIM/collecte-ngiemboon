@@ -29,7 +29,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v253";
+const APP_VERSION = "v254";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -799,6 +799,15 @@ async function saveContribution() {
   kickReconcile();            // tente l'envoi tout de suite, puis en boucle jusqu'à confirmation
   toast(t("toast.saved.local"), "ok");
   celebrate($("#btn-save"));  // micro-célébration sobre (halo + confettis Ndop)
+  focusSourceCentered();      // après « Enregistrer », on recentre sur l'OBJECTIF : le mot source
+                              // (mot proposé, ou champ à remplir pour le suivant) — prêt à enchaîner.
+}
+/** Ramène l'utilisateur à l'objectif après un enregistrement : le champ SOURCE (mot proposé en
+    mode « proposer », ou champ à remplir en mode libre) est centré à l'écran et prend le focus. */
+function focusSourceCentered() {
+  const sw = $("#source-wrap"), s = $("#source");
+  try { if (sw) sw.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) { /* ok */ }
+  if (s) { try { s.focus({ preventScroll: true }); } catch (e) { try { s.focus(); } catch (e2) { /* ok */ } } }
 }
 
 function resetForm() {

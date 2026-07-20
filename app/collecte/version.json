@@ -1,6 +1,9 @@
 {
-  "version": "v253",
+  "version": "v254",
   "changelog": {
+    "v254": [
+      "Apr\u00e8s \u00ab Enregistrer la contribution \u00bb, l'application te ram\u00e8ne automatiquement sur le mot \u00e0 traduire/transcrire (celui propos\u00e9, ou le champ \u00e0 remplir), centr\u00e9 \u00e0 l'\u00e9cran et pr\u00eat pour le suivant"
+    ],
     "v253": [
       "Nouvelle onde d'\u00e9coute audio : retour aux barres verticales (fa\u00e7on message vocal) dimensionn\u00e9es par le son r\u00e9el, partie lue en d\u00e9grad\u00e9 cyan-vert-or et partie non lue gris\u00e9e ; pendant la lecture une vibration se propage le long des barres au rythme du son (des barres statiques, d'autres qui enflent au passage) ; plus de courbe blanche"
     ],
