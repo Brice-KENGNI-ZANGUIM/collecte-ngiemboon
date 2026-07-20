@@ -2301,6 +2301,12 @@ body::after {
 .about-hero { display: block; width: 100%; height: auto; border-radius: 18px; margin: 4px 0 18px;
   border: 1px solid color-mix(in srgb, var(--cyan) 22%, var(--border));
   box-shadow: var(--shadow-card), 0 0 46px -24px var(--cyan), inset 0 1px 0 var(--card-sheen); }
+/* Bannière en tête de page (Accueil, Profil, Bugs, Langue, Notifications) : sujet à droite,
+   zone calme à gauche. Ratio d'origine ~3:1, recadré en bandeau responsive. */
+.page-banner { display: block; width: 100%; height: clamp(120px, 20vw, 190px);
+  object-fit: cover; object-position: center; border-radius: 16px; margin: 2px 0 18px;
+  border: 1px solid color-mix(in srgb, var(--cyan) 20%, var(--border));
+  box-shadow: var(--shadow-card), 0 0 44px -26px var(--cyan), inset 0 1px 0 var(--card-sheen); }
 /* Cadre « La vision » = HÉROS premium : fond en lavis d'accent, bordure dégradée vive tout
    autour, eyebrow, titre au dégradé de marque, filet lumineux. */
 .about-vision { position: relative; overflow: hidden; border: 1.5px solid transparent;
