@@ -1,6 +1,9 @@
 {
-  "version": "v230",
+  "version": "v231",
   "changelog": {
+    "v231": [
+      "Pied de page enrichi : des raccourcis vers les espaces (Transcrire, Traduire, Explorer, Demander) et les pages du projet (Accueil, À propos, Bugs), et un sous-titre sur deux lignes mieux présenté"
+    ],
     "v230": [
       "La zone d'écoute audio est entièrement redessinée : une onde en barres lumineuses, dégradé cyan-vert-or, qui vit et réagit au son pendant la lecture, avec un front de lecture éclatant, pour une écoute belle et immersive"
     ],

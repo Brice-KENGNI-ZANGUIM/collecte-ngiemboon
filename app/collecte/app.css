@@ -1293,9 +1293,17 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   padding: 26px clamp(14px, 4vw, 36px) 18px;
 }
 .foot-inner {
-  max-width: var(--wrap-max); margin: 0 auto; display: flex; align-items: center;
-  justify-content: space-between; gap: 20px; flex-wrap: wrap;
+  max-width: var(--wrap-max); margin: 0 auto; display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 24px 44px; flex-wrap: wrap;
 }
+/* Raccourcis thématiques au milieu du footer. */
+.foot-nav { display: flex; gap: 18px 46px; flex-wrap: wrap; }
+.foot-nav-col { display: flex; flex-direction: column; gap: 7px; }
+.foot-nav-title { color: var(--gold); font-size: .7rem; font-weight: 700;
+  letter-spacing: .09em; text-transform: uppercase; margin-bottom: 3px; }
+.foot-nav a { color: var(--label); font-size: .87rem; text-decoration: none;
+  width: fit-content; transition: color .14s ease, transform .14s ease; }
+.foot-nav a:hover { color: var(--cyan); transform: translateX(2px); }
 .foot-brand { display: flex; align-items: center; gap: 13px; }
 .foot-mark {
   width: 52px; height: 52px; display: block; border-radius: 14px;

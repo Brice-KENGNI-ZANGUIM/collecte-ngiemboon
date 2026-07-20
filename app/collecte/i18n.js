@@ -371,8 +371,10 @@ export const STR = {
   // — Pied de page —
   "foot.by": { fr: "Créé par", en: "Created by" },
   "foot.contact": { fr: "Un problème ou une suggestion ?", en: "A problem or a suggestion?" },
-  "foot.sub": { fr: "Numériser les langues d'Afrique, texte et voix, par leurs communautés",
-                en: "Digitizing African languages, text and voice, by their communities" },
+  "foot.sub": { fr: "Numériser les langues d'Afrique,<br>texte et voix, par leurs communautés",
+                en: "Digitizing African languages,<br>text and voice, by their communities" },
+  "footnav.spaces": { fr: "Les espaces", en: "Spaces" },
+  "footnav.project": { fr: "Le projet", en: "The project" },
   "foot.thanks": { fr: "Merci à chaque contributeur de la langue", en: "Thanks to every contributor to the language" },
   "legal.title": { fr: "Informations légales", en: "Legal information" },
   "legal.mentions": { fr: "Mentions légales", en: "Legal notice" },
