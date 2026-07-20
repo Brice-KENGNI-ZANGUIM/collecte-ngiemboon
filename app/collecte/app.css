@@ -97,9 +97,9 @@
 /* Motif africain en fond global (couche fixe, derrière tout le contenu), très discret.
    Variante claire par défaut, plus marquée en sombre (où il se marie mieux). */
 .bg-motif { position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background: url("icons/bg-pattern-light.jpg") center center / cover no-repeat fixed; opacity: .09; }
-:root[data-theme="dark"] .bg-motif { background-image: url("icons/bg-pattern-dark.jpg"); opacity: .16; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bg-motif { background-image: url("icons/bg-pattern-dark.jpg"); opacity: .16; } }
+  background: url("icons/bg-pattern-light.jpg") center top / 520px auto repeat fixed; opacity: .22; }
+:root[data-theme="dark"] .bg-motif { background-image: url("icons/bg-pattern-dark.jpg"); opacity: .34; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bg-motif { background-image: url("icons/bg-pattern-dark.jpg"); opacity: .34; } }
 
 body {
   margin: 0;
