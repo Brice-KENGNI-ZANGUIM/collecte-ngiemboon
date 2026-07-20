@@ -956,7 +956,12 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 .aplayer { flex: 1 1 100%; width: 100%; box-sizing: border-box;
   display: flex; align-items: center; gap: clamp(8px, 2.5vw, 14px);
   padding: 10px clamp(10px, 3vw, 14px); border-radius: 14px;
-  background: color-mix(in srgb, var(--cyan) 6%, var(--panel));
+  /* Panneau d'ambiance dédié derrière l'onde : texture sombre estompée sous un voile de la
+     couleur de panneau, pour ne pas gêner l'onde ni les contrôles. */
+  background-color: color-mix(in srgb, var(--cyan) 6%, var(--panel));
+  background-image: linear-gradient(color-mix(in srgb, var(--panel) 62%, transparent), color-mix(in srgb, var(--panel) 62%, transparent)),
+    url("icons/audio-panel-bg.jpg");
+  background-size: cover; background-position: center;
   border: 1px solid color-mix(in srgb, var(--cyan) 26%, var(--border));
   box-shadow: 0 0 24px -16px var(--cyan), var(--shadow-card); }
 /* Bouton play/pause rond (aplat cyan, icône = couleur du fond → contraste 2 thèmes) */
@@ -2254,8 +2259,16 @@ body::after {
 /* Pied de page : filet identitaire en haut */
 .site-footer { position: relative; overflow: hidden; }
 .site-footer::before {
-  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; z-index: 1;
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px; z-index: 2;
   background: linear-gradient(90deg, transparent, rgba(34,211,238,.4), rgba(52,211,153,.4), transparent);
+}
+/* Image d'ambiance en fond de footer (texture Ndop très sombre), estompée sous un voile
+   pour garder les liens/texte parfaitement lisibles. */
+.site-footer::after {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: linear-gradient(color-mix(in srgb, var(--bg) 62%, transparent), color-mix(in srgb, var(--bg) 82%, transparent)),
+    url("icons/footer-bg.jpg") center / cover no-repeat;
+  opacity: .9;
 }
 .foot-inner, .foot-copy { position: relative; z-index: 1; }
 
@@ -2301,10 +2314,10 @@ body::after {
 .about-hero { display: block; width: 100%; height: auto; border-radius: 18px; margin: 4px 0 18px;
   border: 1px solid color-mix(in srgb, var(--cyan) 22%, var(--border));
   box-shadow: var(--shadow-card), 0 0 46px -24px var(--cyan), inset 0 1px 0 var(--card-sheen); }
-/* Bannière en tête de page (Accueil, Profil, Bugs, Langue, Notifications) : sujet à droite,
-   zone calme à gauche. Ratio d'origine ~3:1, recadré en bandeau responsive. */
-.page-banner { display: block; width: 100%; height: clamp(120px, 20vw, 190px);
-  object-fit: cover; object-position: center; border-radius: 16px; margin: 2px 0 18px;
+/* Bannière en tête de page (Accueil, Profil, Bugs, Langue, Notifications, Explorer, Demander) :
+   image ENTIÈRE, jamais recadrée. width:100% + height:auto → la hauteur affichée est exactement
+   celle de l'image à cette largeur (ratio ~3:1 respecté), tout est visible. */
+.page-banner { display: block; width: 100%; height: auto; border-radius: 16px; margin: 2px 0 18px;
   border: 1px solid color-mix(in srgb, var(--cyan) 20%, var(--border));
   box-shadow: var(--shadow-card), 0 0 44px -26px var(--cyan), inset 0 1px 0 var(--card-sheen); }
 /* Cadre « La vision » = HÉROS premium : fond en lavis d'accent, bordure dégradée vive tout
