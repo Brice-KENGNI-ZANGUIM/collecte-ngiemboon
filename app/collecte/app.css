@@ -97,7 +97,7 @@
 /* Motif africain en fond global (couche fixe, derrière tout le contenu), très discret.
    Variante claire par défaut, plus marquée en sombre (où il se marie mieux). */
 .bg-motif { position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background: url("icons/bg-pattern-light.jpg") center top / 520px auto repeat fixed; opacity: .13; }
+  background: url("icons/bg-pattern-light.jpg") center top / 520px auto repeat fixed; opacity: .26; }
 :root[data-theme="dark"] .bg-motif { background-image: url("icons/bg-pattern-dark.jpg"); opacity: .34; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .bg-motif { background-image: url("icons/bg-pattern-dark.jpg"); opacity: .34; } }
 
@@ -2256,9 +2256,13 @@ body::after {
 
 /* Pied de page : filet identitaire en haut */
 /* Image en FOND de l'élément footer (derrière TOUT le contenu), COMPLÈTEMENT OPAQUE (aucun voile).
-   ⏳ Mode clair : remplacer par footer-bg-light.jpg dès que Brice l'aura généré. */
+   Comme l'image reste SOMBRE dans les 2 modes (en attendant footer-bg-light.jpg), on force les
+   couleurs de texte du footer à rester CLAIRES (valeurs du thème sombre) même en mode clair, pour
+   une lisibilité parfaite. ⏳ À rétablir/adapter quand l'image claire sera dispo. */
 .site-footer { position: relative; overflow: hidden;
-  background: url("icons/footer-bg.jpg") center / cover no-repeat; }
+  background: url("icons/footer-bg.jpg") center / cover no-repeat;
+  --text: #e9f0f6; --muted: #8b97a6; --cyan: #22d3ee; --green: #34d399; --gold: #e5c07b;
+  --violet: #a78bfa; --border: #253041; --panel: #12181f; --panel2: #1a2230; }
 /* Galon Kente (pattern-accent) en liseré ornemental au sommet du footer. */
 .site-footer::before {
   content: ""; position: absolute; top: 0; left: 0; right: 0; height: 12px; z-index: 2;
