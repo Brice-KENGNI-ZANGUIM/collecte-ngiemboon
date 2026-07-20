@@ -29,7 +29,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v224";
+const APP_VERSION = "v225";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -2333,7 +2333,7 @@ async function _sendAnswer(item, btn) {
 async function _shareRequest(item) {
   const w = item.dataset.w, lang = _langNameById(item.dataset.lang);
   const text = ti("req.share.msg", { w, lang, url: PRESENT_URL.replace(/\/$/, "") });
-  try { if (navigator.share) { await navigator.share({ title: "LANGA", text }); return; } }
+  try { if (navigator.share) { await navigator.share({ title: "LANGIAL", text }); return; } }
   catch (e) { if (e && e.name === "AbortError") return; }
   try {
     if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -2378,8 +2378,8 @@ function enterExplore() {
 // Identité, présentée en ouverture de chaque visite. Chaque étape porte sa traduction
 // anglaise (`en:`) ; le rendu (tourGoto) choisit selon la langue d'interface.
 const TOUR_INTRO = [
-  { sel: ".brand", title: "LANGA, en deux mots", text: "Cette application rassemble les mots et les voix de nos langues pour en bâtir des dictionnaires, des claviers et des intelligences artificielles. Touche ce logo ou ce nom à tout moment pour revenir à l'accueil et ses trois portes : Traduire, Transcrire, Explorer",
-    en: { title: "LANGA in a nutshell", text: "This app gathers the words and voices of our languages to build dictionaries, keyboards and artificial intelligences from them. Tap this logo or name at any time to go back to the home screen and its three doors: Translate, Transcribe, Explore" } },
+  { sel: ".brand", title: "LANGIAL, en deux mots", text: "Cette application rassemble les mots et les voix de nos langues pour en bâtir des dictionnaires, des claviers et des intelligences artificielles. Touche ce logo ou ce nom à tout moment pour revenir à l'accueil et ses trois portes : Traduire, Transcrire, Explorer",
+    en: { title: "LANGIAL in a nutshell", text: "This app gathers the words and voices of our languages to build dictionaries, keyboards and artificial intelligences from them. Tap this logo or name at any time to go back to the home screen and its three doors: Translate, Transcribe, Explore" } },
 ];
 // Barre d'outils du header, disponible sur toutes les pages.
 const TOUR_TOOLS = [
@@ -2389,10 +2389,10 @@ const TOUR_TOOLS = [
     en: { title: "Your version", text: "The number of the version you're using. The app updates itself: when a newer version exists, a banner warns you and a single button installs it, with no technical step on your part" } },
   { sel: "#home-link", title: "Revenir à l'accueil", text: "Te ramène à l'écran d'accueil, celui qui présente les trois portes : Traduire, Transcrire et Explorer. Pratique pour changer d'activité d'un seul geste, depuis n'importe quelle page. Le logo et le nom, en haut comme en bas, font la même chose",
     en: { title: "Back to home", text: "Takes you back to the home screen, the one that presents the three doors: Translate, Transcribe and Explore. Handy to switch activity in one move, from any page. The logo and the name, at the top as at the bottom, do the same thing" } },
-  { sel: "#lang-chip", title: "Ta langue", text: "Indique la langue dans laquelle tu contribues, et permet d'en changer à tout moment. LANGA est communautaire : si ta langue n'existe pas encore, tu peux la déclarer d'ici, et elle deviendra aussitôt disponible pour tous ceux qui la parlent",
-    en: { title: "Your language", text: "Shows the language you're contributing in, and lets you change it at any time. LANGA is community-driven: if your language doesn't exist yet, you can declare it from here, and it becomes immediately available to everyone who speaks it" } },
-  { sel: "#about-link", title: "Découvrir le projet", text: "Ouvre la page qui raconte l'ambition de LANGA, pourquoi ta langue mérite d'exister dans le numérique et les trois manières d'y prendre part. C'est la page idéale à montrer à quelqu'un que tu veux convaincre de participer",
-    en: { title: "Discover the project", text: "Opens the page that tells LANGA's ambition, why your language deserves to exist in the digital world and the three ways to take part. It's the ideal page to show someone you want to convince to join" } },
+  { sel: "#lang-chip", title: "Ta langue", text: "Indique la langue dans laquelle tu contribues, et permet d'en changer à tout moment. LANGIAL est communautaire : si ta langue n'existe pas encore, tu peux la déclarer d'ici, et elle deviendra aussitôt disponible pour tous ceux qui la parlent",
+    en: { title: "Your language", text: "Shows the language you're contributing in, and lets you change it at any time. LANGIAL is community-driven: if your language doesn't exist yet, you can declare it from here, and it becomes immediately available to everyone who speaks it" } },
+  { sel: "#about-link", title: "Découvrir le projet", text: "Ouvre la page qui raconte l'ambition de LANGIAL, pourquoi ta langue mérite d'exister dans le numérique et les trois manières d'y prendre part. C'est la page idéale à montrer à quelqu'un que tu veux convaincre de participer",
+    en: { title: "Discover the project", text: "Opens the page that tells LANGIAL's ambition, why your language deserves to exist in the digital world and the three ways to take part. It's the ideal page to show someone you want to convince to join" } },
   { sel: "#help-btn", title: "Cette visite guidée", text: "Le bouton que tu viens d'utiliser. Sur n'importe quelle page il éclaire chaque zone l'une après l'autre et explique à quoi elle sert. Reviens-y sans crainte : rien ne s'enregistre et tu peux passer les étapes quand tu veux",
     en: { title: "This guided tour", text: "The button you've just used. On any page it highlights each area one after another and explains what it's for. Come back to it without fear: nothing is saved and you can skip the steps whenever you want" } },
   { sel: "#bugs-link", title: "Signaler un souci", text: "Un bouton qui coince, une lettre absente du clavier, un envoi qui bloque : décris-le en quelques mots. Tu suis ensuite son traitement jusqu'à la correction, et tu vois la liste des problèmes déjà résolus",
@@ -2483,8 +2483,8 @@ const TOURS = {
       en: { title: "The consensus answer", text: "When the same answer comes back often enough in your village, it stands out here as the reference variant for you. It's your community's usage that prevails, not that of another village" } },
   ]),
   about: withChrome([
-    { sel: ".about-head", title: "La page qui raconte le projet", text: "Un espace à part pour présenter LANGA : d'où vient son nom, quelle ambition le porte et comment n'importe qui peut y prendre part. C'est la page à partager pour donner à d'autres l'envie de contribuer",
-      en: { title: "The page that tells the project", text: "A dedicated space to present LANGA: where its name comes from, what ambition drives it and how anyone can take part. It's the page to share to give others the urge to contribute" } },
+    { sel: ".about-head", title: "La page qui raconte le projet", text: "Un espace à part pour présenter LANGIAL : d'où vient son nom, quelle ambition le porte et comment n'importe qui peut y prendre part. C'est la page à partager pour donner à d'autres l'envie de contribuer",
+      en: { title: "The page that tells the project", text: "A dedicated space to present LANGIAL: where its name comes from, what ambition drives it and how anyone can take part. It's the page to share to give others the urge to contribute" } },
     { sel: ".about-vision", title: "L'ambition de fond", text: "Bien plus qu'un simple dictionnaire : rassembler mots et voix pour donner à nos langues des claviers, des traducteurs et des IA qui les comprennent. Le ngiemboon montre la voie, l'horizon vise toutes nos langues",
       en: { title: "The underlying ambition", text: "Far more than a mere dictionary: gathering words and voices to give our languages keyboards, translators and AIs that understand them. Ngiemboon leads the way, the horizon aims at all our languages" } },
     { sel: "#about-grid-why", title: "Ce que ça change vraiment", text: "Trois enjeux réunis : préserver ce qui pourrait se perdre, outiller la langue pour qu'elle vive dans les téléphones et les ordinateurs, et le faire ensemble, car une langue appartient à ceux qui la parlent",
@@ -2499,14 +2499,14 @@ const TOURS = {
   lang: withChrome([
     { sel: "#lang-search", title: "Chercher une langue", text: "Tape le nom d'une langue, une région ou un pays : la liste se filtre à mesure que tu écris. Bien pratique quand beaucoup de langues sont déjà déclarées, pour retrouver la tienne d'un coup d'œil",
       en: { title: "Search a language", text: "Type the name of a language, a region or a country: the list filters as you write. Quite handy when many languages are already declared, to find yours at a glance" } },
-    { sel: "#lang-declare-btn", title: "Déclarer ta langue", text: "Si ta langue n'apparaît pas encore dans la liste, ce bouton ouvre un court formulaire pour la créer. Elle devient aussitôt disponible pour toi et pour toute personne qui la parle : LANGA est fait pour accueillir toutes nos langues",
-      en: { title: "Declare your language", text: "If your language doesn't appear in the list yet, this button opens a short form to create it. It becomes immediately available to you and to anyone who speaks it: LANGA is made to welcome all our languages" } },
+    { sel: "#lang-declare-btn", title: "Déclarer ta langue", text: "Si ta langue n'apparaît pas encore dans la liste, ce bouton ouvre un court formulaire pour la créer. Elle devient aussitôt disponible pour toi et pour toute personne qui la parle : LANGIAL est fait pour accueillir toutes nos langues",
+      en: { title: "Declare your language", text: "If your language doesn't appear in the list yet, this button opens a short form to create it. It becomes immediately available to you and to anyone who speaks it: LANGIAL is made to welcome all our languages" } },
     { sel: "#lang-grid", title: "Choisir ta langue", text: "Chaque carte est une langue déjà présente : touche-la pour contribuer dans cette langue. Le ngiemboon a son clavier dédié avec les tons ; les autres s'écrivent avec le clavier habituel de ton téléphone en attendant le leur",
       en: { title: "Choose your language", text: "Each card is a language already present: tap it to contribute in that language. Ngiemboon has its dedicated keyboard with the tones; the others are written with your phone's usual keyboard while waiting for their own" } },
-    { sel: "#lang-merge-panel", title: "Réunir les doublons", text: "Deux personnes ont parfois créé la même langue sous des écritures différentes. LANGA te le signale ici : tu peux confirmer une fusion qu'on te propose, accepter une ressemblance repérée automatiquement, ou choisir toi-même deux langues que tu sais identiques et proposer de les réunir. La fusion n'a lieu qu'avec l'accord des personnes concernées, et rien n'est perdu : les orthographes et les régions des deux sont conservées",
-      en: { title: "Merge duplicates", text: "Two people sometimes created the same language under different spellings. LANGA flags it for you here: you can confirm a merge proposed to you, accept a resemblance spotted automatically, or pick two languages yourself that you know are identical and propose to merge them. The merge only happens with the agreement of the people concerned, and nothing is lost: the spellings and regions of both are kept" } },
-    { sel: "#ld-nom", title: "Le nom de la langue", text: "Écris le nom sous lequel ta langue est connue. Pendant que tu tapes, LANGA compare avec les langues déjà déclarées pour t'éviter de créer un doublon sous une orthographe un peu différente",
-      en: { title: "The language name", text: "Write the name your language is known by. As you type, LANGA compares with the languages already declared to save you from creating a duplicate under a slightly different spelling" } },
+    { sel: "#lang-merge-panel", title: "Réunir les doublons", text: "Deux personnes ont parfois créé la même langue sous des écritures différentes. LANGIAL te le signale ici : tu peux confirmer une fusion qu'on te propose, accepter une ressemblance repérée automatiquement, ou choisir toi-même deux langues que tu sais identiques et proposer de les réunir. La fusion n'a lieu qu'avec l'accord des personnes concernées, et rien n'est perdu : les orthographes et les régions des deux sont conservées",
+      en: { title: "Merge duplicates", text: "Two people sometimes created the same language under different spellings. LANGIAL flags it for you here: you can confirm a merge proposed to you, accept a resemblance spotted automatically, or pick two languages yourself that you know are identical and propose to merge them. The merge only happens with the agreement of the people concerned, and nothing is lost: the spellings and regions of both are kept" } },
+    { sel: "#ld-nom", title: "Le nom de la langue", text: "Écris le nom sous lequel ta langue est connue. Pendant que tu tapes, LANGIAL compare avec les langues déjà déclarées pour t'éviter de créer un doublon sous une orthographe un peu différente",
+      en: { title: "The language name", text: "Write the name your language is known by. As you type, LANGIAL compares with the languages already declared to save you from creating a duplicate under a slightly different spelling" } },
     { sel: "#ld-pays", title: "Le pays", text: "Le pays où la langue est parlée. On part du plus large, le pays, avant de préciser la région : cela situe d'emblée la langue sur la carte",
       en: { title: "The country", text: "The country where the language is spoken. We start from the broadest, the country, before narrowing to the region: it places the language on the map right away" } },
     { sel: "#ld-region", title: "Où on la parle", text: "La région ou la localité, plus précise que le pays. Deux langues de noms proches mais de régions éloignées sont sans doute distinctes, et cette précision aide à ne pas les confondre",
@@ -2672,7 +2672,7 @@ function downloadDict(fmt) {
   const entries = _exploreEntries || [];
   let content, mime;
   if (fmt === "json") {
-    content = entriesToJSON(entries, { langue: lid, nom: currentLang().nom, exporte_par: "LANGA" });
+    content = entriesToJSON(entries, { langue: lid, nom: currentLang().nom, exporte_par: "LANGIAL" });
     mime = "application/json";
   } else if (fmt === "lift") {
     content = entriesToLIFT(entries, { langId: lid });
@@ -3714,7 +3714,7 @@ function mountShareBars() {
   const opts = {
     url: shareUrl,
     text: t("share.text"),
-    title: "LANGA",
+    title: "LANGIAL",
     toast: toast,
     nativeLabel: t("share.native"),
     copyLabel: t("share.copy"),
@@ -3795,7 +3795,7 @@ async function presentPosterCanvas() {
   const tg = g.createLinearGradient(W / 2 - 320, 0, W / 2 + 320, 0);
   tg.addColorStop(0, cyan); tg.addColorStop(1, green);
   g.fillStyle = tg; g.font = "800 176px system-ui, 'Segoe UI', sans-serif";
-  g.fillText("LANGA", W / 2, 700);
+  g.fillText("LANGIAL", W / 2, 700);
   g.fillStyle = muted; g.font = "400 48px system-ui, 'Segoe UI', sans-serif";
   g.fillText("Numériser les langues d'Afrique, texte et voix", W / 2, 810);
 

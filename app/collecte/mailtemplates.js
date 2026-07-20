@@ -1,4 +1,4 @@
-// Gabarits d'e-mails TYPIQUES de LANGA, par cas de figure (FR/EN). Module PUR : il
+// Gabarits d'e-mails TYPIQUES de LANGIAL, par cas de figure (FR/EN). Module PUR : il
 // se contente de PRODUIRE le sujet + le corps d'un e-mail à partir de données ; il
 // n'envoie RIEN. L'envoi réel est DIFFÉRÉ jusqu'à l'acquisition du domaine
 // (langia.tech) et d'un service d'e-mail ; ce module sera alors branché sur le même
@@ -31,7 +31,7 @@ const GENERATORS = {
   vote(d, lang) {
     const who = _who(d, lang), mot = (d.mot || "").trim();
     return {
-      subject: _pick(lang, `${who} a noté ta traduction sur LANGA`, `${who} rated your translation on LANGA`),
+      subject: _pick(lang, `${who} a noté ta traduction sur LANGIAL`, `${who} rated your translation on LANGIAL`),
       body: [
         _hello(d, lang), "",
         _pick(lang,
@@ -133,8 +133,8 @@ const GENERATORS = {
       body: [
         _hello(d, lang), "",
         _pick(lang,
-          `Bonne nouvelle : ${who} a répondu à ta demande de traduction de « ${mot} ». Va voir la réponse sur LANGA.`,
-          `Good news: ${who} answered your translation request for “${mot}”. Check the answer on LANGA.`),
+          `Bonne nouvelle : ${who} a répondu à ta demande de traduction de « ${mot} ». Va voir la réponse sur LANGIAL.`,
+          `Good news: ${who} answered your translation request for “${mot}”. Check the answer on LANGIAL.`),
       ].join("\n"),
     };
   },
@@ -159,9 +159,9 @@ const GENERATORS = {
 function _footer(d, lang) {
   const url = (d.appUrl || APP_URL_DEFAULT);
   return "\n\n" + [
-    _pick(lang, `Ouvre LANGA : ${url}`, `Open LANGA: ${url}`),
-    _pick(lang, "Tu reçois cet e-mail parce que tu contribues à LANGA. Pour ne plus en recevoir, réponds « STOP ».",
-                "You receive this email because you contribute to LANGA. To stop receiving them, reply “STOP”."),
+    _pick(lang, `Ouvre LANGIAL : ${url}`, `Open LANGIAL: ${url}`),
+    _pick(lang, "Tu reçois cet e-mail parce que tu contribues à LANGIAL. Pour ne plus en recevoir, réponds « STOP ».",
+                "You receive this email because you contribute to LANGIAL. To stop receiving them, reply “STOP”."),
   ].join("\n");
 }
 

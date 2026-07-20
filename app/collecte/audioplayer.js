@@ -1,4 +1,4 @@
-// Lecteur audio SUR-MESURE de LANGA — premium, moderne, responsive.
+// Lecteur audio SUR-MESURE de LANGIAL — premium, moderne, responsive.
 //
 // Habille un élément <audio> existant : bouton play/pause à anneau de progression,
 // forme d'onde (canvas) dont la partie lue se remplit avec une CRÊTE lumineuse qui

@@ -1,7 +1,7 @@
 {
-  "name": "LANGA — Collecte des langues",
-  "short_name": "LANGA",
-  "description": "LANGA — numériser les langues d'Afrique, texte et audio, par leurs communautés.",
+  "name": "LANGIAL · Collecte des langues",
+  "short_name": "LANGIAL",
+  "description": "LANGIAL — numériser les langues d'Afrique, texte et audio, par leurs communautés.",
   "lang": "fr",
   "start_url": "./",
   "scope": "./",

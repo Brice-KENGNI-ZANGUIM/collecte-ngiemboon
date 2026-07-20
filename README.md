@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="assets/logo.png" alt="Logo LANGA" height="130" />
+  <img src="assets/logo.png" alt="Logo LANGIAL" height="130" />
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/wordmark-dark.png" />
-    <img src="assets/wordmark-light.png" alt="LANGA" height="130" />
+    <img src="assets/wordmark-light.png" alt="LANGIAL" height="130" />
   </picture>
 </p>
 
@@ -25,7 +25,7 @@
 
 La plupart des langues africaines se parlent tous les jours mais s'écrivent peu, et
 elles restent presque absentes des outils numériques : on ne les trouve ni dans les
-claviers, ni dans les dictionnaires en ligne, ni dans les traducteurs. **LANGA** est
+claviers, ni dans les dictionnaires en ligne, ni dans les traducteurs. **LANGIAL** est
 une application ouverte à tous qui permet à chacun d'écrire, de prononcer et de
 consulter les mots de sa langue, à l'écrit comme à l'oral, depuis un simple téléphone
 ou un ordinateur.
@@ -76,7 +76,7 @@ pour changer d'activité, de langue ou de thème.
 Traduire consiste à donner l'équivalent d'un mot ou d'une phrase entre le français et la
 langue choisie. On peut se laisser proposer un mot du corpus, qui compte déjà plusieurs
 milliers d'entrées, ou saisir librement le sien. Comme les lettres et les tons propres
-aux langues africaines ne figurent pas sur un clavier ordinaire, LANGA fournit un
+aux langues africaines ne figurent pas sur un clavier ordinaire, LANGIAL fournit un
 **clavier virtuel dédié** qui s'ouvre au moment où l'on touche le champ de saisie, à la
 manière d'une application de messagerie.
 
@@ -267,6 +267,6 @@ son propre code source sous la même licence.
 ---
 
 <p align="center">
-  <img src="assets/logo.png" alt="LANGA" height="46" /><br>
+  <img src="assets/logo.png" alt="LANGIAL" height="46" /><br>
   <sub>© 2026 Brice Kengni Zanguim</sub>
 </p>

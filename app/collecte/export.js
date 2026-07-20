@@ -70,7 +70,7 @@ export function xmlEscape(v) {
 export function entriesToLIFT(entries, meta) {
   meta = meta || {};
   const lang = xmlEscape(meta.langId || "und");   // code de la langue (ex. « nge »)
-  const out = ['<?xml version="1.0" encoding="UTF-8"?>', '<lift version="0.13" producer="LANGA">'];
+  const out = ['<?xml version="1.0" encoding="UTF-8"?>', '<lift version="0.13" producer="LANGIAL">'];
   let n = 0;
   for (const e of (entries || [])) {
     const toFr = /2fr$/i.test(e.direction || "");           // sens X→français : la vedette est la SOURCE
@@ -143,7 +143,7 @@ export function entriesToELAN(entries, meta) {
   });
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    `<ANNOTATION_DOCUMENT AUTHOR="LANGA" DATE="${date}" FORMAT="3.0" VERSION="3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.mpi.nl/tools/elan/EAFv3.0.xsd">`,
+    `<ANNOTATION_DOCUMENT AUTHOR="LANGIAL" DATE="${date}" FORMAT="3.0" VERSION="3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.mpi.nl/tools/elan/EAFv3.0.xsd">`,
     '  <HEADER TIME_UNITS="milliseconds"></HEADER>',
     '  <TIME_ORDER>', slots.join("\n"), '  </TIME_ORDER>',
     `  <TIER TIER_ID="${lang}-transcription" LINGUISTIC_TYPE_REF="transcription">`, trans.join("\n"), '  </TIER>',

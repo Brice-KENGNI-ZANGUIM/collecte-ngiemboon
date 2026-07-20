@@ -1,4 +1,4 @@
-// Moteur de SIMILARITÉ entre langues — LANGA.
+// Moteur de SIMILARITÉ entre langues — LANGIAL.
 //
 // But : quand un utilisateur déclare une langue, détecter celles DÉJÀ présentes qui
 // lui ressemblent, même écrites différemment (Nguiemboon ≈ Nguiembor ≈ Nguiembow) ou

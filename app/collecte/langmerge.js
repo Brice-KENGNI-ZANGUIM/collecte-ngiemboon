@@ -1,4 +1,4 @@
-// Fusion / jumelage de langues (LANGA) — logique PURE et testable.
+// Fusion / jumelage de langues (LANGIAL) — logique PURE et testable.
 //
 // Deux personnes qui ne se connaissent pas peuvent déclarer LA MÊME langue sous des
 // orthographes ou des régions différentes. Ce module DÉTECTE les couples proches,

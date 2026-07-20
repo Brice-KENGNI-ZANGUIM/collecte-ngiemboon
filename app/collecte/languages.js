@@ -1,4 +1,4 @@
-// Registre des LANGUES — LANGA, plateforme adaptative et communautaire.
+// Registre des LANGUES — LANGIAL, plateforme adaptative et communautaire.
 //
 // Philosophie : une langue est une DONNÉE, pas du code. La liste des langues vit
 // dans le backend ; tout utilisateur peut en DÉCLARER une nouvelle (ex. le Bassa),

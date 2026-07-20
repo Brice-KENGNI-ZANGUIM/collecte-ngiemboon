@@ -1,6 +1,9 @@
 {
-  "version": "v224",
+  "version": "v225",
   "changelog": {
+    "v225": [
+      "L'application s'appelle désormais LANGIAL : le nom a été mis à jour partout (accueil, à propos, partages, e-mails). Le mode sombre devient l'affichage par défaut à la première ouverture ; ton choix clair/sombre reste respecté. Le motif de fond défile maintenant avec le contenu, d'un seul tenant"
+    ],
     "v224": [
       "Chaque titre de page s'inscrit désormais dans un cadre à bordure lumineuse et halo, comme les onglets du haut ; le centre du séparateur devient un véritable ornement ; les logos des réseaux sociaux du footer reposent sur un rond blanc dans les deux thèmes"
     ],
@@ -44,7 +47,7 @@
     ],
     "v213": [
       "Nouvelle porte « Demander » sur l'accueil : tu peux demander à la communauté la traduction ou la prononciation d'un mot ou d'une phrase dans une langue précise (avec le pays, la région et un peu de contexte). Les personnes qui parlent cette langue sont prévenues et peuvent t'aider ; les autres peuvent relayer ta demande autour d'eux avec un message tout prêt à partager",
-      "Répondre à une demande se fait en un geste : ta réponse aide la personne, rejoint la bibliothèque Explorer et prévient le demandeur. LANGA devient un vrai outil d'entraide où chacun peut aider chacun",
+      "Répondre à une demande se fait en un geste : ta réponse aide la personne, rejoint la bibliothèque Explorer et prévient le demandeur. LANGIAL devient un vrai outil d'entraide où chacun peut aider chacun",
       "Si la langue que tu cherches n'est pas encore dans la liste, tu peux la déclarer directement depuis la page « Demander » (juste son nom et sa région), puis lancer ta demande, même si tu ne la parles pas toi-même",
       "Le menu du haut de l'application est plus compact : « Mon profil » devient « Profil », les notifications sont représentées par une simple cloche, et les 4 espaces (Transcrire, Traduire, Explorer, Demander) sont accessibles d'un onglet sur toutes les pages d'activité"
     ],
@@ -92,7 +95,7 @@
     "v202": [
       "Le décor animé est désormais visible aussi sur téléphone (il n'était figé que sur ordinateur) ; il ne se met en pause que pendant que tu écris au clavier, pour garder la frappe fluide",
       "Icônes du menu du haut plus faciles à distinguer : chacune a maintenant sa propre couleur (accueil cyan, langue verte, à propos bleu, aide dorée, bugs rouge, profil violet)",
-      "Page « À propos » : nouvel emblème soigné (soleil levant, clin d'œil au sens de LANGA, « la lumière ») et cadre « La vision » retravaillé, plus lisible et plus premium",
+      "Page « À propos » : nouvel emblème soigné (soleil levant, clin d'œil au sens de LANGIAL, « la lumière ») et cadre « La vision » retravaillé, plus lisible et plus premium",
       "Cadres de l'application au rendu plus homogène et plus soigné"
     ],
     "v201": [
@@ -109,7 +112,7 @@
       "Explorer : la page d'une langue montre ses principaux contributeurs, avec le nombre de contributions de chacun"
     ],
     "v198": [
-      "Décor plus premium : les cartes gagnent une matière plus profonde (reflet, relief, halo de lumière à la couleur de l'activité) et l'en-tête un léger effet lumineux derrière le nom LANGA"
+      "Décor plus premium : les cartes gagnent une matière plus profonde (reflet, relief, halo de lumière à la couleur de l'activité) et l'en-tête un léger effet lumineux derrière le nom LANGIAL"
     ],
     "v197": [
       "Beaucoup plus de contenu à traduire : près de deux fois plus de mots (plus de 3200) et plus de deux fois plus de phrases d'exemple (plus de 3100), tous affichés aussi en anglais"
@@ -140,12 +143,12 @@
       "Le panneau de réunion des langues est traduit (français et anglais) et expliqué dans l'aide guidée"
     ],
     "v190": [
-      "Jumelage de langues : LANGA repère les langues déclarées en double (mêmes langues sous des orthographes ou régions différentes) et propose de les réunir",
+      "Jumelage de langues : LANGIAL repère les langues déclarées en double (mêmes langues sous des orthographes ou régions différentes) et propose de les réunir",
       "Deux personnes qui ont créé la même langue peuvent la fusionner : chacune confirme « c'est bien la même », et les deux fiches sont réunies sans rien perdre (orthographes gardées comme autres noms, régions et pays cumulés)",
       "Une langue réunie dans une autre redirige vers elle dans la bibliothèque : aucune contribution n'est perdue"
     ],
     "v189": [
-      "En-tête : « LANGA · Collecte » rétabli en entier sur tous les écrans, avec « LANGA » agrandi et « · Collecte » plus discret ; les deux pastilles d'état restent sur une seule ligne, un peu plus compactes si l'écran est étroit"
+      "En-tête : « LANGIAL · Collecte » rétabli en entier sur tous les écrans, avec « LANGIAL » agrandi et « · Collecte » plus discret ; les deux pastilles d'état restent sur une seule ligne, un peu plus compactes si l'écran est étroit"
     ],
     "v188": [
       "Déclaration d'une langue : le pays est demandé avant la région, du plus général au plus précis"
@@ -156,11 +159,11 @@
     ],
     "v186": [
       "Page « À propos » : le symbole en tête du titre est remplacé par une icône d'information sobre",
-      "Nom LANGA agrandi dans l'en-tête, et les boutons descendent sous le logo au plus près du bas",
+      "Nom LANGIAL agrandi dans l'en-tête, et les boutons descendent sous le logo au plus près du bas",
       "Textes revus pour une lecture plus naturelle et fluide, dans toute l'application"
     ],
     "v185": [
-      "Header plus dense et lisible : logo et nom LANGA agrandis, boutons resserrés (horizontalement et entre les lignes) pour remplir l'espace, sur PC comme sur mobile",
+      "Header plus dense et lisible : logo et nom LANGIAL agrandis, boutons resserrés (horizontalement et entre les lignes) pour remplir l'espace, sur PC comme sur mobile",
       "« Mon profil » et le sélecteur de langue restent affichés sur toutes les pages dès qu'un profil et une langue existent (ils ne disparaissent plus, même sur la page profil)"
     ],
     "v184": [
@@ -347,7 +350,7 @@
     ],
     "v124": [
       "Partage un mot depuis Explorer : le bouton « 🔗 Partager » crée une jolie carte texte (mot, traduction, langue) à envoyer sur WhatsApp, SMS ou n'importe où — ou copiée dans le presse-papiers",
-      "Textes rafraîchis : LANGA accueille déjà plusieurs langues d'Afrique (le ngiemboon reste la plus avancée), fini les mentions « langue pilote / point de départ »"
+      "Textes rafraîchis : LANGIAL accueille déjà plusieurs langues d'Afrique (le ngiemboon reste la plus avancée), fini les mentions « langue pilote / point de départ »"
     ],
     "v123": [
       "Exporte le dictionnaire d'une langue en CSV ou JSON depuis Explorer (appropriation et partage des données)"
@@ -366,7 +369,7 @@
       "Explorer : plus d'entrée « fantôme » sans mot ni audio ni traduction (bug signalé corrigé)"
     ],
     "v112": [
-      "LANGA devient MULTI-LANGUE et communautaire : choisis ta langue au démarrage, ou déclare-la si elle manque — elle devient enrichissable par tous. Le ngiemboon garde son clavier dédié ; les autres langues utilisent le clavier standard. Un sélecteur de langue est toujours accessible dans l'en-tête."
+      "LANGIAL devient MULTI-LANGUE et communautaire : choisis ta langue au démarrage, ou déclare-la si elle manque — elle devient enrichissable par tous. Le ngiemboon garde son clavier dédié ; les autres langues utilisent le clavier standard. Un sélecteur de langue est toujours accessible dans l'en-tête."
     ],
     "v108": [
       "Les cadres posés sur le fond sont désormais opaques (la trame ne les traverse plus)",

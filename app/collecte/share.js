@@ -32,7 +32,7 @@ export function shareCardText(entry, langName, url) {
   else head = "Un mot de notre langue";
   if (lang) head += ` (${lang})`;
 
-  const lines = [head, "Partagé via LANGA, pour numériser nos langues"];
+  const lines = [head, "Partagé via LANGIAL, pour numériser nos langues"];
   const u = clean(url, 200);
   if (u) lines.push(u);
   return lines.join("\n");
@@ -41,7 +41,7 @@ export function shareCardText(entry, langName, url) {
 /** Titre court pour navigator.share (sans le lien). */
 export function shareTitle(langName) {
   const lang = clean(langName, 40);
-  return lang ? `LANGA · ${lang}` : "LANGA";
+  return lang ? `LANGIAL · ${lang}` : "LANGIAL";
 }
 
 // ============================================================================
@@ -83,8 +83,8 @@ export function mountShareBar(container, opts) {
   if (!container) return;
   const o = opts || {};
   const url = o.url || location.href;
-  const text = o.text || "Découvre LANGA et aidons ensemble à numériser nos langues d'Afrique, en texte et en voix";
-  const title = o.title || "LANGA";
+  const text = o.text || "Découvre LANGIAL et aidons ensemble à numériser nos langues d'Afrique, en texte et en voix";
+  const title = o.title || "LANGIAL";
   const toast = typeof o.toast === "function" ? o.toast : function () {};
   const nets = o.nets || ["whatsapp", "facebook", "x", "telegram"];
   const links = siteShareLinks(url, text);

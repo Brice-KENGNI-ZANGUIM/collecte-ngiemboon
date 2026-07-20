@@ -197,7 +197,7 @@ body {
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent; color: var(--cyan);
 }
-/* « · Collecte » : nettement plus petit que « LANGA » (qui domine). */
+/* « · Collecte » : nettement plus petit que « LANGIAL » (qui domine). */
 .brand-sub { -webkit-text-fill-color: var(--green); color: var(--green); font-weight: 700; font-size: .5em; }
 /* En clair, l'amorce near-white du dégradé du titre serait invisible : on part
    directement du cyan pour garder un titre lisible et coloré. */
@@ -311,7 +311,7 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 .chip--btn:hover .chip-ico { filter: drop-shadow(0 0 6px rgba(34,211,238,.7)); }
 
 /* --- Header MOBILE / TABLETTE (≤900px) : réorganisation lisible -----------------
-   Nom LANGA agrandi (≈ hauteur du logo) ; boutons de nav AVEC leur texte (l'icône
+   Nom LANGIAL agrandi (≈ hauteur du logo) ; boutons de nav AVEC leur texte (l'icône
    seule rendait les boutons peu clairs) ; « en ligne », « Drive », version et « EN »
    repoussés EN DERNIER (2e ligne), les deux pastilles clignotantes réduites. */
 @media (max-width: 900px) {
@@ -319,7 +319,7 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   .brand { gap: 11px; }
   .brand-mark { width: 48px; height: 48px; border-radius: 13px; }
   .brand-mark img { border-radius: 13px; }
-  .brand-txt h1 { font-size: 1.95rem; line-height: 1; }    /* LANGA agrandi, proche du logo */
+  .brand-txt h1 { font-size: 1.95rem; line-height: 1; }    /* LANGIAL agrandi, proche du logo */
   .brand-sub { font-size: .48em; }                         /* « · Collecte » bien plus petit */
   .tagline { display: none; }                              /* déjà répété dans le footer */
   .chip { font-size: .72rem; padding: 4px 6px; }
@@ -368,7 +368,7 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   #ui-lang-toggle, #theme-toggle { padding: 0; }   /* capsules : le padding est sur les segments */
   .lang-switch .lang-seg, .theme-switch .theme-seg { padding: 4px 8px; font-size: .66rem; }
 }
-/* Petits téléphones (≤ 389px) : le nom se réduit d'un cran pour que « LANGA · Collecte »
+/* Petits téléphones (≤ 389px) : le nom se réduit d'un cran pour que « LANGIAL · Collecte »
    ET les deux pastilles d'état tiennent sur la même ligne, sans scroll. Dès 390px le nom
    garde sa grande taille (1.42rem), donc les téléphones courants ne sont pas touchés. */
 @media (max-width: 389px) {
@@ -702,7 +702,7 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 .title-ico { width: 34px; height: 34px; flex: 0 0 auto; }
 /* Icône « info » du titre « À propos » (remplace l'ancien symbole étoilé) : teinte
    cyan d'accent, ne rétrécit pas. */
-/* Emblème premium du titre « À propos » : badge en verre dégradé, soleil levant (LANGA =
+/* Emblème premium du titre « À propos » : badge en verre dégradé, soleil levant (LANGIAL =
    « la lumière ») ; halo doux, léger relief. */
 .about-emblem { flex: 0 0 auto; display: inline-flex; line-height: 0;
   filter: drop-shadow(0 4px 10px rgba(0,0,0,.28)) drop-shadow(0 0 14px color-mix(in srgb, var(--green) 40%, transparent)); }
