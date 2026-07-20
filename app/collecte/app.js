@@ -189,6 +189,8 @@ function applyLanguage() {
   if (dT) dT.textContent = t("hub.desc.translate").replace("{lang}", L.nom);
   const dS = document.querySelector('.hub-card[data-go="transcribe"] .hub-desc');
   if (dS) dS.textContent = t("hub.desc.transcribe").replace("{lang}", L.nom);
+  const dE = document.querySelector('.hub-card[data-go="explore"] .hub-desc');
+  if (dE) dE.textContent = t("hub.card.explore.desc");
   const chipName = $("#lang-chip-name"); if (chipName) chipName.textContent = L.nom;
   applyDirection();
 }
