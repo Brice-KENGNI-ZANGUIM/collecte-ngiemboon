@@ -556,7 +556,7 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 /* MOBILE/TABLETTE : la marge négative desktop provoquait un CHEVAUCHEMENT des onglets sur les
    boutons du header (layout empilé, pas la grille du desktop). Placée APRÈS la base pour gagner
    la cascade : petit écart POSITIF, aucun recouvrement. */
-@media (max-width: 900px) { .main-nav { margin-top: 6px; } }
+@media (max-width: 900px) { .main-nav { margin-top: -16px; } }   /* écart onglets = écart entre les 2 lignes du header (~20px), sans recouvrement */
 .main-nav[hidden] { display: none; }
 /* Onglets : chaque bouton porte SA couleur d'activité (contour + fond teinté + halo),
    IDENTIQUE sur PC et téléphone. Sur PC ils s'étirent pour remplir la largeur dédiée
