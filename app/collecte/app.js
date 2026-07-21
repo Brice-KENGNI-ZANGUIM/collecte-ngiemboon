@@ -41,7 +41,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v314";
+const APP_VERSION = "v315";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -348,11 +348,26 @@ function firstUndoneGroup() {
   for (const k of GROUP_ORDER) { if (groupUndone(k).length > 0) return k; }
   return null;
 }
-/** Groupe actif : choix manuel s'il reste des items, sinon le premier groupe
-    non épuisé dans l'ordre (auto-avance + retour sur mise à jour). */
+function _shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t2 = a[i]; a[i] = a[j]; a[j] = t2; } return a; }
+// MOTEUR CYCLIQUE (Brice) : en mode AUTO, on ne vide plus un groupe avant le suivant.
+// On propose UN item par groupe en TOURNANT de groupe en groupe ; l'ORDRE des groupes est
+// RE-MÉLANGÉ à chaque cycle, et l'item dans un groupe est tiré au hasard (cf. loadProposition).
+// Le DICTIONNAIRE (68k mots rares) reste HORS cycle : dernier recours quand les groupes curés
+// sont épuisés (sinon il diluerait la matière curée avec des mots rares/difficiles).
+let _cycleQueue = [];
+function _autoGroup() {
+  const curated = GROUP_ORDER.filter((k) => k !== "dictionnaire" && groupUndone(k).length > 0);
+  if (curated.length) {
+    _cycleQueue = _cycleQueue.filter((k) => k !== "dictionnaire" && groupUndone(k).length > 0);   // purge les épuisés
+    if (!_cycleQueue.length) _cycleQueue = _shuffle(curated.slice());   // nouveau cycle = nouvel ordre aléatoire
+    return _cycleQueue.shift();
+  }
+  return groupUndone("dictionnaire").length > 0 ? "dictionnaire" : null;   // recours final
+}
+/** Groupe actif : choix manuel s'il reste des items ; sinon rotation cyclique aléatoire. */
 function resolveGroup() {
   if (propCat && propCat !== "auto" && groupUndone(propCat).length > 0) return propCat;
-  return firstUndoneGroup();
+  return _autoGroup();
 }
 function initPropCategories() {
   const sel = $("#prop-cat");
@@ -409,11 +424,9 @@ function loadProposition() {
   const restants = items.filter((it) => !_doneTexts.has(it.norm || normTxt(it.texte)));
   const total = items.length, faits = total - restants.length;
   // Progression PAR GROUPE (ex. « Mots · 7/335 traduits »), verbe selon l'activité.
+  // En mode auto CYCLIQUE le groupe change à chaque proposition : plus d'annonce de
+  // « groupe terminé » (elle n'a de sens que dans l'ancien épuisement séquentiel).
   $("#prop-progress").textContent = `${groupLabel(group)} · ${faits} / ${total} ${verb}`;
-  // Annonce le passage AUTOMATIQUE au groupe suivant (quand le précédent est fini).
-  if (_lastGroup && _lastGroup !== group && groupUndone(_lastGroup).length === 0) {
-    toast(`Groupe « ${groupLabel(_lastGroup)} » terminé, on continue avec « ${groupLabel(group)} ».`, "ok");
-  }
   _lastGroup = group;
   // Tirage AU HASARD parmi les restants du groupe.
   currentProp = restants[Math.floor(Math.random() * restants.length)];

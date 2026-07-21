@@ -1,6 +1,9 @@
 {
-  "version": "v314",
+  "version": "v315",
   "changelog": {
+    "v315": [
+      "Proposition automatique repensée : au lieu de vider un groupe (mots, phrases…) avant le suivant, on alterne un élément par groupe en tournant de l'un à l'autre, l'ordre des groupes changeant à chaque tour ; plus de variété"
+    ],
     "v314": [
       "Nouveau : « Mot du jour » sur l'accueil, un mot proposé chaque jour (le même pour tous) à dire dans ta langue en un clic"
     ],
