@@ -806,11 +806,22 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 .trim-wave { display: block; width: 100%; height: auto; touch-action: none; cursor: ew-resize; }
 .trim-times { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
 .trim-time { display: flex; flex-direction: column; gap: 4px; font-size: .82rem; color: var(--muted); }
-.trim-time input { width: 110px; padding: 7px 10px; border-radius: 10px; border: 1px solid var(--border);
-  background: var(--panel); color: var(--text); font: inherit; }
-.trim-dur { margin-left: auto; color: var(--cyan); font-weight: 600; font-size: .9rem; }
-.trim-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.trim-time input { width: 128px; padding: 11px 13px; border-radius: 11px; border: 1.5px solid var(--border);
+  background: var(--panel); color: var(--text); font: inherit; font-size: 1rem; font-weight: 600; }
+.trim-time input:focus-visible { outline: 2px solid var(--cyan); outline-offset: 1px; border-color: var(--cyan); }
+.trim-dur { margin-left: auto; color: var(--cyan); font-weight: 700; font-size: 1rem; }
+.trim-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 4px; }
 .trim-spacer { flex: 1 1 auto; }
+/* Boutons DU MODAL bien présentés : plus larges, plus lisibles, cibles tactiles confortables
+   (auparavant des pastilles trop fines). « Rogner les silences » et « Écouter » teintés cyan. */
+.trim-actions .chip--btn { font-size: .92rem; font-weight: 700; padding: 11px 18px; min-height: 44px;
+  border-width: 1.5px; letter-spacing: .01em; }
+.trim-actions #trim-silence, .trim-actions #trim-play {
+  border-color: color-mix(in srgb, var(--cyan) 55%, var(--border));
+  color: color-mix(in srgb, var(--cyan) 78%, var(--text)); }
+.trim-actions #trim-silence:hover, .trim-actions #trim-play:hover {
+  background: color-mix(in srgb, var(--cyan) 14%, var(--panel)); border-color: var(--cyan); }
+.trim-actions #trim-keep { padding: 12px 22px; font-size: .98rem; }
 #trim-audio { display: none; }
 .lang-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; margin-top: 6px; }
 .lang-card[hidden] { display: none; }
@@ -1801,10 +1812,20 @@ body.kb-docked { padding-bottom: var(--kb-h, 50vh); }
   background: var(--panel); color: var(--text); border-radius: 999px; padding: 9px 18px; cursor: pointer;
   font: inherit; font-size: .84rem; font-weight: 700; letter-spacing: .01em;
   transition: background .15s ease, color .15s ease, box-shadow .15s ease, transform .1s ease; }
-.audio-act--trim { border-color: var(--cyan); color: var(--cyan);
-  background: color-mix(in srgb, var(--cyan) 12%, var(--panel)); }
-.audio-act--trim:hover { background: var(--cyan); color: var(--bg);
-  transform: translateY(-1px); box-shadow: 0 0 18px -5px var(--cyan); }
+/* Bouton « Découper » = action AUDIO clé, mise en AVANT : pleine couleur cyan, plus grand, halo
+   doux qui respire pour attirer l'œil (trop peu vu/utilisé sinon). Respecte reduced-motion. */
+.audio-act--trim { border-color: var(--cyan); color: var(--bg);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--cyan) 92%, #fff), var(--cyan));
+  padding: 12px 24px; font-size: .95rem;
+  box-shadow: 0 6px 20px -6px var(--cyan), inset 0 1px 0 rgba(255,255,255,.3);
+  animation: trim-breathe 2.8s ease-in-out infinite; }
+.audio-act--trim:hover { filter: brightness(1.07); transform: translateY(-1px);
+  box-shadow: 0 8px 26px -6px var(--cyan), inset 0 1px 0 rgba(255,255,255,.35); }
+@keyframes trim-breathe {
+  0%, 100% { box-shadow: 0 6px 18px -8px var(--cyan), inset 0 1px 0 rgba(255,255,255,.3); }
+  50% { box-shadow: 0 6px 26px -4px var(--cyan), 0 0 0 3px color-mix(in srgb, var(--cyan) 22%, transparent), inset 0 1px 0 rgba(255,255,255,.3); }
+}
+@media (prefers-reduced-motion: reduce) { .audio-act--trim { animation: none; } }
 .audio-act--del { border-color: var(--red); color: var(--red);
   background: color-mix(in srgb, var(--red) 12%, var(--panel)); }
 .audio-act--del:hover { background: var(--red); color: var(--bg);
