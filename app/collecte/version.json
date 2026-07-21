@@ -1,6 +1,9 @@
 {
-  "version": "v304",
+  "version": "v305",
   "changelog": {
+    "v305": [
+      "Téléphone : onglets encore rapprochés du header (écart au-dessus de nouveau réduit de moitié)"
+    ],
     "v304": [
       "Téléphone : les 4 onglets sont rapprochés du header (écart au-dessus réduit de moitié)"
     ],
