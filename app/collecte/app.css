@@ -330,10 +330,10 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
    droite (FR/EN, thème, pastilles d'état) restent inchangés. Demande Brice : sur PC les chips
    de nav paraissaient trop petits. */
 @media (min-width: 901px) {
-  .chips-nav .chip--btn { font-size: .95rem; padding: 9px 16px; gap: 9px; }
-  .chips-nav .chip--btn .chip-ico { width: 28px; height: 28px; }
-  .chips-nav .chip--icon { padding: 8px 13px; }
-  .chips-nav .chip--icon .chip-ico { width: 28px; height: 28px; }
+  .chips-nav .chip--btn { font-size: .95rem; padding: 9px 16px; gap: 10px; }
+  .chips-nav .chip--btn .chip-ico { width: 36px; height: 36px; }
+  .chips-nav .chip--icon { padding: 7px 13px; }
+  .chips-nav .chip--icon .chip-ico { width: 36px; height: 36px; }
 }
 
 /* --- Header MOBILE / TABLETTE (≤900px) : réorganisation lisible -----------------
