@@ -2213,6 +2213,12 @@ body.kb-docked { padding-bottom: var(--kb-h, 50vh); }
   box-shadow: inset 0 1px 0 var(--card-sheen); transition: background .14s, box-shadow .14s, transform .1s; }
 .incite-listen:hover { background-color: var(--pop-acc); color: var(--bg); box-shadow: 0 0 16px -5px var(--pop-acc); }
 .incite-listen:active { transform: translateY(1px); }
+/* États d'écoute (comme Explorer) : chargement (pulse, non cliquable) puis lecture. */
+.incite-listen.is-loading { opacity: .8; cursor: progress; animation: incListenPulse 1s ease-in-out infinite; }
+.incite-listen.is-playing { background-color: var(--pop-acc); color: var(--bg); }
+.incite-listen:disabled { cursor: progress; }
+@keyframes incListenPulse { 0%,100% { opacity: .55; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .incite-listen.is-loading { animation: none; } }
 .incite-close { position: absolute; top: 8px; right: 10px; width: 26px; height: 26px; border-radius: 8px;
   border: 1px solid var(--border); background: var(--panel); color: var(--muted); cursor: pointer;
   font-size: .8rem; line-height: 1; display: grid; place-items: center; transition: color .14s, border-color .14s; }

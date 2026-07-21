@@ -679,6 +679,8 @@ export const STR = {
   "incite.aria": { fr: "Invitation à contribuer", en: "Invitation to contribute" },
   "incite.cta": { fr: "Le dire dans ma langue →", en: "Say it in my language →" },
   "incite.listen": { fr: "🔊 Écouter", en: "🔊 Listen" },
+  "audio.loading": { fr: "⏳ Chargement…", en: "⏳ Loading…" },
+  "audio.playing": { fr: "🔊 Lecture…", en: "🔊 Playing…" },
   "incite.listen.name": { fr: "🔊 Écouter {name}", en: "🔊 Hear {name}" },
   "incite.later": { fr: "Plus tard", en: "Later" },
   "incite.close": { fr: "Fermer", en: "Close" },

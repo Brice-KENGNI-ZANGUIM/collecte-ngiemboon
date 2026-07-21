@@ -1,6 +1,9 @@
 {
-  "version": "v282",
+  "version": "v283",
   "changelog": {
+    "v283": [
+      "Bouton « Écouter » des popups : un indicateur clair de chargement puis de lecture (comme dans la bibliothèque), pour ne plus croire que le bouton ne répond pas quand l'audio met un instant à charger"
+    ],
     "v282": [
       "Popups plus lisibles : le nom du demandeur, le mot demandé et la langue cible sont mis en évidence (gras et couleur) d'un coup d'œil, et le bouton d'action indique la vraie destination (par ex. « Transcrire en medumba » au lieu de « Voir mes notifications »)"
     ],

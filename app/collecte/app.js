@@ -30,7 +30,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v282";
+const APP_VERSION = "v283";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -2534,6 +2534,8 @@ function renderIncitation(pick) {
     lis.hidden = !aud;
     if (aud) {
       lis.textContent = pick.ref.name ? ti("incite.listen.name", { name: pick.ref.name }) : t("incite.listen");
+      lis.dataset.label = lis.textContent;      // libellé de référence (restauré après écoute)
+      lis.disabled = false; lis.classList.remove("is-loading", "is-playing");
       lis.onclick = () => _incPlayAudio(aud);
     } else { lis.onclick = null; }
   }
@@ -2542,12 +2544,27 @@ function renderIncitation(pick) {
 function _incStopAudio() { const au = $("#incite-audio"); if (au) { try { au.pause(); au.currentTime = 0; } catch (e) { /* ok */ } } }
 /** Joue l'audio d'une contribution (direct/data ou Drive) dans le petit lecteur du popup. */
 async function _incPlayAudio(url) {
-  const au = $("#incite-audio"); if (!au || !url) return;
+  const au = $("#incite-audio"), lis = $("#incite-listen");
+  if (!au || !url) return;
+  // Retour visuel sur le bouton « Écouter » (comme dans Explorer) : l'audio Drive a une latence
+  // de téléchargement → sans indicateur, on croit que le bouton bugue. On montre « Chargement… »
+  // puis « Lecture… », et on restaure le libellé à la fin.
+  const label = lis ? (lis.dataset.label || lis.textContent) : "";
+  if (lis) lis.dataset.label = label;
+  const restore = () => { if (!lis) return; lis.disabled = false; lis.classList.remove("is-loading", "is-playing"); lis.textContent = lis.dataset.label || t("incite.listen"); };
+  const setStatus = (msg) => { if (lis && msg) lis.textContent = msg; };
   try { au.pause(); } catch (e) { /* ok */ }
+  if (lis) { lis.disabled = true; lis.classList.add("is-loading"); lis.textContent = t("audio.loading"); }
   const did = driveFileId(url);
-  if (did) { await loadDriveAudioInto(au, did, () => {}); }
-  else { try { au.src = url; au.load(); } catch (e) { /* ok */ } }
-  try { await au.play(); } catch (e) { /* politique autoplay : le clic utilisateur devrait suffire */ }
+  try {
+    if (did) { await loadDriveAudioInto(au, did, setStatus); }
+    else { au.src = url; au.load(); }
+  } catch (e) { /* on tente quand même la lecture */ }
+  try {
+    await au.play();
+    if (lis) { lis.disabled = false; lis.classList.remove("is-loading"); lis.classList.add("is-playing"); lis.textContent = t("audio.playing"); }
+  } catch (e) { restore(); return; }   // politique autoplay : le clic utilisateur devrait suffire
+  au.onended = restore; au.onpause = restore; au.onerror = restore;
 }
 // « Plus tard »/fermer : retrait de la FILE pour cette session (il reviendra au prochain
 // chargement, après le délai de grâce). On ne marque PAS « vu » : seul un clic d'ACTION le retire
