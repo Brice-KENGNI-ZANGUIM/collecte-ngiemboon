@@ -209,6 +209,27 @@ export async function fetchNotifications(deviceId, since) {
   } catch (e) { return null; }
 }
 
+/** Envoie un témoignage (« Ils parlent de nous »). Publication AUTO côté serveur avec
+    garde-fous (longueur, gros mots, 1 par appareil). Renvoie {ok, ...} ou {ok:false}. */
+export function submitTestimonial(rec) {
+  return postOp(Object.assign({ op: "submit_testimonial" }, rec));
+}
+/** Témoignages publics pour « Ils parlent de nous ». Renvoie [] si l'endpoint n'existe pas
+    encore (ancien backend Google non redéployé → la section reste simplement masquée). */
+export async function fetchTestimonials(limit) {
+  const base = endpoint();
+  const q = limit ? "limit=" + encodeURIComponent(limit) : "";
+  const url = isGoogle()
+    ? `${base}?action=testimonials${q ? "&" + q : ""}`
+    : `${base || ""}/api/testimonials${q ? "?" + q : ""}`;
+  try {
+    const r = await fetch(url, { cache: "no-store" });
+    if (!r.ok) return [];
+    const data = await r.json();
+    return (data && Array.isArray(data.testimonials)) ? data.testimonials : [];
+  } catch (e) { return []; }
+}
+
 /** Demandes ouvertes de traduction/transcription (« porte Demander »). Filtre par
     langue si fournie. Renvoie {ok, requests:[…]} ou null si l'endpoint n'existe pas
     encore (ancien backend Google non redéployé). */

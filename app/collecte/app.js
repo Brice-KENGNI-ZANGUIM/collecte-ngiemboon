@@ -9,7 +9,8 @@ import { reconcile, checkServer, serverStats, modeGoogle, browseLibrary,
   fetchSuggestions, postSuggestion, postVote, postBug, fetchBugs,
   fetchLanguages, declareLanguage, declareUser, fetchDriveAudio,
   proposeMerge, respondMerge, mergesForDevice, fetchNotifications,
-  fetchRequests, fetchRequestsToTranslate, postRequest, postAnswer, translateWord } from "./sync.js";
+  fetchRequests, fetchRequestsToTranslate, postRequest, postAnswer, translateWord,
+  submitTestimonial, fetchTestimonials } from "./sync.js";
 import { PROPOSITIONS } from "./propositions.js";
 import { BUGS } from "./bugs.js";
 import { CONFIG } from "./config.js";
@@ -29,7 +30,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v267";
+const APP_VERSION = "v268";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1122,15 +1123,16 @@ function openAbout() {
   showView("about");
   renderTestimonials();
 }
-// « Ils parlent de nous » : avis RÉELS d'utilisateurs. On n'invente JAMAIS de témoignage :
-// la liste ne contient que des avis vérifiés fournis par Brice. Tant qu'elle est vide, la
-// section entière reste masquée (aucun faux avis, aucun encart vide trompeur).
-// Pour ajouter un avis réel : { nom, role, langue, texte } (role/langue facultatifs).
-const TESTIMONIALS = [];
-function renderTestimonials() {
+// « Ils parlent de nous » : avis RÉELS d'utilisateurs, chargés depuis le backend (publication
+// AUTO avec garde-fous côté serveur : longueur, gros mots, 1 par appareil). Section masquée tant
+// qu'il n'y en a aucun (jamais de faux avis ni d'encart vide). Les contributeurs actifs sont
+// invités à en laisser un (file de popups + bouton « Laisser un mot »).
+let _testimonials = [];
+async function renderTestimonials() {
   const grid = $("#about-say"), head = $("#about-sec-say");
   if (!grid || !head) return;
-  const items = TESTIMONIALS.filter((x) => x && (x.texte || "").trim());
+  try { _testimonials = await fetchTestimonials(30); } catch (e) { _testimonials = []; }
+  const items = (_testimonials || []).filter((x) => x && (x.texte || "").trim());
   const has = items.length > 0;
   head.hidden = !has; grid.hidden = !has;
   if (!has) { grid.innerHTML = ""; return; }
@@ -1138,10 +1140,72 @@ function renderTestimonials() {
     const meta = [x.role, x.langue ? _langNameById(x.langue) : ""].filter(Boolean).join(" · ");
     return `<figure class="say-card">
       <blockquote class="say-text">${escapeHtml(x.texte)}</blockquote>
-      <figcaption class="say-by"><span class="say-name">${escapeHtml(x.nom || t("say.anon"))}</span>` +
+      <figcaption class="say-by"><span class="say-name">${escapeHtml(x.credit || t("say.anon"))}</span>` +
       (meta ? `<span class="say-meta">${escapeHtml(meta)}</span>` : "") + `</figcaption>
     </figure>`;
   }).join("");
+}
+
+// --- Formulaire « Laisser un mot » (témoignage) : publication AUTO avec garde-fous ---
+const TESTI_DONE_KEY = "langa-testi-done";     // l'utilisateur a déjà laissé un mot
+const TESTI_INVITE_KEY = "langa-testi-invite"; // dernier jour d'invitation (anti-spam)
+function testimonialDone() { return localStorage.getItem(TESTI_DONE_KEY) === "1"; }
+function showTestimonialForm() {
+  if (!requireProfile(t("testi.needprofile"))) return;   // un profil est requis (crédit + anti-doublon)
+  const m = $("#testi-form"); if (!m) return;
+  const c = loadContributeur();
+  const ta = $("#testi-text"); if (ta) ta.value = "";
+  const err = $("#testi-error"); if (err) err.hidden = true;
+  const who = $("#testi-who");
+  if (who) { const name = (c.consentement && creditDisplay()) ? creditDisplay() : t("testi.anon"); who.textContent = ti("testi.as", { who: name }); }
+  m.hidden = false;
+  try { ta.focus(); } catch (e) { /* ok */ }
+}
+function hideTestimonialForm() { const m = $("#testi-form"); if (m) m.hidden = true; }
+async function submitTestimonialForm() {
+  const ta = $("#testi-text"), err = $("#testi-error"), btn = $("#testi-send");
+  const texte = ((ta && ta.value) || "").trim();
+  const showErr = (k) => { if (err) { err.textContent = t(k); err.hidden = false; } };
+  if (texte.length < 10) { showErr("testi.err.short"); return; }
+  const c = loadContributeur();
+  if (btn) btn.disabled = true;
+  let res = null;
+  try {
+    res = await submitTestimonial({
+      texte, device_id: deviceId(), consentement: !!c.consentement,
+      credit: creditDisplay(), role: c.role || "", langue: getCurrentLangId(),
+    });
+  } catch (e) { res = null; }
+  if (btn) btn.disabled = false;
+  if (res && res.ok) {
+    try { localStorage.setItem(TESTI_DONE_KEY, "1"); } catch (e) { /* ok */ }
+    hideTestimonialForm(); dismissPopup("testi");
+    toast(t("testi.thanks"), "ok");
+    renderTestimonials();
+    return;
+  }
+  const code = res && res.error;
+  showErr(code === "inapproprie" ? "testi.err.bad" : code === "trop_court" ? "testi.err.short" : "testi.err.net");
+}
+/** Invitation à témoigner : ENFILE un popup pour les contributeurs actifs qui n'ont pas encore
+    laissé de mot (au plus 1 invitation/jour). La file gère l'affichage (jamais deux à la fois). */
+function maybeInviteTestimonial() {
+  if (!profileComplete() || testimonialDone()) return;
+  if (!_doneTexts || _doneTexts.size < 3) return;                // au moins quelques contributions
+  const today = new Date().toISOString().slice(0, 10);
+  if (localStorage.getItem(TESTI_INVITE_KEY) === today) return;  // 1 invitation / jour max
+  try { localStorage.setItem(TESTI_INVITE_KEY, today); } catch (e) { /* ok */ }
+  enqueuePopup("testi", () => _renderTestiInvite());
+}
+function _renderTestiInvite() {
+  const bn = $("#incite-banner"); if (!bn) return;
+  bn.dataset.ptype = "rate";   // teinte or (valorisation)
+  const ico = bn.querySelector(".incite-ico"); if (ico) ico.innerHTML = _popIllHTML("two-talk-ill.webp");
+  const msg = $("#incite-msg"); if (msg) msg.textContent = t("testi.invite.msg");
+  const lis = $("#incite-listen"); if (lis) { lis.hidden = true; lis.onclick = null; }
+  const go = $("#incite-go");
+  if (go) { go.textContent = t("testi.invite.cta"); go.onclick = () => { bn.hidden = true; dismissPopup("testi"); showTestimonialForm(); }; }
+  bn.hidden = false;
 }
 
 // --- Suivi des bugs -------------------------------------------------------
@@ -1304,9 +1368,17 @@ function enterHub() {
   setTimeout(() => { refreshNotifs().then(() => { try { maybeShowNotifPopup(); } catch (e) { /* ok */ } }); }, 1000);
   // Invitation à contribuer (au plus 1×/jour) : apparaît en douceur après l'arrivée.
   setTimeout(() => { try { maybeShowIncitation(); } catch (e) { /* jamais bloquant */ } }, 1400);
-  // Les deux ci-dessus ENFILENT leurs popups ; la file les affiche un par un, en alternance,
+  // Invitation à laisser un mot (« Ils parlent de nous ») pour les contributeurs actifs.
+  setTimeout(() => { try { maybeInviteTestimonial(); } catch (e) { /* jamais bloquant */ } }, 1800);
+  // Les collecteurs ci-dessus ENFILENT leurs popups ; la file les affiche un par un, en alternance,
   // après le délai de grâce (jamais deux à la fois, persistant au rafraîchissement).
   startPopupQueue();
+  // Rejoue les déclarations de langue restées en attente (anti-langue-orpheline) : garantit
+  // qu'une langue déclarée finit toujours par être enregistrée au backend, même après un échec.
+  setTimeout(() => { try { flushPendingLangDecls(); } catch (e) { /* jamais bloquant */ } }, 2200);
+  // RECONSTITUTION AUTO en temps réel : à chaque connexion, l'appareil re-déclare ses langues
+  // locales pour compléter au backend toute métadonnée manquante (pays, région…), sans écraser.
+  setTimeout(() => { try { reconstituteLocalLanguages(); } catch (e) { /* jamais bloquant */ } }, 3000);
 }
 /** Accueil = le hub aux trois portes (Traduire, Transcrire, Explorer). Si le profil
     n'est pas encore complet, l'accueil obligatoire reste la vue Profil (aucun
@@ -1599,6 +1671,58 @@ function slugLang(nom) {
 function declareLanguageRemote(desc) {
   try { declareLanguage(desc).catch(() => {}); } catch (e) { /* offline : sans gravité */ }
 }
+// --- Déclaration de langue FIABLE (anti-langue-orpheline) -----------------------------
+// Une nouvelle langue DOIT finir enregistrée au backend, sinon ses contributions y existent
+// mais la langue est invisible dans la liste (bug « dourou »). On persiste toute déclaration
+// non confirmée dans une file de RÉESSAI, rejouée à chaque boot jusqu'à succès.
+const PENDING_LANGDECL_KEY = "langa-pending-langdecl";
+function _pendingLangDecls() {
+  try { const a = JSON.parse(localStorage.getItem(PENDING_LANGDECL_KEY) || "[]"); return Array.isArray(a) ? a : []; }
+  catch (e) { return []; }
+}
+function queuePendingLangDecl(desc) {
+  try {
+    const arr = _pendingLangDecls().filter((x) => x && x.id !== desc.id);
+    arr.push(desc);
+    localStorage.setItem(PENDING_LANGDECL_KEY, JSON.stringify(arr));
+  } catch (e) { /* stockage indispo */ }
+}
+/** Rejoue les déclarations de langue en attente (appelé au boot). Retire celles confirmées. */
+async function flushPendingLangDecls() {
+  const arr = _pendingLangDecls(); if (!arr.length) return;
+  const still = [];
+  for (const d of arr) {
+    try { const r = await declareLanguage(d); if (!r || r.ok === false) still.push(d); }
+    catch (e) { still.push(d); }
+  }
+  try { localStorage.setItem(PENDING_LANGDECL_KEY, JSON.stringify(still)); } catch (e) { /* ok */ }
+}
+/** Déclare une langue en ATTENDANT la confirmation ; en cas d'échec, met en file de réessai.
+    À utiliser AVANT tout location.reload() (sinon le reload avorterait la requête). */
+async function declareLanguageReliable(desc) {
+  try {
+    const r = await declareLanguage(desc);
+    if (!r || r.ok === false) queuePendingLangDecl(desc);
+  } catch (e) { queuePendingLangDecl(desc); }
+}
+/** RECONSTITUTION AUTO au démarrage : re-déclare au backend les langues connues LOCALEMENT (elles
+    portent les métadonnées complètes saisies par leur déclarant : nom, région, pays, famille),
+    afin de COMPLÉTER toute donnée manquante côté base (langue orpheline, pays absent…). Le backend
+    ne remplit QUE les champs vides (jamais d'écrasement). Chaque appareil « répare » ainsi ses
+    propres langues à chaque connexion, sans rien inventer. Ignore la graine (ngiemboon). */
+async function reconstituteLocalLanguages() {
+  try {
+    const langs = (knownLanguages() || []).filter((l) => l && l.id && !l.graine
+      && (l.nom || "").trim() && (l.region || "").trim());
+    for (const l of langs) {
+      await declareLanguageReliable({
+        id: l.id, nom: l.nom, autonyme: l.autonyme || "", region: l.region,
+        pays: l.pays || "", famille: l.famille || "", alias: l.alias || [],
+        clavier: l.clavier || "defaut", statut: l.statut || "active", device_id: deviceId(),
+      });
+    }
+  } catch (e) { /* jamais bloquant */ }
+}
 /** Rafraîchit le registre distant des langues (best-effort) puis re-peint si on est
     sur l'écran de choix. */
 async function refreshLanguages() {
@@ -1848,7 +1972,9 @@ async function _amorceEnd(complete) {
   const statut = complete ? "active" : "provisoire";
   const others = knownLanguages().filter((l) => !l.graine).map((l) => l.id === desc.id ? Object.assign({}, l, { statut }) : l);
   cacheRemoteLanguages(others);
-  declareLanguageRemote(Object.assign({ note: _amorcePendingNote || "" }, desc, { statut }));
+  // Déclaration FIABLE : on ATTEND sa confirmation AVANT le reload plus bas (sinon le reload
+  // avorterait la requête et la langue resterait orpheline). En cas d'échec, file de réessai.
+  await declareLanguageReliable(Object.assign({ note: _amorcePendingNote || "" }, desc, { statut }));
   addProfileLangue(desc.id);            // la langue (même provisoire) devient une langue d'appartenance
   _amorceBuffer = []; _amorcePendingNote = "";
   try { kickReconcile(); } catch (e) { /* le boot renverra de toute façon */ }
@@ -2558,7 +2684,7 @@ async function _declareNewLangForRequest() {
   const rec = { id, nom, region, pays, autonyme: "", alias: [], famille: "", clavier: "defaut", statut: "active" };
   const btn = $("#req-nl-declare"); if (btn) btn.disabled = true;
   try {
-    declareLanguageRemote({ id, nom, region, pays, device_id: deviceId() });   // best-effort backend
+    declareLanguageReliable({ id, nom, region, pays, device_id: deviceId() });   // fiable (file de réessai si échec)
     addKnownLanguage(rec);                                                     // registre local immédiat
     _fillReqLangSelects();
     const sel = $("#req-langue"); if (sel) { sel.value = id; refreshEnhancedSelects(); }
@@ -5298,6 +5424,10 @@ function initEvents() {
     });
   });
   // Mode présentation (plein écran)
+  // Témoignage « Laisser un mot » : ouvrir / publier / annuler.
+  const tOpen = $("#testi-open"); if (tOpen) tOpen.addEventListener("click", showTestimonialForm);
+  const tSend = $("#testi-send"); if (tSend) tSend.addEventListener("click", submitTestimonialForm);
+  const tCancel = $("#testi-cancel"); if (tCancel) tCancel.addEventListener("click", hideTestimonialForm);
   const presentOpen = $("#present-open"); if (presentOpen) presentOpen.addEventListener("click", openPresent);
   const presentClose = $("#present-close"); if (presentClose) presentClose.addEventListener("click", closePresent);
   const dlPng = $("#present-dl-png"); if (dlPng) dlPng.addEventListener("click", () => downloadPresent("png"));

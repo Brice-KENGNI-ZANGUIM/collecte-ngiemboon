@@ -680,6 +680,9 @@
            Masqué tant qu'il n'y a aucun avis réel (on n'invente JAMAIS de faux témoignage). -->
       <h3 class="about-sec" id="about-sec-say" data-i18n="about.say.h" hidden>Ils parlent de nous</h3>
       <div class="say-grid" id="about-say" hidden></div>
+      <div class="say-invite">
+        <button id="testi-open" class="btn btn--ghost" type="button" data-i18n="testi.open">💬 Laisser un mot sur LANGIAL</button>
+      </div>
 
       <div class="card about-share">
         <div class="about-share-txt">
@@ -1180,6 +1183,26 @@
       <div class="pg-actions">
         <button id="lc-ok" class="btn btn--primary" type="button">Oui</button>
         <button id="lc-change" class="btn btn--ghost" type="button" data-i18n="langconfirm.change">Non, changer de langue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Formulaire « Laisser un mot » (témoignage). Publication auto (garde-fous côté serveur). -->
+  <div id="testi-form" class="tr-guide" hidden role="dialog" aria-modal="true" aria-labelledby="testi-title">
+    <div class="tr-guide-card testi-card">
+      <div class="tr-guide-head">
+        <div class="tr-guide-ico" aria-hidden="true">💬</div>
+        <h2 id="testi-title" data-i18n="testi.title">Ton mot sur LANGIAL</h2>
+        <p class="tr-guide-lead" data-i18n="testi.lead">En une ou deux phrases, dis ce que LANGIAL t'apporte ou ce que tu en penses. Ton mot pourra apparaître publiquement dans « Ils parlent de nous ».</p>
+      </div>
+      <label class="field field--wide">
+        <textarea id="testi-text" rows="4" maxlength="400" data-i18n-ph="testi.ph" placeholder="ex. Enfin une application pour écrire et entendre ma langue. J'y ajoute un mot chaque jour."></textarea>
+      </label>
+      <p class="testi-who" id="testi-who"></p>
+      <p class="lock-hint testi-error" id="testi-error" hidden></p>
+      <div class="pg-actions">
+        <button id="testi-send" class="btn btn--primary" type="button" data-i18n="testi.send">Publier mon mot →</button>
+        <button id="testi-cancel" class="btn btn--ghost" type="button" data-i18n="testi.cancel">Annuler</button>
       </div>
     </div>
   </div>

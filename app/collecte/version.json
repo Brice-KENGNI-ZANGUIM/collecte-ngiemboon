@@ -1,6 +1,10 @@
 {
-  "version": "v267",
+  "version": "v268",
   "changelog": {
+    "v268": [
+      "Langues fiabilis\u00e9es : une langue d\u00e9clar\u00e9e est toujours bien enregistr\u00e9e (fini le cas o\u00f9 elle n'apparaissait pas dans la liste), et \u00e0 chaque connexion l'application compl\u00e8te automatiquement les informations manquantes d'une langue (comme le pays) sans jamais \u00e9craser ce qui existe",
+      "Illustrations en qualit\u00e9 maximale (sans perte) \u00e0 partir des images d'origine"
+    ],
     "v267": [
       "Flyer remis \u00e0 jour : nouveau nom LANGIAL, adresse langial.com et QR correspondant, fond aux motifs de l'application ; t\u00e9l\u00e9chargeable en image l\u00e9g\u00e8re ou en PDF"
     ],
