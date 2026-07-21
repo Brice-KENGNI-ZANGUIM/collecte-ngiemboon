@@ -1,6 +1,9 @@
 {
-  "version": "v309",
+  "version": "v310",
   "changelog": {
+    "v310": [
+      "Explorer : les icônes de « Ton avis » et du bouton « Améliorer/voter » sont agrandies (deux fois plus grandes) pour être bien visibles"
+    ],
     "v309": [
       "Onglets : contour des boutons laissé à son épaisseur d'origine"
     ],
