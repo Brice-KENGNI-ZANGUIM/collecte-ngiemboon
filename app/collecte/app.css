@@ -363,7 +363,7 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
    repoussés EN DERNIER (2e ligne), les deux pastilles clignotantes réduites. */
 @media (max-width: 900px) {
   .topbar { padding: 8px 14px 5px; gap: 7px 8px; }         /* header compact : peu d'espace vertical */
-  .main-nav { margin-top: -3px; }   /* écart onglets ≈ 4px = gap entre les lignes du header (mobile) */
+  .main-nav { margin-top: 1px; }   /* écart onglets équilibré (mobile) : dégage la 2e ligne du header sans trop l'écarter */
   .brand { gap: 11px; }
   .brand-mark { width: 48px; height: 48px; border-radius: 13px; }
   .brand-mark img { border-radius: 13px; }
@@ -538,7 +538,7 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 /* Onglets d'activité RAPPROCHÉS des boutons du header : la grille .topbar met 18px entre les
    rangées ; on remonte de 12px → écart ~6px, identique à l'espace entre les deux lignes de
    boutons du header (impression d'un seul bloc, séparations égales). */
-.main-nav { grid-column: 1 / -1; grid-row: 3; display: flex; align-items: center; gap: 12px; margin: -12px 0 0; }
+.main-nav { grid-column: 1 / -1; grid-row: 3; display: flex; align-items: center; gap: 12px; margin: -7px 0 0; }
 .main-nav[hidden] { display: none; }
 /* Onglets : chaque bouton porte SA couleur d'activité (contour + fond teinté + halo),
    IDENTIQUE sur PC et téléphone. Sur PC ils s'étirent pour remplir la largeur dédiée
