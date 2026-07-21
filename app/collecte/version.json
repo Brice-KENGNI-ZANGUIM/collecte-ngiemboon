@@ -1,6 +1,10 @@
 {
-  "version": "v289",
+  "version": "v290",
   "changelog": {
+    "v290": [
+      "En-tête finalisé : tous les boutons tiennent sur 2 lignes (ordinateur, tablette et téléphone) ; Bugs rejoint le groupe de navigation, le groupe perso se limite à Profil et Notifications ; icône Profil agrandie ; bouton clair/sombre à la même hauteur que FR/EN",
+      "Pied de page : la mention « Créé par » a été retirée"
+    ],
     "v289": [
       "En-tête : chaque bouton reçoit une légère couleur de fond (sans bordure) pour qu'on distingue clairement les boutons, et le bouton des notifications affiche désormais le texte « Notifications » (placé en dernier)",
       "Correctifs de langue : en mode anglais, le message de chargement de l'audio et les libellés d'enregistrement s'affichent bien en anglais (plus de français résiduel qui s'affichait à l'action)"

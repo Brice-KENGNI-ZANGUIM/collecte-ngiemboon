@@ -306,8 +306,8 @@ body {
    utilisé ailleurs). */
 .theme-switch { padding: 0; overflow: visible; display: inline-flex; align-items: center;
   border: 0; background: none; line-height: 0; cursor: pointer; border-radius: 999px; }
-.theme-switch .theme-ico { height: 30px; width: auto; display: block;
-  filter: drop-shadow(0 2px 5px rgba(0,0,0,.35)); transition: transform .12s ease, filter .16s ease; }
+.theme-switch .theme-ico { height: 22px; width: auto; display: block;   /* même hauteur que la capsule FR|EN */
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,.35)); transition: transform .12s ease, filter .16s ease; }
 .theme-switch:hover .theme-ico { transform: translateY(-1px); filter: drop-shadow(0 0 10px color-mix(in srgb, var(--cyan) 60%, transparent)); }
 .theme-switch:active .theme-ico { transform: translateY(1px); }
 /* Étiquettes techniques (version) en mono, cohérent avec le logo */
@@ -330,10 +330,9 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
    droite (FR/EN, thème, pastilles d'état) restent inchangés. Demande Brice : sur PC les chips
    de nav paraissaient trop petits. */
 @media (min-width: 901px) {
-  .chips-nav .chip--btn { font-size: .95rem; padding: 9px 16px; gap: 10px; }
-  .chips-nav .chip--btn .chip-ico { width: 36px; height: 36px; }
-  .chips-nav .chip--icon { padding: 7px 13px; }
-  .chips-nav .chip--icon .chip-ico { width: 36px; height: 36px; }
+  /* Icônes bien visibles sans élargir le bouton (padding horizontal serré, vertical réduit). */
+  .chips-nav .chip--btn { font-size: .9rem; padding: 6px 12px; gap: 8px; }
+  .chips-nav .chip--btn .chip-ico { width: 38px; height: 38px; }
 }
 /* --- STYLE PLAT + DEUX GROUPES (demande Brice : 1+2) ------------------------------
    Les boutons de nav ne sont plus des « pilules » de verre : fond transparent au repos,
@@ -390,10 +389,18 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
      ils débordent (jamais de scroll ni de bouton caché), le groupe outils reste à droite. */
   .chips-nav { flex-wrap: wrap; gap: 4px 4px; }
   .chips-nav .chip--btn { flex: 0 0 auto; }
-  /* Icônes du header AGRANDIES sur mobile/tablette (elles étaient trop petites). */
-  .chips-nav .chip--btn .chip-ico { width: 23px; height: 23px; }
-  /* Coins MOINS arrondis sur mobile (petits boutons → 8px paraissait trop « pilule »). */
-  .chips-nav .chip--btn { border-radius: 5px; }
+  /* Boutons COMPACTS (coins peu arrondis) : icône visible mais peu de padding pour tenir sur
+     2 lignes. Structure imposée : groupe NAV = 1re ligne (pleine largeur), groupe PERSO + outils
+     (FR/EN, thème) = 2e ligne, collés ensemble (pas de margin-left:auto qui les séparait). */
+  .chips-nav { gap: 4px 3px; }
+  .chips-nav .chip--btn { border-radius: 5px; padding: 3px 5px; gap: 4px; font-size: .72rem; }
+  .chips-nav .chip--btn .chip-ico { width: 20px; height: 20px; }
+  /* Groupes « transparents » sur mobile : leurs boutons deviennent enfants directs de .chips-nav
+     → l'enroulement se fait bouton par bouton (efficace) et tout tient sur 2 lignes. Le séparateur
+     n'apparaît de toute façon que sur grand écran. Outils (FR/EN, thème) sans margin-left:auto pour
+     rester collés à la suite des boutons. */
+  .chip-group { display: contents; }
+  .chips-tools { margin-left: 3px; gap: 4px; }
 }
 /* Téléphone étroit : la marque et les deux pastilles d'état doivent tenir sur UNE ligne,
    avec leur libellé (« en ligne », « Drive : prêt ») et le point clignotant. */
@@ -420,7 +427,7 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   #net.chip--on::before, #srv.chip--on::before { margin-right: 3px; width: 4px; height: 4px; }
   #ui-lang-toggle, #theme-toggle { padding: 0; }   /* capsules : le padding est sur les segments */
   .lang-switch .lang-seg, .theme-switch .theme-seg { padding: 4px 8px; font-size: .66rem; }
-  .theme-ico { height: 22px; }   /* bouton thème à la même échelle que FR|EN sur téléphone */
+  .theme-switch .theme-ico { height: 21px; }   /* bouton thème = hauteur FR|EN sur téléphone (spécificité corrigée) */
 }
 /* Petits téléphones (≤ 389px) : le nom se réduit d'un cran pour que « LANGIAL · Collecte »
    ET les deux pastilles d'état tiennent sur la même ligne, sans scroll. Dès 390px le nom
