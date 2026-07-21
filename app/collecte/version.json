@@ -1,6 +1,9 @@
 {
-  "version": "v280",
+  "version": "v281",
   "changelog": {
+    "v281": [
+      "Partage enrichi : TikTok ajouté aux réseaux, et des hashtags adaptés à chaque réseau (Facebook, X, LinkedIn, TikTok, Instagram). Sur ces réseaux le message prêt à publier est copié et la plateforme s'ouvre pour le coller ; WhatsApp et Telegram gardent un message simple sans hashtags. Vaut aussi pour le partage d'une entrée précise ou d'une demande"
+    ],
     "v280": [
       "Illustrations africaines cohérentes : le formulaire de déclaration de langue, le popup de jalon, le popup 'profil requis' et la page À propos affichent désormais de vraies illustrations plutôt que des émojis ou une photo"
     ],

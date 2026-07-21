@@ -30,7 +30,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v280";
+const APP_VERSION = "v281";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1219,10 +1219,10 @@ function openSharePanel(url, text) {
   ov.querySelector(".sp-title").textContent = t("share.panel.title");
   ov.querySelector(".sp-sub").textContent = t("share.panel.sub");
   mountShareBar(ov.querySelector(".sp-bar-host"), {
-    url, text, title: "LANGIAL", toast,
-    nets: ["whatsapp", "facebook", "x", "telegram", "linkedin", "email"],
+    url, text, title: "LANGIAL", toast, hashtags: t("share.hashtags"),
+    nets: ["whatsapp", "facebook", "x", "telegram", "linkedin", "tiktok", "instagram", "email"],
     shareOnLabel: t("share.on"), nativeLabel: t("share.native"),
-    copyLabel: t("share.copy"), copiedMsg: t("share.copied2"), igMsg: t("share.ig"),
+    copyLabel: t("share.copy"), copiedMsg: t("share.copied2"), copyCaptionMsg: t("share.caption.copied"),
   });
   ov.hidden = false;
 }
@@ -2945,15 +2945,15 @@ async function _sendAnswer(item, btn) {
 /** Message prêt à copier/partager pour relayer une demande (non-locuteurs). */
 async function _shareRequest(item) {
   const w = item.dataset.w, lang = _langNameById(item.dataset.lang);
-  const text = ti("req.share.msg", { w, lang, url: PRESENT_URL.replace(/\/$/, "") });
-  try { if (navigator.share) { await navigator.share({ title: "LANGIAL", text }); return; } }
-  catch (e) { if (e && e.name === "AbortError") return; }
-  try {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      await navigator.clipboard.writeText(text); toast(t("req.share.copied"), "ok"); return;
-    }
-  } catch (e) { /* repli */ }
-  toast(t("req.share.copied"), "ok");
+  const url = PRESENT_URL.replace(/\/$/, "");
+  const text = ti("req.share.msg", { w, lang, url });
+  const textNoUrl = ti("req.share.msg", { w, lang, url: "" }).replace(/[\s:]+$/, "");
+  const coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+  if (navigator.share && coarse) {
+    try { await navigator.share({ title: "LANGIAL", text }); return; }
+    catch (e) { if (e && e.name === "AbortError") return; }
+  }
+  openSharePanel(url, textNoUrl);   // PC : panneau réseaux (hashtags/TikTok/Facebook)
 }
 function onReqListClick(e) {
   const openB = e.target.closest(".req-answer-open");
@@ -3326,18 +3326,13 @@ async function shareEntry(src, tgt, dir, hasAudio) {
   const url = entryDeepLink(src, dir);
   const q = dir === "nge2fr" ? ti("shareE.q.rev", { w: s, lang: L.nom }) : ti("shareE.q", { w: s, lang: L.nom });
   const body = tg ? ti("shareE.has", { t: tg }) : (hasAudio ? t("shareE.audio") : t("shareE.none"));
-  const text = [q, body, t("shareE.cta"), url].join("\n");
-  try {
-    if (navigator.share) { await navigator.share({ title: shareTitle(L.nom), text }); return; }
-  } catch (e) { if (e && e.name === "AbortError") return; /* sinon : on tente le presse-papiers */ }
-  try {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      await navigator.clipboard.writeText(text);
-      toast(t("toast.card.copied"), "ok");
-      return;
-    }
-  } catch (e) { /* dernier repli ci-dessous */ }
-  toast(t("toast.share.na"), "warn");
+  const textNoUrl = [q, body, t("shareE.cta")].join("\n");
+  const coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+  if (navigator.share && coarse) {
+    try { await navigator.share({ title: shareTitle(L.nom), text: textNoUrl + "\n" + url }); return; }
+    catch (e) { if (e && e.name === "AbortError") return; }
+  }
+  openSharePanel(url, textNoUrl);   // PC : panneau réseaux (hashtags/TikTok/Facebook gérés)
 }
 
 /** Télécharge le dictionnaire de la LANGUE COURANTE (entrées visibles) en CSV ou JSON. */
@@ -4457,10 +4452,11 @@ function mountShareBars() {
     text: t("share.text"),
     title: "LANGIAL",
     toast: toast,
+    hashtags: t("share.hashtags"),
     nativeLabel: t("share.native"),
     copyLabel: t("share.copy"),
     copiedMsg: t("share.copied"),
-    igMsg: t("share.ig"),
+    copyCaptionMsg: t("share.caption.copied"),
     shareOnLabel: t("share.on"),
   };
   ["share-hub", "share-about", "share-foot", "share-present"].forEach((id) => {

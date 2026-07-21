@@ -57,27 +57,48 @@ const NET_SVG = {
   telegram: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21.9 4.27l-3.3 15.55c-.24 1.12-.9 1.38-1.84.86l-5.05-3.72-2.44 2.35c-.27.27-.5.5-1.02.5l.36-5.15L17.3 6.9c.41-.36-.09-.56-.63-.2L6.4 13.18l-4.98-1.55c-1.08-.34-1.1-1.08.23-1.6L20.5 2.72c.9-.33 1.69.2 1.4 1.55z"/></svg>',
   linkedin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.8 0 0 .78 0 1.75v20.5C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.75V1.75C24 .78 23.2 0 22.22 0z"/></svg>',
   email: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zm0 2v.4l8 5 8-5V6H4zm16 2.7l-7.47 4.67a1 1 0 0 1-1.06 0L4 8.7V18h16V8.7z"/></svg>',
+  tiktok: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 5.82a4.28 4.28 0 0 1-1.01-2.82h-3.1v12.4a2.6 2.6 0 0 1-2.6 2.5 2.6 2.6 0 0 1-2.6-2.6 2.6 2.6 0 0 1 3.36-2.49V9.6a5.7 5.7 0 0 0-.76-.05A5.7 5.7 0 0 0 4.2 15.3 5.7 5.7 0 0 0 9.9 21a5.7 5.7 0 0 0 5.7-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.28a4.28 4.28 0 0 1-3.3-1.46z"/></svg>',
   instagram: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.43.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23a3.7 3.7 0 0 1-.9 1.38 3.7 3.7 0 0 1-1.38.9c-.43.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.43-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.43-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16M12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63a5.9 5.9 0 0 0-2.12 1.38A5.9 5.9 0 0 0 .63 4.14C.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91a5.9 5.9 0 0 0 1.38 2.12 5.9 5.9 0 0 0 2.12 1.38c.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56a6.14 6.14 0 0 0 3.5-3.5c.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91a5.9 5.9 0 0 0-1.38-2.12A5.9 5.9 0 0 0 19.86.63c-.76-.3-1.64-.5-2.91-.56C15.67.01 15.26 0 12 0z"/><path d="M12 5.84A6.16 6.16 0 1 0 12 18.16 6.16 6.16 0 0 0 12 5.84m0 10.16A4 4 0 1 1 12 8a4 4 0 0 1 0 8z"/><circle cx="18.41" cy="5.59" r="1.44"/></svg>',
   share: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>',
   copy: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.9 12a3.1 3.1 0 0 1 3.1-3.1h4V7H7a5 5 0 0 0 0 10h4v-1.9H7A3.1 3.1 0 0 1 3.9 12zm9.1-5v1.9h4a3.1 3.1 0 0 1 0 6.2h-4V17h4a5 5 0 0 0 0-10h-4zM8 11h8v2H8z"/></svg>',
 };
 const NET_LABEL = { whatsapp: "WhatsApp", facebook: "Facebook", x: "X", telegram: "Telegram",
-  linkedin: "LinkedIn", email: "E-mail" };
+  linkedin: "LinkedIn", email: "E-mail", instagram: "Instagram", tiktok: "TikTok" };
 
-/** Liens de partage par réseau (chaînes encodées). Fonction pure et testable.
- *  Chaque lien emporte le MESSAGE déjà rédigé (sauf Facebook/LinkedIn qui n'acceptent
- *  que l'URL : l'aperçu OG de la page fournit alors le texte). */
-export function siteShareLinks(url, text) {
+// Réseaux qui aiment les hashtags (on les ajoute au message pour ceux-là) vs messagerie
+// (WhatsApp/Telegram/e-mail) où les hashtags n'ont pas leur place.
+const HASH_NETS = new Set(["facebook", "x", "linkedin", "instagram", "tiktok"]);
+// Réseaux qui n'acceptent PAS de texte pré-rempli via URL → on COPIE le message (avec
+// hashtags) dans le presse-papiers puis on ouvre la plateforme pour coller.
+const COPY_NETS = new Set(["facebook", "linkedin", "instagram", "tiktok"]);
+// Page à ouvrir pour les réseaux « copier puis coller » (Facebook/LinkedIn emmènent l'URL
+// pour l'aperçu ; Instagram/TikTok n'ont pas de partage de lien → page d'accueil).
+function copyOpenTarget(net, url) {
   const u = encodeURIComponent(clean(url, 300));
-  const t = encodeURIComponent(clean(text, 280));
-  const tu = encodeURIComponent(clean(text, 280) + " " + clean(url, 300));
+  if (net === "facebook") return `https://www.facebook.com/sharer/sharer.php?u=${u}`;
+  if (net === "linkedin") return `https://www.linkedin.com/sharing/share-offsite/?url=${u}`;
+  if (net === "tiktok") return "https://www.tiktok.com/";
+  return "https://www.instagram.com/";
+}
+/** Texte adapté à un réseau : message + hashtags si le réseau les accueille. */
+export function netText(text, hashtags, net) {
+  const base = clean(text, 400);
+  const h = clean(hashtags, 200);
+  return h && HASH_NETS.has(net) ? base + "\n\n" + h : base;
+}
+/** Liens de partage par réseau à TEXTE pré-rempli (messagerie + X). Fonction pure.
+ *  Facebook/LinkedIn/Instagram/TikTok sont traités à part (copier + ouvrir). */
+export function siteShareLinks(url, text, hashtags) {
+  const u = encodeURIComponent(clean(url, 300));
+  const t = encodeURIComponent(netText(text, hashtags, "x"));      // X aime les hashtags
+  const plain = clean(text, 280);
+  const tu = encodeURIComponent(plain + " " + clean(url, 300));    // WhatsApp/e-mail : message + lien, sans hashtag
+  const tgt = encodeURIComponent(plain);
   const subj = encodeURIComponent("LANGIAL");
   return {
     whatsapp: `https://wa.me/?text=${tu}`,
-    facebook: `https://www.facebook.com/sharer/sharer.php?u=${u}`,
+    telegram: `https://t.me/share/url?url=${u}&text=${tgt}`,
     x: `https://twitter.com/intent/tweet?text=${t}&url=${u}`,
-    telegram: `https://t.me/share/url?url=${u}&text=${t}`,
-    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${u}`,
     email: `mailto:?subject=${subj}&body=${tu}`,
   };
 }
@@ -93,9 +114,11 @@ export function mountShareBar(container, opts) {
   const url = o.url || location.href;
   const text = o.text || "Découvre LANGIAL et aidons ensemble à numériser nos langues d'Afrique, en texte et en voix";
   const title = o.title || "LANGIAL";
+  const hashtags = o.hashtags || "";
   const toast = typeof o.toast === "function" ? o.toast : function () {};
-  const nets = o.nets || ["whatsapp", "facebook", "x", "telegram"];
-  const links = siteShareLinks(url, text);
+  const nets = o.nets || ["whatsapp", "facebook", "x", "telegram", "linkedin", "tiktok", "instagram", "email"];
+  const links = siteShareLinks(url, text, hashtags);
+  const captionMsg = o.copyCaptionMsg || "Message copié (avec hashtags). Colle-le dans ta publication.";
 
   const bar = document.createElement("div");
   bar.className = "sharebar";
@@ -112,41 +135,34 @@ export function mountShareBar(container, opts) {
   }
 
   nets.forEach(function (n) {
-    if (!links[n]) return;
-    const a = document.createElement("a");
-    a.className = "share-ico share-ico--" + n;
-    a.href = links[n];
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
     const netName = NET_LABEL[n] || n;
     const lbl = o.shareOnLabel ? o.shareOnLabel.split("{net}").join(netName) : "Partager sur " + netName;
-    a.setAttribute("aria-label", lbl);
-    a.title = lbl;
-    a.innerHTML = NET_SVG[n];
-    bar.appendChild(a);
-  });
-
-  // Instagram : pas d'URL de partage → on copie le lien, on ouvre Instagram et on
-  // explique de le coller (story/bio). Seule façon réelle de « partager sur Instagram ».
-  const ig = document.createElement("button");
-  ig.type = "button";
-  ig.className = "share-ico share-ico--instagram";
-  const igLbl = o.shareOnLabel ? o.shareOnLabel.split("{net}").join("Instagram") : "Partager sur Instagram";
-  ig.setAttribute("aria-label", igLbl);
-  ig.title = igLbl;
-  ig.innerHTML = NET_SVG.instagram;
-  ig.addEventListener("click", function () {
-    const go = function () {
-      toast(o.igMsg || "Lien copié. Colle-le dans ta story ou ta bio Instagram.", "ok");
-      window.open("https://www.instagram.com/", "_blank", "noopener");
-    };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(url).then(go).catch(function () { fallbackCopy(url, go, toast); });
+    if (COPY_NETS.has(n)) {
+      // Facebook/LinkedIn/Instagram/TikTok : pas de texte pré-rempli via URL → on copie le
+      // message (avec hashtags pour ces réseaux) puis on ouvre la plateforme pour coller.
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "share-ico share-ico--" + n;
+      btn.setAttribute("aria-label", lbl); btn.title = lbl;
+      btn.innerHTML = NET_SVG[n];
+      btn.addEventListener("click", function () {
+        const caption = netText(text, hashtags, n) + "\n" + url;
+        const go = function () { toast(captionMsg, "ok"); window.open(copyOpenTarget(n, url), "_blank", "noopener"); };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(caption).then(go).catch(function () { fallbackCopy(caption, go, toast); });
+        } else { fallbackCopy(caption, go, toast); }
+      });
+      bar.appendChild(btn);
     } else {
-      fallbackCopy(url, go, toast);
+      if (!links[n]) return;   // whatsapp/telegram/x/email : lien direct avec texte
+      const a = document.createElement("a");
+      a.className = "share-ico share-ico--" + n;
+      a.href = links[n]; a.target = "_blank"; a.rel = "noopener noreferrer";
+      a.setAttribute("aria-label", lbl); a.title = lbl;
+      a.innerHTML = NET_SVG[n];
+      bar.appendChild(a);
     }
   });
-  bar.appendChild(ig);
 
   const c = document.createElement("button");
   c.type = "button";

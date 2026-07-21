@@ -296,6 +296,8 @@ export const STR = {
   "share.ig": { fr: "Lien copié. Colle-le dans ta story ou ta bio Instagram.", en: "Link copied. Paste it in your Instagram story or bio." },
   "share.panel.title": { fr: "Partager cette page", en: "Share this page" },
   "share.panel.sub": { fr: "Choisis un réseau : le message est déjà prêt à publier.", en: "Pick a network: the message is ready to post." },
+  "share.hashtags": { fr: "#LANGIAL #LanguesAfricaines #Afrique #PatrimoineVivant #Cameroun #Bamiléké #Ngiemboon #languematernelle", en: "#LANGIAL #AfricanLanguages #Africa #LivingHeritage #Cameroon #MotherTongue #Ngiemboon #Heritage" },
+  "share.caption.copied": { fr: "Message copié avec les hashtags. Colle-le dans ta publication.", en: "Message copied with hashtags. Paste it into your post." },
   // Textes marketing par page (message pré-rédigé qui accompagne le lien).
   "share.page.": { fr: "Découvre LANGIAL et aidons ensemble à numériser nos langues d'Afrique, en texte et en voix 🌍", en: "Discover LANGIAL and let's help digitize Africa's languages together, in text and voice 🌍" },
   "share.page.traduire": { fr: "Sur LANGIAL, je traduis des mots dans nos langues d'Afrique pour en bâtir des dictionnaires vivants. Viens ajouter les tiens 🌍", en: "On LANGIAL, I translate words into our African languages to build living dictionaries. Come add yours 🌍" },

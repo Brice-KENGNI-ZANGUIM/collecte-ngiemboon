@@ -2929,6 +2929,8 @@ body::after {
   box-shadow: 0 7px 16px -6px #8134AF; }
 .share-ico--linkedin { color: #0A66C2; }
 .share-ico--linkedin:hover { background: #0A66C2; color: #fff; box-shadow: 0 7px 16px -6px #0A66C2; }
+.share-ico--tiktok { color: #0f1419; }                             /* noir TikTok : visible sur pastille claire */
+.share-ico--tiktok:hover { background: #0f1419; color: #fff; box-shadow: 0 7px 16px -8px #0f1419; }
 .share-ico--email { color: var(--gold); }
 .share-ico--email:hover { background: var(--gold); color: var(--bg); box-shadow: 0 7px 16px -6px var(--gold); }
 .share-ico--copy { color: var(--cyan); }
