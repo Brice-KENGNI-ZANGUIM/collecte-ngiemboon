@@ -276,7 +276,7 @@
       <div class="way">
         <div class="ic"><svg width="31" height="31" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-1L20 7a2.1 2.1 0 0 0-3-3L5 16l-1 4z"/><path d="M14.5 6.5l3 3"/></svg></div>
         <h3>Traduire</h3>
-        <p>Donne la traduction de mots et de phrases entières (français ↔ ngiemboon)</p>
+        <p>Donne la traduction de mots et de phrases entières (français ↔ ta langue)</p>
       </div>
       <div class="way b2">
         <div class="ic"><svg width="31" height="31" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4M9 21h6"/></svg></div>
@@ -289,7 +289,7 @@
         <p>Écoute, apprends et vote pour les meilleures améliorations</p>
       </div>
     </section>
-    <p class="note"><b>Clavier ngiemboon intégré</b> · fonctionne sur téléphone · même sans connexion internet</p>
+    <p class="note"><b>Claviers dédiés</b> (ngiemboon et plus) · fonctionne sur téléphone · même sans connexion internet</p>
 
     <section class="join">
       <div class="jtext">
@@ -298,13 +298,14 @@
           <h2>Scanne, contribue <em>en 2 minutes</em></h2>
         </div>
         <ul class="jlist">
-          <li style="--c:#2ad4ee"><span class="jbead"></span><span><b>Tu parles</b> ngiemboon ? Traduis des mots et des phrases du français</span></li>
-          <li style="--c:#a78bfa"><span class="jbead"></span><span><b>Tu le comprends</b> ? Enregistre ta voix et corrige celle des autres</span></li>
-          <li style="--c:#2dd4bf"><span class="jbead"></span><span><b>Tu apprends</b> ? Explore la bibliothèque, écoute et découvre la langue</span></li>
+          <li style="--c:#2ad4ee"><span class="jbead"></span><span><b>Tu parles</b> une langue d'Afrique ? Traduis des mots et des phrases du français</span></li>
+          <li style="--c:#a78bfa"><span class="jbead"></span><span><b>Tu la comprends</b> ? Enregistre ta voix et corrige celle des autres</span></li>
+          <li style="--c:#2dd4bf"><span class="jbead"></span><span><b>Tu apprends</b> ? Explore la bibliothèque, écoute et découvre ta langue</span></li>
           <li style="--c:#e2b56f"><span class="jbead"></span><span><b>Nul besoin d'être expert</b> : chaque mot et chaque voix comptent</span></li>
         </ul>
         <div class="badges">
           <span class="badge"><b>Gratuit</b></span>
+          <span class="badge"><b>Plusieurs langues</b></span>
           <span class="badge">Sur ton téléphone</span>
           <span class="badge">Aucune installation</span>
         </div>
@@ -326,5 +327,15 @@
 
   </div>
 </div>
+<script>
+  /* Le flyer suit le thème CHOISI dans l'application (clé partagée « ng-theme », même origine) :
+     si l'utilisateur est en mode clair, le flyer s'affiche en clair (et inversement). L'export
+     headless force explicitement la classe, donc ceci ne concerne que l'ouverture navigateur. */
+  try {
+    var t = localStorage.getItem("ng-theme");
+    if (t === "light") document.querySelector(".sheet").classList.add("sheet--light");
+    else if (t === "dark") document.querySelector(".sheet").classList.remove("sheet--light");
+  } catch (e) { /* pas de stockage : on garde le thème par défaut */ }
+</script>
 </body>
 </html>
