@@ -728,11 +728,9 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 /* Icône devant un titre de page (Traduire/Transcrire/Explorer) */
 .view-title--ico { display: inline-flex; align-items: center; gap: 10px; }
 .title-ico { width: 34px; height: 34px; flex: 0 0 auto; }
-/* Avatar RÉEL (illustration africaine) en icône de titre : rond, cerclé, remplace l'émoji jaune. */
-.title-ico--avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; object-position: 50% 20%;
-  border: 2px solid color-mix(in srgb, var(--cyan) 55%, var(--border));
-  box-shadow: 0 0 14px -4px var(--cyan), inset 0 1px 0 rgba(255,255,255,.15);
-  background: color-mix(in srgb, var(--cyan) 12%, var(--card)); }
+/* Avatar RÉEL (illustration africaine) en icône de titre : posé TEL QUEL, sans cercle ni cadre
+   (demande Brice) — l'illustration se suffit à elle-même. */
+.title-ico--avatar { width: 46px; height: 46px; object-fit: contain; }
 /* Icône « info » du titre « À propos » (remplace l'ancien symbole étoilé) : teinte
    cyan d'accent, ne rétrécit pas. */
 /* Emblème premium du titre « À propos » : badge en verre dégradé, soleil levant (LANGIAL =
