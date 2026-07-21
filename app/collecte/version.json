@@ -1,6 +1,9 @@
 {
-  "version": "v316",
+  "version": "v317",
   "changelog": {
+    "v317": [
+      "Nouveau groupe : Pluriels (formes au pluriel à traduire, avec le singulier associé) ; équivalents anglais corrects y compris irréguliers (pieds→feet, femmes→women, souris→mice, cheveux→hair)"
+    ],
     "v316": [
       "Nouveaux groupes à traduire/transcrire : Pronoms et Prépositions, avec leurs équivalents anglais adaptés (tu et vous → you, ils et elles → they) ; chaque contribution garde des étiquettes (personne, nombre…) pour de futurs usages linguistiques"
     ],

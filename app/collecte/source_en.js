@@ -1385,7 +1385,24 @@ const PRON_PREP = {
   "le long de": "along", "grâce à": "thanks to", "à cause de": "because of",
   "au bord de": "at the edge of", "à travers": "through", "hors de": "out of", "jusqu'à": "until",
 };
-const DICT = Object.assign({}, NOMBRES, MOTS, PRON_PREP);
+// Pluriels : forme anglaise correcte, irrégularités incluses (specificités : pieds→feet,
+// femmes→women, souris→mice, yeux→eyes, cheveux→hair (indénombrable), couteaux→knives…).
+const PLURIELS_EN = {
+  "chiens": "dogs", "chats": "cats", "maisons": "houses", "livres": "books",
+  "arbres": "trees", "tables": "tables", "amis": "friends", "fleurs": "flowers",
+  "enfants": "children", "mains": "hands", "pieds": "feet", "routes": "roads",
+  "villages": "villages", "femmes": "women", "hommes": "men", "jours": "days",
+  "chevaux": "horses", "journaux": "newspapers", "animaux": "animals", "travaux": "works",
+  "hôpitaux": "hospitals", "bocaux": "jars", "cheveux": "hair", "jeux": "games",
+  "feux": "fires", "lieux": "places", "neveux": "nephews", "gâteaux": "cakes",
+  "bateaux": "boats", "oiseaux": "birds", "châteaux": "castles", "chapeaux": "hats",
+  "couteaux": "knives", "genoux": "knees", "cailloux": "pebbles", "bijoux": "jewels",
+  "hiboux": "owls", "choux": "cabbages", "souris": "mice", "nez": "noses",
+  "prix": "prices", "fois": "times", "voix": "voices", "bras": "arms",
+  "corps": "bodies", "pays": "countries", "yeux": "eyes", "cieux": "skies",
+  "messieurs": "gentlemen", "mesdames": "ladies",
+};
+const DICT = Object.assign({}, NOMBRES, MOTS, PRON_PREP, PLURIELS_EN);
 
 // ========================= PHRASES =========================================
 // Deux niveaux : (1) phrases IDIOMATIQUES (salutations, questions courantes) traduites

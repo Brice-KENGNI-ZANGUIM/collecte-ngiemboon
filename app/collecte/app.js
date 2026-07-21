@@ -41,7 +41,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v316";
+const APP_VERSION = "v317";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -322,7 +322,7 @@ function allProps() {
 // RETOUR automatique à un groupe antérieur qui vient d'être enrichi.
 // Ordre EXACT demandé par Brice : MOTS d'abord, puis PHRASES, puis le reste
 // (lettres, chiffres, nombres), et le DICTIONNAIRE TOUJOURS EN DERNIER.
-const GROUP_ORDER = ["mots", "phrases", "pronoms", "prepositions", "lettres", "chiffres", "nombres", "dictionnaire"];
+const GROUP_ORDER = ["mots", "phrases", "pronoms", "prepositions", "pluriels", "lettres", "chiffres", "nombres", "dictionnaire"];
 let _BY_CAT = null;
 function byCat() {
   if (!PROPOSITIONS) return {};   // pas encore chargé → NE PAS mettre en cache un résultat vide
