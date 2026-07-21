@@ -1,6 +1,9 @@
 {
-  "version": "v318",
+  "version": "v319",
   "changelog": {
+    "v319": [
+      "Nouveau groupe : Conjugaison (verbes courants à différents temps : présent, imparfait, futur), avec leur équivalent anglais correct ; chaque contribution garde le verbe, le temps et la personne"
+    ],
     "v318": [
       "Notifications : icônes agrandies (1,5 fois plus grandes) pour être mieux visibles"
     ],
