@@ -517,6 +517,67 @@
         </label>
       </div>
 
+      <!-- R4 : ENRICHIR LE MOT (tout facultatif) — métadonnées linguistiques structurées pour
+           bâtir un vrai dictionnaire ET nourrir un futur modèle. Repliable (native <details>)
+           pour ne pas alourdir la saisie courante ; chaque champ rempli est stocké avec la contribution. -->
+      <details id="word-enrich" class="word-enrich">
+        <summary data-i18n="enrich.title">Enrichir ce mot (facultatif) : nature, classe, exemple…</summary>
+        <div class="enrich-grid">
+          <label class="field"><span data-i18n="enrich.nature">Nature grammaticale</span>
+            <select id="we-nature">
+              <option value=""></option>
+              <option value="nom" data-i18n="enrich.nature.nom">Nom</option>
+              <option value="verbe" data-i18n="enrich.nature.verbe">Verbe</option>
+              <option value="adjectif" data-i18n="enrich.nature.adjectif">Adjectif</option>
+              <option value="adverbe" data-i18n="enrich.nature.adverbe">Adverbe</option>
+              <option value="pronom" data-i18n="enrich.nature.pronom">Pronom</option>
+              <option value="preposition" data-i18n="enrich.nature.preposition">Préposition</option>
+              <option value="conjonction" data-i18n="enrich.nature.conjonction">Conjonction</option>
+              <option value="determinant" data-i18n="enrich.nature.determinant">Déterminant</option>
+              <option value="numeral" data-i18n="enrich.nature.numeral">Numéral</option>
+              <option value="interjection" data-i18n="enrich.nature.interjection">Interjection</option>
+            </select></label>
+          <label class="field"><span data-i18n="enrich.classe">Classe nominale (langues bantoues)</span>
+            <input id="we-classe" type="text" data-i18n-ph="enrich.classe.ph" placeholder="ex. classe 1, mu-/ba-…" /></label>
+          <label class="field"><span data-i18n="enrich.genre">Genre</span>
+            <select id="we-genre">
+              <option value=""></option>
+              <option value="masculin" data-i18n="enrich.genre.m">Masculin</option>
+              <option value="feminin" data-i18n="enrich.genre.f">Féminin</option>
+              <option value="neutre" data-i18n="enrich.genre.n">Neutre</option>
+            </select></label>
+          <label class="field"><span data-i18n="enrich.nombre">Nombre</span>
+            <select id="we-nombre">
+              <option value=""></option>
+              <option value="singulier" data-i18n="enrich.nombre.sg">Singulier</option>
+              <option value="pluriel" data-i18n="enrich.nombre.pl">Pluriel</option>
+              <option value="invariable" data-i18n="enrich.nombre.inv">Invariable</option>
+            </select></label>
+          <label class="field"><span data-i18n="enrich.pluriel">Forme au pluriel</span>
+            <input id="we-pluriel" type="text" data-i18n-ph="enrich.pluriel.ph" placeholder="le mot au pluriel" /></label>
+          <label class="field"><span data-i18n="enrich.prononciation">Prononciation (API)</span>
+            <input id="we-prononciation" type="text" data-i18n-ph="enrich.prononciation.ph" placeholder="ex. [ndɔ]" /></label>
+          <label class="field"><span data-i18n="enrich.registre">Registre</span>
+            <select id="we-registre">
+              <option value=""></option>
+              <option value="courant" data-i18n="enrich.registre.courant">Courant</option>
+              <option value="familier" data-i18n="enrich.registre.familier">Familier</option>
+              <option value="soutenu" data-i18n="enrich.registre.soutenu">Soutenu</option>
+              <option value="argot" data-i18n="enrich.registre.argot">Argot</option>
+            </select></label>
+          <label class="field"><span data-i18n="enrich.etymologie">Étymologie / origine</span>
+            <input id="we-etymologie" type="text" data-i18n-ph="enrich.etymologie.ph" placeholder="origine du mot" /></label>
+          <label class="field field--wide"><span data-i18n="enrich.exemple">Phrase d'exemple (en français)</span>
+            <input id="we-exemple" type="text" data-i18n-ph="enrich.exemple.ph" placeholder="une phrase qui emploie le mot" /></label>
+          <label class="field field--wide"><span data-i18n="enrich.exemple.trad">L'exemple dans ta langue</span>
+            <input id="we-exemple-trad" type="text" data-i18n-ph="enrich.exemple.trad.ph" placeholder="la même phrase traduite" /></label>
+          <label class="field"><span data-i18n="enrich.synonymes">Synonymes</span>
+            <input id="we-synonymes" type="text" data-i18n-ph="enrich.liste.ph" placeholder="séparés par des virgules" /></label>
+          <label class="field"><span data-i18n="enrich.antonymes">Antonymes (contraires)</span>
+            <input id="we-antonymes" type="text" data-i18n-ph="enrich.liste.ph" placeholder="séparés par des virgules" /></label>
+        </div>
+      </details>
+
       <!-- Audio (zone encadrée à part) : label + « revoir les consignes » à droite,
            ligne de contrôles, PUIS le cadre de progression SEUL, PUIS les actions
            (découper / retirer) en bas. Aucun bouton devant l'onde, surtout sur mobile. -->

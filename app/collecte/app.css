@@ -194,6 +194,17 @@ body {
 .wod-cta{ flex:0 0 auto; padding:9px 16px; font-size:.9rem; }
 @media (max-width:560px){ .wod-word{ font-size:1.3rem; } .wod-body{ gap:10px; } .wod-cta{ font-size:.84rem; padding:8px 13px; } }
 
+/* R4 — « Enrichir ce mot » : section repliable (native <details>), grille de champs facultatifs. */
+.word-enrich{ margin-top:12px; border:1px solid var(--border); border-radius:14px; background:var(--panel); overflow:hidden; }
+.word-enrich > summary{ cursor:pointer; padding:12px 16px; font-weight:600; font-size:.9rem; color:var(--muted); list-style:none; user-select:none; }
+.word-enrich > summary::-webkit-details-marker{ display:none; }
+.word-enrich > summary::before{ content:"＋"; margin-right:8px; color:var(--cyan); font-weight:800; }
+.word-enrich[open] > summary::before{ content:"－"; }
+.word-enrich[open] > summary{ border-bottom:1px solid var(--border); color:var(--text); }
+.enrich-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:14px 16px; }
+.enrich-grid .field--wide{ grid-column:1 / -1; }
+@media (max-width:560px){ .enrich-grid{ grid-template-columns:1fr; } }
+
 /* --- Barre supérieure --- */
 /* Header en GRILLE 2 niveaux (max), identique PC / mobile / tablette :
    ligne 1 = marque (gauche) + méta état/version/langue/thème (droite) ;

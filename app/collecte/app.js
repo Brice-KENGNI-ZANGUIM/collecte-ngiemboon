@@ -41,7 +41,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v319";
+const APP_VERSION = "v320";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -393,6 +393,29 @@ function discardWorkingInputs() {
   }
   clearAudio();
   ["#target", "#note", "#domaine"].forEach((s) => { const el = $(s); if (el) el.value = ""; });
+  resetWordEnrich();
+}
+// R4 : liste des champs d'enrichissement du mot (tous facultatifs).
+const WORD_ENRICH_FIELDS = {
+  nature: "#we-nature", classe_nominale: "#we-classe", genre: "#we-genre", nombre: "#we-nombre",
+  pluriel: "#we-pluriel", prononciation: "#we-prononciation", registre: "#we-registre",
+  etymologie: "#we-etymologie", exemple: "#we-exemple", exemple_trad: "#we-exemple-trad",
+  synonymes: "#we-synonymes", antonymes: "#we-antonymes",
+};
+/** Rassemble les champs d'enrichissement NON VIDES en un objet structuré (ou null). */
+function collectWordMeta() {
+  const m = {};
+  for (const k in WORD_ENRICH_FIELDS) {
+    const el = $(WORD_ENRICH_FIELDS[k]);
+    const v = el ? String(el.value || "").trim() : "";
+    if (v) m[k] = v;
+  }
+  return Object.keys(m).length ? m : null;
+}
+/** Réinitialise + replie la section d'enrichissement (au mot suivant / après envoi). */
+function resetWordEnrich() {
+  for (const k in WORD_ENRICH_FIELDS) { const el = $(WORD_ENRICH_FIELDS[k]); if (el) el.value = ""; }
+  const d = $("#word-enrich"); if (d) d.open = false;
 }
 /** RÈGLE GLOBALE (Brice) : une action qui RESTE sur la même page (mot suivant, envoi,
     vote, bascule…) ne doit JAMAIS déplacer le défilement, pas d'un pixel. On mémorise
@@ -923,6 +946,10 @@ async function saveContribution() {
     // d'entraînement structurée (temps, personne, nombre, singulier…).
     if (currentProp.meta) rec.proposition_meta = currentProp.meta;
   }
+  // R4 : enrichissement linguistique du mot (nature, classe nominale, exemple, synonymes…), tout
+  // facultatif → stocké en métadonnées structurées avec la contribution (vrai dictionnaire + NLP).
+  const _wm = collectWordMeta();
+  if (_wm) rec.word_meta = _wm;
   // lot 5 : réponse à une DEMANDE de la communauté -> relie la contribution à la
   // demande (compte comme réponse + notifie le demandeur, côté backend).
   const reqId = _currentReqId;
