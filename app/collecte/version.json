@@ -1,6 +1,9 @@
 {
-  "version": "v262",
+  "version": "v263",
   "changelog": {
+    "v263": [
+      "Onde audio plus r\u00e9aliste : les vibrations naissent au niveau du curseur de lecture et d\u00e9croissent avec la distance (seules les cordes proches du curseur bougent, les autres restent au repos) ; l'agitation se propage en suivant le curseur au lieu d'exister partout \u00e0 la fois"
+    ],
     "v262": [
       "Onde audio nettement plus color\u00e9e : trois fois plus de cordes vibrantes (une trentaine), chacune d'une couleur distincte cyan, vert ou or, pour un faisceau franchement multicolore et vivant, proche des ondes lumineuses de la banni\u00e8re Transcrire"
     ],

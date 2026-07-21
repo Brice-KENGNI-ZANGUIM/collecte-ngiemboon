@@ -252,24 +252,29 @@ export function mountAudioPlayer(box, audio) {
     const flowGrad = () => { const g = ctx.createLinearGradient(0, 0, W, 0); const NS = 15; for (let i = 0; i <= NS; i++) { const q = i / NS; g.addColorStop(q, cyc(q * CYCLES + flowOff)); } return g; };
     const played = flowGrad();
     const bw = 2.3, step = bw + 2.3, n = Math.max(1, Math.floor((W - 2) / step));  // barres TRÈS DENSES
-    // Position de l'ONDE qui se propage (0→1, boucle), et sa largeur (bosse étroite).
-    const wavePos = (wavePhase * 0.016) % 1, sig = 0.07;
-    const travelAt = (t) => { const dd = Math.min(Math.abs(t - wavePos), 1 - Math.abs(t - wavePos)); return Math.exp(-(dd * dd) / (2 * sig * sig)); };
+    // EXCITATION PHYSIQUE localisée au CURSEUR : la vibration naît au niveau du curseur (playhead)
+    // et DÉCROÎT avec la distance en ~1/distance² (forme lorentzienne 1/(1+(d/σ)²), exactement en
+    // inverse du carré au loin). Loin du curseur → repos. Le curseur se déplaçant pendant la
+    // lecture, la zone qui vibre se PROPAGE avec lui (elle « prend naissance » au curseur, pas
+    // partout à la fois). Au repos (pause), on montre une forme douce et uniforme (rien ne tremble).
+    const playing = !audio.paused && !audio.ended;
+    const SIG = 0.085;
+    const excite = (t) => { const d = (t - p) / SIG; return 1 / (1 + d * d); };
+    const field = (t) => (playing ? excite(t) : 0.5);
     for (let i = 0; i < n; i++) {
       const cx = 2 + i * step + step / 2;
       const t = cx / W, e = envAt(t);
-      // Onde voyageante : bosse gaussienne (distance circulaire → boucle sans à-coup). Seules les
-      // barres sous la bosse enflent/tremblent (au rythme du son) ; les autres restent statiques.
-      const travel = travelAt(t);
-      const vib = 1 + liveAmp * 1.9 * travel;
+      const fx = field(t);
+      // Les barres n'enflent/tremblent QUE près du curseur en lecture ; ailleurs, hauteur statique.
+      const vib = 1 + (0.30 + liveAmp * 1.9) * (playing ? excite(t) : 0);
       const half = Math.min(maxA, maxA * (0.10 + 0.90 * e) * vib);
       const isPlayed = cx <= px;
       const path = new Path2D(); addBar(path, cx, half, bw);
       ctx.save();
       ctx.fillStyle = isPlayed ? played : "rgba(150,168,186,0.30)";
-      // Halo de la MÊME teinte que la barre (au lieu d'un vert uniforme qui écrasait les couleurs)
-      // → le multicolore ressort vraiment le long de la progression.
-      if (isPlayed) { ctx.shadowColor = cyc(t * CYCLES + flowOff); ctx.shadowBlur = 2 + 7 * travel; ctx.globalAlpha = 0.92 + 0.08 * travel; }
+      // Halo de la MÊME teinte que la barre (multicolore le long de la progression), renforcé au
+      // voisinage du curseur (fx) → le point d'énergie se voit là où le curseur passe.
+      if (isPlayed) { ctx.shadowColor = cyc(t * CYCLES + flowOff); ctx.shadowBlur = 2 + 7 * fx; ctx.globalAlpha = 0.9 + 0.1 * fx; }
       ctx.fill(path);
       ctx.restore();
     }
@@ -289,10 +294,13 @@ export function mountAudioPlayer(box, audio) {
       const col = cyc(kk * 3 + flowOff);   // 3 cycles cyan→vert→or répartis sur les 30 cordes
       ctx.beginPath();
       for (let x = 0; x <= W; x += 4) {
-        const tt = x / W, e = envAt(tt), travel = travelAt(tt);
-        const live = 1 + liveAmp * (0.6 + 1.5 * travel);   // enfle au passage de l'onde + au son
-        const mirage = (0.13 + liveAmp * 0.55) * travel * Math.sin(x * 0.5 + wavePhase * 8 + k) * maxA * 0.11; // TREMBLEMENT
-        const y = midY + dir * (Math.sin(x * 0.02 * f + ph) * maxA * ampS * e * live + mirage);
+        const tt = x / W, e = envAt(tt), fx = field(tt);
+        const live = 1 + liveAmp * (0.6 + 1.5 * fx);
+        // Amplitude localisée : loin du curseur la corde est quasi immobile (repos), près du
+        // curseur elle vibre pleinement. Le tremblement (mirage) n'existe qu'en lecture, près du curseur.
+        const amp = 0.08 + 0.92 * fx;
+        const mirage = (playing ? (0.13 + liveAmp * 0.55) * excite(tt) : 0) * Math.sin(x * 0.5 + wavePhase * 8 + k) * maxA * 0.11;
+        const y = midY + dir * ((Math.sin(x * 0.02 * f + ph) * maxA * ampS * e * live) * amp + mirage);
         if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
       }
       ctx.strokeStyle = col;
