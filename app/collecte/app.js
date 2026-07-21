@@ -995,6 +995,13 @@ function profileComplete() {
   return !!(c.nom && c.prenom && c.village && c.role &&
             c.indicatif && c.telephone && c.consentement);
 }
+// Seuil LÉGER pour l'AFFICHAGE des popups (informer/inviter) : le téléphone/indicatif ne sont
+// exigés que pour CONTRIBUER (le clic sur un popup revérifie profileComplete via requireProfile).
+// Sans ça, un profil mobile plus ancien (sans téléphone) ne recevait plus aucun popup de la file.
+function profileBasics() {
+  const c = loadContributeur();
+  return !!(c.nom && c.prenom && c.consentement);
+}
 
 /** Garde FAIL-CLOSED : toute action de contribution (Traduire, Transcrire, Explorer,
     déclarer une langue) exige un profil complet. Sans profil, on n'ouvre PAS l'action ;
@@ -2426,7 +2433,10 @@ function _popIllHTML(file) {
 }
 
 function incitationDue() {
-  if (!profileComplete() || !hasChosenLang()) return false;
+  // Inviter à contribuer ne demande qu'une langue choisie + consentement ; le profil complet
+  // (téléphone…) est revérifié au CLIC (startTranslateWord/startRateWord → requireProfile).
+  const c = loadContributeur();
+  if (!hasChosenLang() || !c.consentement) return false;
   const slot = _incSlot(); if (!slot) return false;
   return !_incShownSlots().includes(slot);
 }
@@ -2797,7 +2807,7 @@ function openNotifs() {
 }
 /** Popup à l'ouverture s'il y a une notif personnelle fraîche jamais encore montrée en popup. */
 async function maybeShowNotifPopup() {
-  if (!profileComplete()) return;
+  if (!profileBasics()) return;   // informer d'une activité sur son travail n'exige pas le téléphone
   const seen = _notifSeenTs();
   const lastPop = parseInt(localStorage.getItem(NOTIF_POPUP_KEY) || "0", 10) || 0;
   const POP_TYPES = { vote: 1, suggestion: 1, milestone: 1, request: 1, request_answered: 1 };
