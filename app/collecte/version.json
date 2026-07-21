@@ -1,6 +1,10 @@
 {
-  "version": "v291",
+  "version": "v292",
   "changelog": {
+    "v292": [
+      "En-tête et onglets d'activité forment désormais un seul bloc : espacement resserré et uniforme (l'écart entre les boutons du header et les onglets égale l'écart entre les deux lignes de boutons), bordures des onglets affinées et hauteur légèrement réduite",
+      "Sur téléphone : FR/EN et le bouton clair/sombre plaqués à droite, Profil et Notifications à gauche, le tout sur 2 lignes"
+    ],
     "v291": [
       "Icônes africaines dans la bibliothèque : les boutons Partager et Améliorer/voter, ainsi que le repère de vote, utilisent désormais les illustrations fournies (cauris, calame) au lieu d'émojis génériques"
     ],

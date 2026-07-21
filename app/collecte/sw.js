@@ -3,7 +3,7 @@
 // version quand on est connecté ; le cache ne sert que de secours hors-ligne),
 // et l'API n'est jamais mise en cache. Bumper CACHE à chaque évolution de la
 // coquille purge l'ancien cache.
-const CACHE = "collecte-nge-v291";
+const CACHE = "collecte-nge-v292";
 const SHELL = [
   "./",
   "./index.html",

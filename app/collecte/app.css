@@ -330,10 +330,8 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
    droite (FR/EN, thème, pastilles d'état) restent inchangés. Demande Brice : sur PC les chips
    de nav paraissaient trop petits. */
 @media (min-width: 901px) {
-  /* Icônes plus GRANDES à hauteur de bouton CONSTANTE : padding vertical réduit d'autant
-     (icône 44 + 2×3 = 50, comme avant 38 + 2×6). */
-  .chips-nav .chip--btn { font-size: .9rem; padding: 3px 12px; gap: 8px; }
-  .chips-nav .chip--btn .chip-ico { width: 44px; height: 44px; }
+  .chips-nav .chip--btn { font-size: .9rem; padding: 6px 12px; gap: 8px; }
+  .chips-nav .chip--btn .chip-ico { width: 34px; height: 34px; }
 }
 /* --- STYLE PLAT + DEUX GROUPES (demande Brice : 1+2) ------------------------------
    Les boutons de nav ne sont plus des « pilules » de verre : fond transparent au repos,
@@ -365,6 +363,7 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
    repoussés EN DERNIER (2e ligne), les deux pastilles clignotantes réduites. */
 @media (max-width: 900px) {
   .topbar { padding: 8px 14px 5px; gap: 7px 8px; }         /* header compact : peu d'espace vertical */
+  .main-nav { margin-top: -3px; }   /* écart onglets ≈ 4px = gap entre les lignes du header (mobile) */
   .brand { gap: 11px; }
   .brand-mark { width: 48px; height: 48px; border-radius: 13px; }
   .brand-mark img { border-radius: 13px; }
@@ -394,18 +393,15 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
      2 lignes. Structure imposée : groupe NAV = 1re ligne (pleine largeur), groupe PERSO + outils
      (FR/EN, thème) = 2e ligne, collés ensemble (pas de margin-left:auto qui les séparait). */
   .chips-nav { gap: 4px 3px; }
-  /* Icônes plus grandes à hauteur constante (padding vertical minimal). */
-  .chips-nav .chip--btn { border-radius: 5px; padding: 1px 5px; gap: 4px; font-size: .72rem; }
-  .chips-nav .chip--btn .chip-ico { width: 26px; height: 26px; }
+  .chips-nav .chip--btn { border-radius: 5px; padding: 3px 5px; gap: 4px; font-size: .72rem; }
+  .chips-nav .chip--btn .chip-ico { width: 20px; height: 20px; }
   /* Groupes « transparents » sur mobile : leurs boutons deviennent enfants directs de .chips-nav
      → l'enroulement se fait bouton par bouton (efficace) et tout tient sur 2 lignes. Le séparateur
      n'apparaît de toute façon que sur grand écran. Outils (FR/EN, thème) sans margin-left:auto pour
      rester collés à la suite des boutons. */
-  /* Structure claire : le groupe NAV occupe la 1re ligne (pleine largeur) ; sur la 2e ligne, le
-     groupe PERSO (Profil, Notifications) reste À GAUCHE et les outils (FR/EN, thème) sont plaqués
-     À DROITE (margin-left:auto) → deux groupes distincts, même ligne, séparés par l'espace. */
-  .chip-group { display: flex; gap: 4px; }
-  .chip-group--nav { flex: 1 1 100%; }
+  /* Groupes « transparents » (wrap bouton par bouton = 2 lignes efficaces) ET outils (FR/EN, thème)
+     plaqués À DROITE de leur ligne (Profil/Notifications restent à gauche → gauche/droite). */
+  .chip-group { display: contents; }
   .chips-tools { margin-left: auto; gap: 4px; }
 }
 /* Téléphone étroit : la marque et les deux pastilles d'état doivent tenir sur UNE ligne,
@@ -539,12 +535,15 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 /* ---- Navigation entre espaces (Traduire / Transcrire / Explorer) ---- */
 /* Barre des 4 onglets REMONTÉE près du header (comble ~80% de l'espace vide). */
 /* Barre des 4 espaces : 3e rangée du header (intégrée au header, pleine largeur). */
-.main-nav { grid-column: 1 / -1; grid-row: 3; display: flex; align-items: center; gap: 12px; margin: 2px 0 0; }
+/* Onglets d'activité RAPPROCHÉS des boutons du header : la grille .topbar met 18px entre les
+   rangées ; on remonte de 12px → écart ~6px, identique à l'espace entre les deux lignes de
+   boutons du header (impression d'un seul bloc, séparations égales). */
+.main-nav { grid-column: 1 / -1; grid-row: 3; display: flex; align-items: center; gap: 12px; margin: -12px 0 0; }
 .main-nav[hidden] { display: none; }
 /* Onglets : chaque bouton porte SA couleur d'activité (contour + fond teinté + halo),
    IDENTIQUE sur PC et téléphone. Sur PC ils s'étirent pour remplir la largeur dédiée
    (fini le vide dans le header). */
-.nav-tabs { display: flex; flex: 1 1 auto; gap: 8px; padding: 0; background: transparent;
+.nav-tabs { display: flex; flex: 1 1 auto; gap: 6px; padding: 0; background: transparent;
   border: none; flex-wrap: nowrap; }
 /* Onglets = MÊMES effets que les cartes de l'accueil : lavis de couleur d'activité,
    halo d'ambiance qui « respire », bordure comète blanche qui tourne, shimmer au survol
@@ -554,13 +553,13 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   border: 1px solid color-mix(in srgb, var(--acc) 40%, var(--border));
   background: radial-gradient(130% 80% at 50% -20%, color-mix(in srgb, var(--acc) 18%, transparent), transparent 62%),
     color-mix(in srgb, var(--acc) 10%, var(--panel)); color: var(--text);
-  padding: 11px 18px; border-radius: 12px; cursor: pointer; font: inherit; font-size: 1.12rem;
+  padding: 10px 18px; border-radius: 12px; cursor: pointer; font: inherit; font-size: 1.12rem;   /* hauteur -5% */
   font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 9px;
   box-shadow: 0 0 26px -14px var(--acc), inset 0 1px 0 var(--card-sheen), 0 2px 8px -4px rgba(0,0,0,.28);
   transition: color .15s ease, background .15s ease, box-shadow .2s ease, border-color .2s ease, transform .12s ease;
   animation: ngCardBreath 6s ease-in-out infinite; }
 .nav-tab > * { position: relative; z-index: 3; }   /* icône + libellé au-dessus des effets */
-.nav-tab::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 2px;
+.nav-tab::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.6px;   /* bordure animée -20% */
   pointer-events: none; z-index: 2;
   background:
     conic-gradient(from var(--ng-angle), transparent 0%,
