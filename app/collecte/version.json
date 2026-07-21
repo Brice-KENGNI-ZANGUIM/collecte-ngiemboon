@@ -1,6 +1,10 @@
 {
-  "version": "v328",
+  "version": "v329",
   "changelog": {
+    "v329": [
+      "Vitesse : l'application s'ouvre beaucoup plus vite, surtout quand tu reviens (les fichiers déjà chargés sont servis instantanément, sans réseau) et sur téléphone",
+      "Vitesse : les parties utilisées seulement dans certains cas (mode anglais, pages légales, journal des bugs, export, lecteur audio) ne sont plus chargées au démarrage mais uniquement quand tu en as besoin"
+    ],
     "v328": [
       "Partage : la fenêtre des réseaux sociaux (WhatsApp, Facebook, X, Telegram, LinkedIn, TikTok, Instagram, e-mail, copier le lien) s'ouvre désormais sur TOUS les appareils, téléphone et tablette compris, puis renvoie vers le réseau choisi",
       "Partage : les messages pré-rédigés sont mieux aérés (retours à la ligne entre l'accroche, la description et l'appel à l'action) et adaptés à chaque réseau, avec un lien qui pointe au bon endroit"

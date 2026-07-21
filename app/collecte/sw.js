@@ -1,9 +1,13 @@
-// Service worker — mode hors-ligne de l'app de collecte.
-// Stratégie : RÉSEAU D'ABORD pour la coquille (on obtient toujours la dernière
-// version quand on est connecté ; le cache ne sert que de secours hors-ligne),
-// et l'API n'est jamais mise en cache. Bumper CACHE à chaque évolution de la
-// coquille purge l'ancien cache.
-const CACHE = "collecte-nge-v328";
+// Service worker — mode hors-ligne + RAPIDITÉ de l'app de collecte.
+// Stratégie : CACHE D'ABORD pour la coquille (chargement INSTANTANÉ pour un
+// visiteur qui revient : zéro aller-retour réseau sur les fichiers déjà en
+// cache), l'API toujours au réseau, et `version.json` toujours au réseau (c'est
+// LUI qui détecte une nouvelle version → bannière). La fraîcheur est garantie
+// par le cycle de vie du SW : chaque release bumpe CACHE → nouvelle installation
+// qui PRÉCACHE la coquille FRAÎCHE (`cache: "reload"`, contourne le cache HTTP de
+// GitHub Pages), et le bouton « Mettre à jour » purge les caches avant de
+// recharger. Aucun fichier périmé ne peut donc survivre à une mise à jour.
+const CACHE = "collecte-nge-v329";
 const SHELL = [
   "./",
   "./index.html",
@@ -63,8 +67,12 @@ const SHELL = [
 ];
 
 self.addEventListener("install", (e) => {
+  // Précache la coquille FRAÎCHE (cache: "reload" → contourne le cache HTTP, indispensable sur
+  // GitHub Pages). Tolérant : un asset manquant n'empêche pas l'installation (allSettled).
   e.waitUntil(
-    caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())
+    caches.open(CACHE).then((c) => Promise.allSettled(
+      SHELL.map((u) => fetch(new Request(u, { cache: "reload" })).then((r) => { if (r && r.ok) return c.put(u, r); }))
+    )).then(() => self.skipWaiting())
   );
 });
 
@@ -96,21 +104,31 @@ self.addEventListener("fetch", (e) => {
     )));
     return;
   }
-  // coquille : RÉSEAU d'abord (met à jour le cache), CACHE en secours hors-ligne.
-  // CRUCIAL : on force { cache: "reload" } pour CONTOURNER le cache HTTP du
-  // navigateur (GitHub Pages envoie un Cache-Control: max-age). Sans ça, après une
-  // mise à jour + rechargement, le navigateur resservait un app.js PÉRIMÉ depuis
-  // son cache HTTP → la bannière « nouvelle version » réapparaissait indéfiniment,
-  // et seul un Ctrl+Shift+R (qui contourne ce cache) la faisait disparaître.
-  // « reload » = toujours aller au réseau ET rafraîchir le cache HTTP au passage.
-  const fresh = new Request(e.request.url, {
-    cache: "reload", headers: e.request.headers, redirect: "follow",
-  });
+  // version.json : TOUJOURS au réseau (c'est le signal de détection d'une nouvelle version).
+  // Cache en secours hors-ligne uniquement. Jamais servi depuis le cache quand on est en ligne.
+  if (url.pathname.endsWith("/version.json")) {
+    e.respondWith(
+      fetch(new Request(e.request.url, { cache: "reload" })).catch(() => caches.match(e.request))
+    );
+    return;
+  }
+  // Coquille : CACHE D'ABORD → réponse INSTANTANÉE si le fichier est déjà en cache (aucun
+  // aller-retour réseau). Sur cache-miss (1re visite, ou après purge lors d'une mise à jour),
+  // on va au réseau en { cache: "reload" } (contourne le cache HTTP de GitHub Pages, sinon un
+  // app.js PÉRIMÉ pouvait resurgir) puis on met en cache. La fraîcheur entre versions est
+  // assurée par le bump de CACHE (réinstallation) + la purge des caches au clic « Mettre à jour ».
   e.respondWith(
-    fetch(fresh).then((res) => {
-      const copy = res.clone();
-      caches.open(CACHE).then((c) => c.put(e.request, copy)).catch(() => {});
-      return res;
-    }).catch(() => caches.match(e.request))
+    caches.match(e.request).then((cached) => {
+      if (cached) return cached;
+      return fetch(new Request(e.request.url, { cache: "reload", headers: e.request.headers, redirect: "follow" }))
+        .then((res) => {
+          // On ne met en cache QUE les vraies ressources de la coquille (sans query). Les sondes
+          // à cache-buster (`sw.js?ts=…`, `version.json?ts=…`, appelées en boucle par la détection
+          // de version) NE sont PAS mises en cache → aucune accumulation d'entrées jetables.
+          if (res && res.ok && !url.search) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(e.request, copy)).catch(() => {}); }
+          return res;
+        })
+        .catch(() => caches.match(e.request));
+    })
   );
 });
