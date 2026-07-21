@@ -50,6 +50,32 @@ function deviceId() {
   }
   return id;
 }
+// ── JETON DE PROPRIÉTÉ (Couche 2) ───────────────────────────────────────────
+// Secret LOCAL, jamais envoyé en clair au moment du profil : on n'envoie que son
+// HASH (SHA-256). Il prouve, au moment d'une correction (Couche 3), que l'appareil
+// est bien le propriétaire de la contribution, même si un tiers connaissait le
+// device_id. Créé à la volée (donc RÉTROACTIF : les profils existants en obtiennent
+// un à la prochaine remontée de profil).
+function ownerToken() {
+  let t = localStorage.getItem("langa-owner");
+  if (!t) {
+    t = (crypto.randomUUID && crypto.randomUUID()) ||
+        ("own-" + Date.now() + "-" + Math.random().toString(36).slice(2));
+    localStorage.setItem("langa-owner", t);
+  }
+  return t;
+}
+/** Hash hex du jeton (SHA-256 via Web Crypto ; repli déterministe hors contexte sécurisé). */
+async function ownerHash() {
+  const tok = ownerToken();
+  try {
+    const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(tok));
+    return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+  } catch (e) {
+    let h = 0; for (let i = 0; i < tok.length; i++) { h = (h * 31 + tok.charCodeAt(i)) | 0; }
+    return "w" + (h >>> 0).toString(16);
+  }
+}
 
 // --- Contributeur (persisté en localStorage) -----------------------------
 function loadContributeur() {
@@ -1460,13 +1486,16 @@ function openProfile(edit) {
 /** Remonte le PROFIL courant vers la base (best-effort, offline-safe) : tout profil
     complété doit apparaître dans l'Excel, même sans la moindre contribution. Upsert
     idempotent par device_id, sans compter de contribution. */
-function pushUserProfile() {
+async function pushUserProfile() {
   const c = loadContributeur();
   if (!c.consentement) return;   // pas de remontée sans consentement explicite
+  let owner_hash = "";
+  try { owner_hash = await ownerHash(); } catch (e) { owner_hash = ""; }   // enregistre/rafraîchit le hash du jeton (rétroactif)
   try {
     declareUser({
       device_id: deviceId(),
       consentement: !!c.consentement,
+      owner_hash,   // Couche 2 : le backend mémorise ce hash pour autoriser plus tard une correction
       // AUCUNE langue devinée : on n'envoie que les langues EXPLICITEMENT choisies/déclarées ou
       // issues d'une contribution. Sinon vide (on ne suppose JAMAIS que l'utilisateur parle nge).
       langues: Array.isArray(c.langues) ? c.langues : [],
