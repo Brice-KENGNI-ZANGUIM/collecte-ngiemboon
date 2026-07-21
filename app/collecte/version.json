@@ -1,6 +1,9 @@
 {
-  "version": "v306",
+  "version": "v307",
   "changelog": {
+    "v307": [
+      "Téléphone : onglets resserrés (moins d'espace entre eux), icône et libellé légèrement agrandis et bien centrés, sans changer la hauteur ni l'écart avec le header"
+    ],
     "v306": [
       "Téléphone : onglets encore rapprochés du header (écart au-dessus de nouveau réduit de moitié)"
     ],

@@ -642,19 +642,19 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   /* Onglets TÉLÉPHONE : les 4 boutons sur UNE SEULE LIGNE, icône + libellé côte à
      côte. Chaque onglet est un vrai bouton visible (contour + fond teinté de sa
      couleur d'activité). Icône et texte un peu agrandis pour remplir le bouton. */
-  .nav-tabs { width: 100%; flex-wrap: nowrap; gap: 4px; padding: 0; background: transparent; border: none; }
-  /* Ensemble icône + libellé CENTRÉ dans chaque cadre ; icône et texte agrandis.
-     Gap et marges resserrés pour laisser toute la place au libellé (aucune troncature). */
+  .nav-tabs { width: 100%; flex-wrap: nowrap; gap: 2px; padding: 0; background: transparent; border: none; }   /* espace entre boutons resserré */
+  /* Ensemble icône + libellé CENTRÉ dans chaque cadre ; icône et texte LÉGÈREMENT agrandis.
+     Padding vertical réduit d'autant → la HAUTEUR du cadre reste inchangée (icône plus grande
+     compensée par moins de padding). Gap resserré pour laisser la place au libellé (pas de troncature). */
   .nav-tab { flex: 1 1 0; min-width: 0; justify-content: center;
-    gap: 2px; padding: 5px 0; font-size: .6rem; border-radius: 11px; }
+    gap: 2px; padding: 4px 0; font-size: .62rem; border-radius: 11px; }
   .nav-tab span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
-  /* Icônes calibrées une à une pour une même hauteur apparente, sans débordement.
-     Les glyphes larges (mégaphone) sont resserrés pour ne pas rogner le libellé. */
-  .nav-tab .nav-ico { width: 27px; height: 27px; flex: none; }
-  #tab-transcrire .nav-ico { width: 26px; height: 28px; }
-  #tab-traduire  .nav-ico { width: 27px; height: 27px; }
-  #tab-explorer  .nav-ico { width: 27px; height: 27px; }
-  #tab-demander  .nav-ico { width: 25px; height: 27px; }
+  /* Icônes calibrées une à une pour une même hauteur apparente, sans débordement. */
+  .nav-tab .nav-ico { width: 29px; height: 29px; flex: none; }
+  #tab-transcrire .nav-ico { width: 28px; height: 30px; }
+  #tab-traduire  .nav-ico { width: 29px; height: 29px; }
+  #tab-explorer  .nav-ico { width: 29px; height: 29px; }
+  #tab-demander  .nav-ico { width: 27px; height: 29px; }
   /* Onglet actif : couleur d'activité pleine (déjà géré par .is-active) — on garde. */
 }
 /* Écrans très étroits (≤ 374 px, type 360) : on réduit d'un cran police et icônes pour
