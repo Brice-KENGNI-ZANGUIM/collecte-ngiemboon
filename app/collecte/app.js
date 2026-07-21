@@ -41,7 +41,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v323";
+const APP_VERSION = "v324";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -85,6 +85,40 @@ async function ownerHash() {
     let h = 0; for (let i = 0; i < tok.length; i++) { h = (h * 31 + tok.charCodeAt(i)) | 0; }
     return "w" + (h >>> 0).toString(16);
   }
+}
+
+// --- IDENTITÉ D'APPAREIL : paire de clés cryptographique persistante ----------
+// Sans compte ni mot de passe. À la 1re connexion, on génère une paire de clés (ECDSA
+// P-256) ; la clé PRIVÉE reste dans IndexedDB de l'appareil (à jamais), la clé PUBLIQUE
+// est exportée (base64) et envoyée avec le profil → chaque appareil est reconnu de façon
+// unique et infalsifiable. IndexedDB dédiée « langa-identity » (n'affecte pas la base des
+// contributions). Repli silencieux si Web Crypto indisponible (le device_id reste).
+let _devPubB64 = null;
+function _openKeyDB() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open("langa-identity", 1);
+    r.onupgradeneeded = (e) => { const db = e.target.result; if (!db.objectStoreNames.contains("keys")) db.createObjectStore("keys"); };
+    r.onsuccess = (e) => res(e.target.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+function _idbGet(db, k) { return new Promise((res) => { const t = db.transaction("keys", "readonly").objectStore("keys").get(k); t.onsuccess = () => res(t.result); t.onerror = () => res(null); }); }
+function _idbPut(db, k, v) { return new Promise((res) => { const t = db.transaction("keys", "readwrite").objectStore("keys").put(v, k); t.onsuccess = () => res(true); t.onerror = () => res(false); }); }
+function _abToB64(buf) { const b = new Uint8Array(buf); let s = ""; for (let i = 0; i < b.length; i++) s += String.fromCharCode(b[i]); return btoa(s); }
+/** Assure la paire de clés d'appareil ; renvoie la clé PUBLIQUE (base64 SPKI) ou "". */
+async function ensureDeviceKey() {
+  if (_devPubB64) return _devPubB64;
+  try {
+    const db = await _openKeyDB();
+    let pair = await _idbGet(db, "keypair");
+    if (!pair || !pair.publicKey) {
+      pair = await crypto.subtle.generateKey({ name: "ECDSA", namedCurve: "P-256" }, true, ["sign", "verify"]);
+      await _idbPut(db, "keypair", pair);   // persiste la CryptoKey sur l'appareil
+    }
+    const spki = await crypto.subtle.exportKey("spki", pair.publicKey);
+    _devPubB64 = _abToB64(spki);
+    return _devPubB64;
+  } catch (e) { return ""; }
 }
 
 // --- Contributeur (persisté en localStorage) -----------------------------
@@ -1607,11 +1641,14 @@ async function pushUserProfile() {
   if (!c.consentement) return;   // pas de remontée sans consentement explicite
   let owner_hash = "";
   try { owner_hash = await ownerHash(); } catch (e) { owner_hash = ""; }   // enregistre/rafraîchit le hash du jeton (rétroactif)
+  let device_pubkey = "";
+  try { device_pubkey = await ensureDeviceKey(); } catch (e) { device_pubkey = ""; }   // clé publique d'appareil (identité)
   try {
     declareUser({
       device_id: deviceId(),
       consentement: !!c.consentement,
       owner_hash,   // Couche 2 : le backend mémorise ce hash pour autoriser plus tard une correction
+      device_pubkey,   // identité cryptographique de l'appareil (clé publique)
       // AUCUNE langue devinée : on n'envoie que les langues EXPLICITEMENT choisies/déclarées ou
       // issues d'une contribution. Sinon vide (on ne suppose JAMAIS que l'utilisateur parle nge).
       langues: Array.isArray(c.langues) ? c.langues : [],

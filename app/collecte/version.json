@@ -1,6 +1,9 @@
 {
-  "version": "v323",
+  "version": "v324",
   "changelog": {
+    "v324": [
+      "Identité automatique sans compte ni mot de passe : chaque appareil reçoit une clé unique qui reste sur lui, et le système reconnaît une même personne d'un appareil à l'autre en rapprochant les informations du profil (noms, e-mail, téléphone, langues), pour réduire les doublons"
+    ],
     "v323": [
       "Conjugaison beaucoup plus riche : 20 verbes courants à 7 temps (présent, imparfait, futur, conditionnel, passé composé, plus-que-parfait, subjonctif), avec l'équivalent anglais correct à chaque personne (correction d'un sujet erroné au futur)"
     ],
