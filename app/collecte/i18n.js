@@ -728,6 +728,7 @@ export const STR = {
   "req.newlang.pays": { fr: "Pays", en: "Country" },
   "req.newlang.declare": { fr: "Déclarer et choisir", en: "Declare and select" },
   "req.newlang.err": { fr: "Indique au moins le nom et la région de la langue.", en: "Enter at least the language name and region." },
+  "req.newlang.dup": { fr: "Une langue déjà connue ressemble à ta saisie : {noms}. Choisis-la dans la liste, ou reclique pour créer quand même.", en: "A known language looks like your entry: {noms}. Pick it from the list, or click again to create anyway." },
   "req.newlang.ok": { fr: "{nom} est déclarée : tu peux maintenant lancer ta demande.", en: "{nom} is declared: you can now post your request." },
   "req.newlang.first": { fr: "Choisis une langue, ou déclare-la d'abord ci-dessous.", en: "Choose a language, or declare it below first." },
   "incite.aria": { fr: "Invitation à contribuer", en: "Invitation to contribute" },

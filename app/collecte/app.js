@@ -41,7 +41,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v325";
+const APP_VERSION = "v326";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -2102,6 +2102,7 @@ function declareQuery() {
 }
 let _ldSimTimer = 0;
 let _ldConfirmDup = false;
+let _reqNlConfirmDup = false;   // même garde anti-doublon pour la déclaration depuis la page Demander
 /** Affiche les langues DÉJÀ présentes qui ressemblent à la saisie (pour éviter les
  *  doublons : Nguiemboon / Nguiembor / Nguiembow…). Rendu SÛR (textContent). */
 function updateLangSuggestions() {
@@ -3118,9 +3119,19 @@ async function _declareNewLangForRequest() {
   const pays = ($("#req-nl-pays").value || "").trim();
   const err = $("#req-nl-error");
   if (!nom || !region) { if (err) { err.hidden = false; err.textContent = t("req.newlang.err"); } return; }
+  const known = knownLanguages();
+  // HARMONISATION avec le formulaire principal (submitDeclareLang) : même garde ANTI-DOUBLON.
+  // Si une langue déjà connue ressemble fortement à la saisie, on invite à la CHOISIR dans la
+  // liste plutôt que d'en créer une en double ; un 2e clic force la création malgré tout.
+  const strong = findSimilarLanguages({ nom, region, pays, autonyme: "", alias: [] }, known, { minScore: 0.7, limit: 3 });
+  if (strong.length && !_reqNlConfirmDup) {
+    if (err) { err.hidden = false; err.textContent = ti("req.newlang.dup", { noms: strong.map((s) => s.lang.nom).join(", ") }); }
+    _reqNlConfirmDup = true;
+    return;
+  }
+  _reqNlConfirmDup = false;
   if (err) err.hidden = true;
   let id = _slugLang(nom);
-  const known = knownLanguages();
   // évite une collision d'id (suffixe incrémental)
   let base = id, k = 2; while (known.some((l) => l.id === id)) { id = base + k; k++; }
   const rec = { id, nom, region, pays, autonyme: "", alias: [], famille: "", clavier: "defaut", statut: "active" };
@@ -5809,6 +5820,7 @@ function initEvents() {
   const rList = $("#req-list"); if (rList) rList.addEventListener("click", onReqListClick);
   const rLang = $("#req-langue"); if (rLang) rLang.addEventListener("change", _onReqLangueChange);
   const rNl = $("#req-nl-declare"); if (rNl) rNl.addEventListener("click", _declareNewLangForRequest);
+  ["#req-nl-nom", "#req-nl-region", "#req-nl-pays"].forEach((s) => { const el = $(s); if (el) el.addEventListener("input", () => { _reqNlConfirmDup = false; const e = $("#req-nl-error"); if (e) e.hidden = true; }); });
   const upNow = $("#update-now"); if (upNow) upNow.addEventListener("click", doUpdate);
   const upLater = $("#update-later"); if (upLater) upLater.addEventListener("click", () => {
     const dep = $("#update-ver") ? $("#update-ver").textContent.trim() : "";

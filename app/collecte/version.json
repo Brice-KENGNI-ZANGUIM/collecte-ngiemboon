@@ -1,6 +1,9 @@
 {
-  "version": "v325",
+  "version": "v326",
   "changelog": {
+    "v326": [
+      "Déclaration d'une nouvelle langue depuis la page Demander : même garde anti-doublon que le formulaire principal (si une langue proche existe déjà, on invite à la choisir plutôt que d'en créer une en double)"
+    ],
     "v325": [
       "Profil : l'e-mail (marqué obligatoire par une étoile) est désormais RÉELLEMENT exigé, avec un format valide, avant de pouvoir valider le profil (avant, l'étoile n'était pas vérifiée)"
     ],
