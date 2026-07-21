@@ -1,6 +1,9 @@
 {
-  "version": "v303",
+  "version": "v304",
   "changelog": {
+    "v304": [
+      "Téléphone : les 4 onglets sont rapprochés du header (écart au-dessus réduit de moitié)"
+    ],
     "v303": [
       "Téléphone : correction du recouvrement des boutons du header par les 4 onglets (écart positif régulier ~20px, sans chevauchement) ; largeur, texte et icônes des onglets inchangés, seule la hauteur est réduite",
       "Profil : nouvel espace « Mes contributions envoyées » pour corriger soi-même la langue d'une contribution mal étiquetée"
