@@ -1,6 +1,9 @@
 {
-  "version": "v283",
+  "version": "v284",
   "changelog": {
+    "v284": [
+      "Textes de partage entièrement personnalisés : chaque lien porte un message marketing rédigé spécifiquement pour la plateforme (conversationnel sur WhatsApp/Telegram, court sur X, professionnel sur LinkedIn, légende sur Instagram/TikTok) ET pour le contenu (page, ou une traduction/prononciation/demande précise avec le mot et la langue), avec des hashtags propres à chaque réseau"
+    ],
     "v283": [
       "Bouton « Écouter » des popups : un indicateur clair de chargement puis de lecture (comme dans la bibliothèque), pour ne plus croire que le bouton ne répond pas quand l'audio met un instant à charger"
     ],

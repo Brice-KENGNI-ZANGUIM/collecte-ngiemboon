@@ -20,6 +20,7 @@ import { applyI18n, getUiLang, setUiLang, t, tToast } from "./i18n.js";
 import { legalHtml, LEGAL_SECTIONS } from "./legal.js";
 import { entriesToCSV, entriesToJSON, entriesToLIFT, entriesToCLDF, entriesToELAN, exportFilename } from "./export.js";
 import { shareCardText, shareTitle, mountShareBar } from "./share.js";
+import { shareMessage, shareSubject } from "./sharecopy.js";
 import { findSimilarLanguages } from "./langsim.js";
 import { findDuplicatePairs, pickCanonical, resolveCanonicalId, visibleLanguages } from "./langmerge.js";
 import { AMORCE, AMORCE_MIN } from "./amorce.js";
@@ -30,7 +31,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v283";
+const APP_VERSION = "v284";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1179,26 +1180,24 @@ function injectBannerShare(name) {
   btn.setAttribute("aria-label", t("banner.share"));
   btn.onclick = () => sharePageBanner(slug);
 }
-function pageShareText(slug) {
-  const key = "share.page." + (slug || "");
-  const v = t(key);
-  return (v && v !== key) ? v : t("share.page.");   // repli sur le texte générique
-}
+// slug d'URL de page → clé de cas de partage (textes marketing de sharecopy.js).
+const SLUG_CASE = { "": "home", traduire: "traduire", transcrire: "transcrire", explorer: "explorer", demander: "demander", langues: "langues", apropos: "apropos" };
 async function sharePageBanner(slug) {
   const url = PRESENT_URL.replace(/\/$/, "") + (slug ? "/" + slug : "/");
-  const text = pageShareText(slug);
+  const caseKey = SLUG_CASE[slug || ""] || "home";
   // Mobile (écran tactile) : la feuille de partage native ouvre déjà toutes les options du système.
   const coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
   if (navigator.share && coarse) {
+    const text = shareMessage(caseKey, "native", {}, getUiLang());   // texte neutre (sans hashtag) pour la feuille système
     try { await navigator.share({ title: "LANGIAL", text, url }); return; }
     catch (e) { return; }   // partage annulé
   }
-  // PC (ou pas de partage natif) : panneau des réseaux avec le message déjà rédigé.
-  openSharePanel(url, text);
+  // PC (ou pas de partage natif) : panneau des réseaux, texte personnalisé PAR réseau.
+  openSharePanel(url, caseKey, {});
 }
-/** Panneau de partage : réseaux (message pré-rédigé) + copier le lien. Réutilise mountShareBar. */
+/** Panneau de partage : réseaux (texte marketing propre à chaque plateforme) + copier le lien. */
 let _sharePanelEl = null;
-function openSharePanel(url, text) {
+function openSharePanel(url, caseKey, ctx) {
   if (!_sharePanelEl) {
     const ov = document.createElement("div");
     ov.id = "share-panel"; ov.className = "tr-guide"; ov.hidden = true;
@@ -1218,8 +1217,11 @@ function openSharePanel(url, text) {
   const ov = _sharePanelEl;
   ov.querySelector(".sp-title").textContent = t("share.panel.title");
   ov.querySelector(".sp-sub").textContent = t("share.panel.sub");
+  const lang = getUiLang();
   mountShareBar(ov.querySelector(".sp-bar-host"), {
-    url, text, title: "LANGIAL", toast, hashtags: t("share.hashtags"),
+    url, title: "LANGIAL", toast,
+    messageFor: (net) => shareMessage(caseKey, net, ctx || {}, lang),   // texte marketing PAR réseau
+    emailSubject: shareSubject(caseKey, lang),
     nets: ["whatsapp", "facebook", "x", "telegram", "linkedin", "tiktok", "instagram", "email"],
     shareOnLabel: t("share.on"), nativeLabel: t("share.native"),
     copyLabel: t("share.copy"), copiedMsg: t("share.copied2"), copyCaptionMsg: t("share.caption.copied"),
@@ -2989,14 +2991,14 @@ async function _sendAnswer(item, btn) {
 async function _shareRequest(item) {
   const w = item.dataset.w, lang = _langNameById(item.dataset.lang);
   const url = PRESENT_URL.replace(/\/$/, "");
-  const text = ti("req.share.msg", { w, lang, url });
-  const textNoUrl = ti("req.share.msg", { w, lang, url: "" }).replace(/[\s:]+$/, "");
+  const ctx = { w, lang };
   const coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
   if (navigator.share && coarse) {
-    try { await navigator.share({ title: "LANGIAL", text }); return; }
+    const text = shareMessage("request", "native", ctx, getUiLang());
+    try { await navigator.share({ title: "LANGIAL", text: text + "\n" + url }); return; }
     catch (e) { if (e && e.name === "AbortError") return; }
   }
-  openSharePanel(url, textNoUrl);   // PC : panneau réseaux (hashtags/TikTok/Facebook)
+  openSharePanel(url, "request", ctx);   // PC : panneau réseaux, texte propre à chaque plateforme
 }
 function onReqListClick(e) {
   const openB = e.target.closest(".req-answer-open");
@@ -3367,15 +3369,16 @@ async function shareEntry(src, tgt, dir, hasAudio) {
   const L = currentLang();
   const s = shareClean(src), tg = shareClean(tgt);
   const url = entryDeepLink(src, dir);
-  const q = dir === "nge2fr" ? ti("shareE.q.rev", { w: s, lang: L.nom }) : ti("shareE.q", { w: s, lang: L.nom });
-  const body = tg ? ti("shareE.has", { t: tg }) : (hasAudio ? t("shareE.audio") : t("shareE.none"));
-  const textNoUrl = [q, body, t("shareE.cta")].join("\n");
+  // Cas de partage : une traduction précise (avec cible) ou une prononciation (audio, sans cible).
+  const caseKey = (!tg && hasAudio) ? "entry-transc" : "entry-trad";
+  const ctx = { w: s, lang: L.nom, tr: tg };
   const coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
   if (navigator.share && coarse) {
-    try { await navigator.share({ title: shareTitle(L.nom), text: textNoUrl + "\n" + url }); return; }
+    const text = shareMessage(caseKey, "native", ctx, getUiLang());
+    try { await navigator.share({ title: shareTitle(L.nom), text: text + "\n" + url }); return; }
     catch (e) { if (e && e.name === "AbortError") return; }
   }
-  openSharePanel(url, textNoUrl);   // PC : panneau réseaux (hashtags/TikTok/Facebook gérés)
+  openSharePanel(url, caseKey, ctx);   // PC : panneau réseaux, texte marketing propre à chaque plateforme
 }
 
 /** Télécharge le dictionnaire de la LANGUE COURANTE (entrées visibles) en CSV ou JSON. */
@@ -4490,12 +4493,13 @@ function mountShareBars() {
   // une URL légèrement distincte (…?s=1), le réseau la voit comme neuve et récupère
   // l'aperçu à jour (avec l'image). Sans effet pour l'utilisateur : même application.
   const shareUrl = PRESENT_URL + "?s=1";
+  const lang = getUiLang();
   const opts = {
     url: shareUrl,
-    text: t("share.text"),
     title: "LANGIAL",
     toast: toast,
-    hashtags: t("share.hashtags"),
+    messageFor: (net) => shareMessage("home", net, {}, lang),   // texte marketing d'accueil, propre à chaque réseau
+    emailSubject: shareSubject("home", lang),
     nativeLabel: t("share.native"),
     copyLabel: t("share.copy"),
     copiedMsg: t("share.copied"),

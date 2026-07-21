@@ -86,6 +86,18 @@ export function netText(text, hashtags, net) {
   const h = clean(hashtags, 200);
   return h && HASH_NETS.has(net) ? base + "\n\n" + h : base;
 }
+/** Lien de partage d'UN réseau à texte pré-rempli (WhatsApp/Telegram/X/e-mail), avec un message
+ *  PROPRE à ce réseau. "" pour les réseaux qui passent par « copier + ouvrir ». */
+export function directLink(net, url, msg, emailSubject) {
+  const u = encodeURIComponent(clean(url, 300));
+  const t = encodeURIComponent(clean(msg, 500));
+  const tu = encodeURIComponent(clean(msg, 500) + " " + clean(url, 300));
+  if (net === "whatsapp") return "https://wa.me/?text=" + tu;
+  if (net === "telegram") return "https://t.me/share/url?url=" + u + "&text=" + t;
+  if (net === "x") return "https://twitter.com/intent/tweet?text=" + t + "&url=" + u;
+  if (net === "email") return "mailto:?subject=" + encodeURIComponent(clean(emailSubject, 120) || "LANGIAL") + "&body=" + tu;
+  return "";
+}
 /** Liens de partage par réseau à TEXTE pré-rempli (messagerie + X). Fonction pure.
  *  Facebook/LinkedIn/Instagram/TikTok sont traités à part (copier + ouvrir). */
 export function siteShareLinks(url, text, hashtags) {
@@ -117,7 +129,9 @@ export function mountShareBar(container, opts) {
   const hashtags = o.hashtags || "";
   const toast = typeof o.toast === "function" ? o.toast : function () {};
   const nets = o.nets || ["whatsapp", "facebook", "x", "telegram", "linkedin", "tiktok", "instagram", "email"];
-  const links = siteShareLinks(url, text, hashtags);
+  // Message PAR réseau : soit fourni par messageFor(net) (textes marketing personnalisés par
+  // plateforme), soit un même texte + hashtags selon le réseau.
+  const msgOf = (typeof o.messageFor === "function") ? o.messageFor : function (net) { return netText(text, hashtags, net); };
   const captionMsg = o.copyCaptionMsg || "Message copié (avec hashtags). Colle-le dans ta publication.";
 
   const bar = document.createElement("div");
@@ -137,16 +151,17 @@ export function mountShareBar(container, opts) {
   nets.forEach(function (n) {
     const netName = NET_LABEL[n] || n;
     const lbl = o.shareOnLabel ? o.shareOnLabel.split("{net}").join(netName) : "Partager sur " + netName;
+    const netMsg = msgOf(n);      // texte propre à CE réseau (ton + hashtags adaptés)
     if (COPY_NETS.has(n)) {
       // Facebook/LinkedIn/Instagram/TikTok : pas de texte pré-rempli via URL → on copie le
-      // message (avec hashtags pour ces réseaux) puis on ouvre la plateforme pour coller.
+      // message (déjà personnalisé pour ce réseau) puis on ouvre la plateforme pour coller.
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "share-ico share-ico--" + n;
       btn.setAttribute("aria-label", lbl); btn.title = lbl;
       btn.innerHTML = NET_SVG[n];
       btn.addEventListener("click", function () {
-        const caption = netText(text, hashtags, n) + "\n" + url;
+        const caption = netMsg + "\n" + url;
         const go = function () { toast(captionMsg, "ok"); window.open(copyOpenTarget(n, url), "_blank", "noopener"); };
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(caption).then(go).catch(function () { fallbackCopy(caption, go, toast); });
@@ -154,10 +169,11 @@ export function mountShareBar(container, opts) {
       });
       bar.appendChild(btn);
     } else {
-      if (!links[n]) return;   // whatsapp/telegram/x/email : lien direct avec texte
+      const href = directLink(n, url, netMsg, o.emailSubject);   // whatsapp/telegram/x/e-mail
+      if (!href) return;
       const a = document.createElement("a");
       a.className = "share-ico share-ico--" + n;
-      a.href = links[n]; a.target = "_blank"; a.rel = "noopener noreferrer";
+      a.href = href; a.target = "_blank"; a.rel = "noopener noreferrer";
       a.setAttribute("aria-label", lbl); a.title = lbl;
       a.innerHTML = NET_SVG[n];
       bar.appendChild(a);
