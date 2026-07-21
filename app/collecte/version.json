@@ -1,6 +1,9 @@
 {
-  "version": "v275",
+  "version": "v276",
   "changelog": {
+    "v276": [
+      "Langues d'appartenance plus justes : plus aucune langue devin\u00e9e par d\u00e9faut ; elles ne se remplissent que par une d\u00e9claration ou une vraie contribution, et \u00e0 chaque connexion le profil se r\u00e9aligne automatiquement sur ce que la personne a r\u00e9ellement fait"
+    ],
     "v275": [
       "Outil de d\u00e9coupe audio am\u00e9lior\u00e9 : l'onde montre clairement les zones de forte amplitude (barres cyan vives), et un curseur de progression suit la lecture quand tu \u00e9coutes la s\u00e9lection"
     ],

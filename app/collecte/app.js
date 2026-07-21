@@ -30,7 +30,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v275";
+const APP_VERSION = "v276";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -868,6 +868,9 @@ async function saveContribution() {
   const reqId = _currentReqId;
   if (reqId) rec.request_id = reqId;
   await DB.put(rec);
+  // Contribuer DANS une langue = la marquer comme langue d'appartenance (peuplement LÉGITIME,
+  // fondé sur une action réelle, jamais deviné). Avec la déclaration, seule source des « langues ».
+  addProfileLangue(lid);
   markDoneText(rec.source_text);   // cet item ne sera plus proposé à CET utilisateur
   if (mode === "proposer" && currentProp) {
     loadProposition(); // enchaîne un item NON encore traité (tirage aléatoire)
@@ -1340,11 +1343,9 @@ async function submitBug() {
 /** Ouvre la vue profil. edit=true → mode modification (depuis l'app). */
 function openProfile(edit) {
   profileSnapshot = edit ? loadContributeur() : null;
-  // Pré-remplit les langues d'appartenance avec la langue déjà choisie (si aucune encore).
-  const c = loadContributeur();
-  if ((!Array.isArray(c.langues) || c.langues.length === 0) && hasChosenLang()) {
-    addProfileLangue(getCurrentLangId());
-  }
+  // On NE devine PLUS la langue : plus de pré-remplissage automatique depuis la langue courante
+  // (souvent la graine nge). Les langues d'appartenance ne se remplissent QUE par un choix
+  // explicite (sélecteur de langue), une déclaration, ou une contribution dans une langue.
   renderProfileLangs();
   $("#profile-title").textContent = edit ? t("profile.title.edit") : t("profile.title.welcome");
   // Le profil est OPTIONNEL (navigation libre) : « Annuler » est toujours proposé pour
@@ -1365,7 +1366,9 @@ function pushUserProfile() {
     declareUser({
       device_id: deviceId(),
       consentement: !!c.consentement,
-      langues: Array.isArray(c.langues) && c.langues.length ? c.langues : [getCurrentLangId()],
+      // AUCUNE langue devinée : on n'envoie que les langues EXPLICITEMENT choisies/déclarées ou
+      // issues d'une contribution. Sinon vide (on ne suppose JAMAIS que l'utilisateur parle nge).
+      langues: Array.isArray(c.langues) ? c.langues : [],
       contributeur: c,
     }).catch(() => {});
   } catch (e) { /* offline : sans gravité, retenté au prochain enregistrement de profil */ }
@@ -1404,6 +1407,9 @@ function enterHub() {
   // RECONSTITUTION AUTO en temps réel : à chaque connexion, l'appareil re-déclare ses langues
   // locales pour compléter au backend toute métadonnée manquante (pays, région…), sans écraser.
   setTimeout(() => { try { reconstituteLocalLanguages(); } catch (e) { /* jamais bloquant */ } }, 3000);
+  // Aligne les LANGUES D'APPARTENANCE du profil sur les contributions réelles (retire tout
+  // défaut hérité type « nge » non parlé, aucune supposition), et pousse la correction au backend.
+  setTimeout(() => { try { reconstituteProfileLangues(); } catch (e) { /* jamais bloquant */ } }, 3400);
 }
 /** Accueil = le hub aux trois portes (Traduire, Transcrire, Explorer). Si le profil
     n'est pas encore complet, l'accueil obligatoire reste la vue Profil (aucun
@@ -1746,6 +1752,30 @@ async function reconstituteLocalLanguages() {
         clavier: l.clavier || "defaut", statut: l.statut || "active", device_id: deviceId(),
       });
     }
+  } catch (e) { /* jamais bloquant */ }
+}
+/** RECONSTITUTION des langues d'appartenance depuis les CONTRIBUTIONS LOCALES RÉELLES (aucune
+    supposition) : nettoie tout défaut hérité (ex. nge jamais parlé) et aligne le profil sur ce
+    que l'utilisateur a VRAIMENT fait. Poussé au backend (l'upsert écrase langues, même vers vide).
+    C'est la reconstitution « depuis ses cookies » : on se fonde sur ses vraies données locales. */
+async function reconstituteProfileLangues() {
+  try {
+    const c = loadContributeur();
+    if (!c || !c.consentement) return;
+    let all = [];
+    try { all = await DB.all(); } catch (e) { all = []; }
+    const langs = [];
+    for (const r of all) {
+      const l = canonLangId(r && r.langue);
+      if (l && l !== "fr" && !langs.includes(l)) langs.push(l);
+    }
+    const cur = Array.isArray(c.langues) ? c.langues.map(canonLangId).filter(Boolean) : [];
+    const same = cur.length === langs.length && cur.every((x) => langs.includes(x));
+    if (same) return;                 // déjà aligné : rien à corriger
+    c.langues = langs;
+    saveContributeur(c);
+    try { renderProfileLangs(); } catch (e) { /* ok */ }
+    pushUserProfile();                // pousse la correction au backend (upsert écrase langues)
   } catch (e) { /* jamais bloquant */ }
 }
 /** Rafraîchit le registre distant des langues (best-effort) puis re-peint si on est
