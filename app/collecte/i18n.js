@@ -721,6 +721,14 @@ export const STR = {
   "pb.translate.title": { fr: "Donne du sens à chaque mot", en: "Give meaning to every word" },
   "pb.transcribe.eye": { fr: "Transcrire", en: "Transcribe" },
   "pb.transcribe.title": { fr: "Prête ta voix à ta langue", en: "Lend your voice to your language" },
+  // Indicateur + confirmation de la langue de la contribution (anti-mauvais étiquetage)
+  "work.lang.lead": { fr: "Langue de ta contribution", en: "Your contribution language" },
+  "work.lang.aria": { fr: "Langue de ta contribution : {lang}. Touche pour changer.", en: "Your contribution language: {lang}. Tap to change." },
+  "langconfirm.title": { fr: "Confirme la langue", en: "Confirm the language" },
+  "langconfirm.msg": { fr: "Tu es en train de contribuer en {lang}. C'est bien la langue de ce mot et de cette voix ?", en: "You are contributing in {lang}. Is this really the language of this word and this voice?" },
+  "langconfirm.doubt": { fr: "Attention : ce texte contient des lettres propres au ngiemboon, mais la langue choisie est {lang}.", en: "Careful: this text contains letters specific to ngiemboon, but the selected language is {lang}." },
+  "langconfirm.ok": { fr: "Oui, c'est {lang}", en: "Yes, it's {lang}" },
+  "langconfirm.change": { fr: "Non, changer de langue", en: "No, change language" },
 };
 
 // Messages éphémères (toasts) : table FR → EN. On garde le FR comme source dans les

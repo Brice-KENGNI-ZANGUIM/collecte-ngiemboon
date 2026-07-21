@@ -917,6 +917,48 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 /* ---- En-tête d'espace + mise en avant de l'enregistrement en transcription ---- */
 .work-head { margin-bottom: 2px; }
 .work-help { color: var(--muted); font-size: .86rem; line-height: 1.55; margin: 8px 0 0; }
+
+/* Indicateur FORT de la langue de la contribution (anti-mauvais étiquetage) : pastille
+   proéminente, cliquable, toujours visible sur la vue de travail. */
+.work-lang {
+  display: inline-flex; align-items: center; gap: 8px; margin: 10px 0 0;
+  padding: 7px 12px; border-radius: 999px; cursor: pointer;
+  border: 1.5px solid color-mix(in srgb, var(--cyan) 55%, var(--border));
+  background:
+    radial-gradient(120% 120% at 0% 0%, color-mix(in srgb, var(--cyan) 15%, transparent), transparent 62%),
+    color-mix(in srgb, var(--cyan) 8%, var(--card));
+  color: var(--text); font-size: .9rem; line-height: 1;
+  box-shadow: inset 0 1px 0 var(--card-sheen), 0 0 20px -10px var(--cyan);
+  transition: border-color .2s, box-shadow .2s, background .2s;
+}
+.work-lang:hover { border-color: var(--cyan); box-shadow: inset 0 1px 0 var(--card-sheen), 0 0 24px -6px var(--cyan); }
+.work-lang-ico { font-size: 1.05rem; }
+.work-lang-lead { color: var(--muted); }
+.work-lang-name { font-weight: 800; letter-spacing: .2px;
+  color: color-mix(in srgb, var(--cyan) 72%, var(--text)); }
+.work-lang-chev { color: var(--muted); font-size: .8rem; }
+/* Tant que la langue n'a pas été confirmée cette session : teinte d'alerte ambrée + halo qui
+   respire pour attirer l'œil (respecte prefers-reduced-motion). */
+.work-lang.is-unconfirmed {
+  border-color: color-mix(in srgb, var(--gold) 65%, var(--border));
+  background:
+    radial-gradient(120% 120% at 0% 0%, color-mix(in srgb, var(--gold) 18%, transparent), transparent 62%),
+    color-mix(in srgb, var(--gold) 9%, var(--card));
+  animation: worklang-breathe 2.4s ease-in-out infinite;
+}
+.work-lang.is-unconfirmed .work-lang-name { color: color-mix(in srgb, var(--gold) 78%, var(--text)); }
+@keyframes worklang-breathe {
+  0%, 100% { box-shadow: inset 0 1px 0 var(--card-sheen), 0 0 14px -10px var(--gold); }
+  50% { box-shadow: inset 0 1px 0 var(--card-sheen), 0 0 22px -4px var(--gold); }
+}
+@media (prefers-reduced-motion: reduce) { .work-lang.is-unconfirmed { animation: none; } }
+/* Ligne de doute (écriture qui contredit la langue) dans le modal de confirmation. */
+.lc-doubt {
+  margin: 0 0 6px; padding: 9px 12px; border-radius: 10px; font-size: .88rem; line-height: 1.5;
+  color: color-mix(in srgb, var(--gold) 40%, var(--text));
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, var(--border));
+  background: color-mix(in srgb, var(--gold) 10%, var(--card));
+}
 /* La zone encadre déjà l'audio → pas de cadre interne redondant (dans TOUS les modes,
    pour un rendu identique Traduire/Transcrire/amorce). */
 .zone--audio .audio-row { padding: 0; margin-top: 12px; background: transparent; border: none; }

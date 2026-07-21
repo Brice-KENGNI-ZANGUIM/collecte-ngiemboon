@@ -29,7 +29,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v260";
+const APP_VERSION = "v261";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -192,8 +192,47 @@ function applyLanguage() {
   const dE = document.querySelector('.hub-card[data-go="explore"] .hub-desc');
   if (dE) dE.textContent = t("hub.card.explore.desc");
   const chipName = $("#lang-chip-name"); if (chipName) chipName.textContent = L.nom;
+  updateWorkLang();
   applyDirection();
 }
+
+// --- Couche 1 anti-mauvais étiquetage : langue de contribution rendue explicite -------
+// L'indicateur FORT (#work-lang) rappelle en permanence dans quelle langue on contribue, et
+// une confirmation apparaît à l'enregistrement tant que la langue n'a pas été validée cette
+// session (ou si l'écriture du texte contredit la langue choisie). Empêche d'inscrire une
+// contribution dans la mauvaise langue cible (bug « je transcris en X, la base note Y »).
+let _langAck = null;   // langue explicitement confirmée par l'utilisateur pour cette session
+function updateWorkLang() {
+  const el = $("#work-lang"); if (!el) return;
+  if (!el.dataset.bound) { el.dataset.bound = "1"; el.addEventListener("click", () => openLangChoice()); }
+  const lid = getCurrentLangId();
+  const name = _langNameById(lid) || "—";
+  const nm = $("#work-lang-name"); if (nm) nm.textContent = name;
+  el.setAttribute("aria-label", ti("work.lang.aria", { lang: name }));
+  el.classList.toggle("is-unconfirmed", _langAck !== lid);   // teinte d'alerte tant que non confirmée
+}
+/** Confirmation bloquante de la langue (Promise → true si confirmée, false si « changer »). */
+function confirmLang(lid, doubt) {
+  return new Promise((resolve) => {
+    const m = $("#lang-confirm"); if (!m) { resolve(true); return; }
+    const name = _langNameById(lid) || String(lid || "");
+    const msg = $("#lc-msg"); if (msg) msg.textContent = ti("langconfirm.msg", { lang: name });
+    const dEl = $("#lc-doubt");
+    if (dEl) { if (doubt) { dEl.textContent = ti("langconfirm.doubt", { lang: name }); dEl.hidden = false; } else { dEl.hidden = true; } }
+    const ok = $("#lc-ok"), ch = $("#lc-change");
+    if (ok) ok.textContent = ti("langconfirm.ok", { lang: name });
+    if (ch) ch.textContent = t("langconfirm.change");
+    m.hidden = false;
+    try { ok.focus(); } catch (e) { /* ok */ }
+    const done = (v) => { m.hidden = true; if (ok) ok.onclick = null; if (ch) ch.onclick = null; resolve(v); };
+    if (ok) ok.onclick = () => done(true);
+    if (ch) ch.onclick = () => done(false);
+  });
+}
+// Clic sur l'indicateur → écran de choix de langue (changer de langue de contribution).
+document.addEventListener("DOMContentLoaded", () => {
+  const wl = $("#work-lang"); if (wl) wl.addEventListener("click", () => openLangChoice());
+});
 // --- Mode « proposer un mot » -------------------------------------------
 // --- Anti-répétition PAR UTILISATEUR (device) : un item déjà traité (traduit OU
 //     transcrit) par CET utilisateur ne lui est plus proposé. Dédup par TEXTE
@@ -754,6 +793,21 @@ async function saveContribution() {
   } else if (!source || !target) {
     toast(t("toast.need.both"), "warn");
     return;
+  }
+
+  // Couche 1 anti-mauvais étiquetage : on CONFIRME la langue de la contribution tant qu'elle
+  // n'a pas été validée cette session, ou si l'écriture du texte contredit la langue choisie
+  // (lettres du ngiemboon alors que la langue cible est autre). Empêche « je transcris en X,
+  // la base note Y » sans avoir à passer par l'admin.
+  {
+    const curLid = getCurrentLangId();
+    const scriptDoubt = activity === "translate" && !!target && /[ŋɛɔʉ]/i.test(target) && !usesDedicatedKeyboard(curLid);
+    if (_langAck !== curLid || scriptDoubt) {
+      const okLang = await confirmLang(curLid, scriptDoubt);
+      if (!okLang) { openLangChoice(); return; }
+      _langAck = curLid;
+      updateWorkLang();
+    }
   }
 
   const fr2nge = direction === "fr2nge";
@@ -1863,6 +1917,7 @@ function setActivity(act) {
   const isT = activity === "transcribe";
   const t2 = $("#work-title"); if (t2) t2.textContent = isT ? t("work.title.transcribe") : t("work.title.translate");
   const wico = $("#work-ico"); if (wico) wico.src = isT ? "icons/mic-real.png" : "icons/act-translate.svg";
+  updateWorkLang();   // rappel FORT de la langue de contribution (anti-mauvais étiquetage)
   const bimg = $("#work-banner-img"); if (bimg) bimg.src = isT ? "icons/banner-transcribe.jpg" : "icons/banner-translate.jpg";
   const beye = $("#work-banner-eye"); if (beye) beye.textContent = isT ? t("pb.transcribe.eye") : t("pb.translate.eye");
   const btit = $("#work-banner-title"); if (btit) btit.textContent = isT ? t("pb.transcribe.title") : t("pb.translate.title");

@@ -1,6 +1,9 @@
 {
-  "version": "v260",
+  "version": "v261",
   "changelog": {
+    "v261": [
+      "Langue de la contribution rendue tr\u00e8s visible sur Traduire et Transcrire (pastille cliquable), avec une confirmation quand elle n'a pas encore \u00e9t\u00e9 valid\u00e9e ou qu'un doute d'\u00e9criture appara\u00eet : plus de risque d'enregistrer dans la mauvaise langue"
+    ],
     "v260": [
       "Lecteur audio embelli : onde multicolore (cyan, vert, or) qui s'\u00e9coule le long de la lecture comme les ondes lumineuses de la banni\u00e8re, et effet de mirage o\u00f9 tout le cadre se d\u00e9forme comme dans l'eau agit\u00e9e d\u00e8s que le son brise le silence"
     ],

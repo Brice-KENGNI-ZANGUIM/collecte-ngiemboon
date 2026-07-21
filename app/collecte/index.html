@@ -376,6 +376,14 @@
       <div class="work-head">
         <h2 class="view-title view-title--ico"><img id="work-ico" class="title-ico" src="icons/act-translate.svg" alt="" aria-hidden="true"><span id="work-title">Traduire</span></h2>
         <p class="work-help" id="work-help"></p>
+        <!-- Indicateur FORT de la langue de la contribution (anti-mauvais étiquetage) :
+             toujours visible, cliquable pour changer de langue. -->
+        <button type="button" id="work-lang" class="work-lang" aria-label="Changer de langue">
+          <span class="work-lang-ico" aria-hidden="true">🎙️</span>
+          <span class="work-lang-lead" data-i18n="work.lang.lead">Langue de ta contribution</span>
+          <span class="work-lang-name" id="work-lang-name">—</span>
+          <span class="work-lang-chev" aria-hidden="true">▾</span>
+        </button>
       </div>
 
     <!-- Bandeau LOT 5 « Demander » : demandes ouvertes de la communauté DANS LA
@@ -1154,6 +1162,24 @@
       <div class="pg-actions">
         <button id="pg-ok" class="btn btn--primary" type="button" data-i18n="pgate.ok">Créer mon profil →</button>
         <button id="pg-later" class="btn btn--ghost" type="button" data-i18n="pgate.later">Plus tard</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation de la LANGUE de la contribution (anti-mauvais étiquetage) : apparaît à
+       l'enregistrement quand la langue n'a pas encore été confirmée cette session, ou quand un
+       doute d'écriture est détecté. Empêche d'inscrire une contribution dans la mauvaise langue. -->
+  <div id="lang-confirm" class="tr-guide" hidden role="dialog" aria-modal="true" aria-labelledby="lc-title">
+    <div class="tr-guide-card lang-confirm-card">
+      <div class="tr-guide-head">
+        <div class="tr-guide-ico" aria-hidden="true">🌍</div>
+        <h2 id="lc-title" data-i18n="langconfirm.title">Confirme la langue</h2>
+        <p class="tr-guide-lead" id="lc-msg"></p>
+      </div>
+      <p class="lc-doubt" id="lc-doubt" hidden></p>
+      <div class="pg-actions">
+        <button id="lc-ok" class="btn btn--primary" type="button">Oui</button>
+        <button id="lc-change" class="btn btn--ghost" type="button" data-i18n="langconfirm.change">Non, changer de langue</button>
       </div>
     </div>
   </div>
