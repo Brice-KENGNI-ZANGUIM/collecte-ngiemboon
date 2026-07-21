@@ -1,6 +1,10 @@
 {
-  "version": "v298",
+  "version": "v299",
   "changelog": {
+    "v299": [
+      "Liste des langues : chaque langue montre sa région d'origine avec le pays entre parenthèses (et sans doublon si le pays figure déjà dans la région)",
+      "Onglets Transcrire, Traduire, Explorer et Demander : hauteur encore réduite et parfaitement alignés avec les boutons du haut, sans chevauchement ni débordement"
+    ],
     "v298": [
       "Fond du site en mode clair : le motif traditionnel est bien plus visible et mis en valeur, avec un reflet lumineux qui glisse doucement (comme en mode sombre)",
       "Popups d'invitation et de notification : ils réapparaissent même sans numéro de téléphone renseigné (le numéro n'est demandé qu'au moment de contribuer), ce qui les rétablit notamment sur téléphone"
