@@ -1579,6 +1579,18 @@ function topContributorsHtml() {
   return `<div class="exp-contrib"><span class="exp-contrib-lbl">✍️ ${t("exp.topcontrib")}</span>${list}</div>`;
 }
 /** Peint la grille des langues connues (graine + déclarées) + la carte « déclarer ». */
+/** Libellé de provenance d'une langue = « Région (Pays) ». Règle d'affichage (demande Brice) :
+ *  on montre TOUJOURS la région et le pays, en s'adaptant à la saisie de l'utilisateur —
+ *  s'il a déjà glissé le pays dans le champ région (ex. « Ouest/Cameroun »), on n'ajoute PAS le
+ *  pays entre parenthèses (sinon doublon) ; sinon on l'ajoute. Détection = recherche du nom du
+ *  pays dans la région, TOUT EN MINUSCULES (l'utilisateur peut mélanger majuscules/minuscules). */
+function langRegionLabel(l) {
+  const region = String((getUiLang() === "en" && l.region_en) ? l.region_en : (l.region || "")).trim();
+  const pays = String(l.pays || "").trim();
+  if (!pays) return region;
+  if (!region) return pays;
+  return region.toLowerCase().includes(pays.toLowerCase()) ? region : `${region} (${pays})`;
+}
 function renderLangChoice() {
   const grid = $("#lang-grid");
   if (!grid) return;
@@ -1602,7 +1614,7 @@ function renderLangChoice() {
         ${l.autonyme ? `<span class="lang-autonym">${escapeHtml(l.autonyme)}</span>` : ""}
         ${langStatHtml(l.id)}
       </span>
-      ${l.region ? `<span class="lang-region">${escapeHtml(getUiLang() === "en" && l.region_en ? l.region_en : l.region)}</span>` : ""}
+      ${(() => { const rl = langRegionLabel(l); return rl ? `<span class="lang-region">${escapeHtml(rl)}</span>` : ""; })()}
       <span class="lang-kb">${kb}</span>
     </button>`;
   }).join("");
@@ -5365,9 +5377,10 @@ const FIELD_TIPS = {
                    en: "If ticked, your first name or initials appear on your contributions and in notifications sent to others. Otherwise you stay anonymous." },
   "ld-nom": { fr: "Le nom courant de la langue en français (ex. Bassa, Douala).",
               en: "The common name of the language in French (e.g. Bassa, Douala)." },
-  "ld-region": { fr: "La région ou la localité où elle est parlée (ex. Ouest, Littoral).",
-                 en: "The region or area where it is spoken (e.g. West, Littoral)." },
-  "ld-pays": { fr: "Le pays principal où on la parle.", en: "The main country where it is spoken." },
+  "ld-region": { fr: "La région d'ORIGINE de la langue (pas là où tu vis) : le berceau où elle est née, ex. l'Ouest pour le ngiemboon, même si tu es à Garoua.",
+                 en: "The language's region of ORIGIN (not where you live): its cradle, e.g. the West for Ngiemboon even if you are in Garoua." },
+  "ld-pays": { fr: "Le pays d'ORIGINE de la langue (celui de sa région d'origine), pas forcément ton pays de naissance ou de résidence.",
+               en: "The language's country of ORIGIN (of its home region), not necessarily where you were born or live." },
   "ld-famille": { fr: "La famille ou le groupe linguistique (ex. bantou, bamiléké). Aide à relier les langues proches.",
                   en: "The language family or group (e.g. Bantu, Bamileke). Helps relate nearby languages." },
   "ld-autonyme": { fr: "Le nom de la langue DANS la langue elle-même, tel que ses locuteurs l'appellent.",
