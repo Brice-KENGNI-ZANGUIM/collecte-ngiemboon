@@ -1,6 +1,9 @@
 {
-  "version": "v294",
+  "version": "v295",
   "changelog": {
+    "v295": [
+      "Explorer : deux langues qui partagent le même mot français ne sont plus regroupées par erreur ; chaque langue garde son propre code court (nge, bas, dua…) de façon cohérente partout"
+    ],
     "v294": [
       "Écran de chargement : le motif traditionnel du site apparaît désormais en fond, adapté au mode clair ou sombre",
       "Onglets Transcrire, Traduire, Explorer et Demander : hauteur légèrement réduite pour un ensemble plus compact",

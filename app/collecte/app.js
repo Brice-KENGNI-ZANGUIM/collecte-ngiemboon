@@ -31,7 +31,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v294";
+const APP_VERSION = "v295";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -838,10 +838,10 @@ async function saveContribution() {
   }
 
   const fr2nge = direction === "fr2nge";
-  const lid = getCurrentLangId();   // langue cible communautaire (nge, bassa, …)
+  const lid = canonLangId(getCurrentLangId());   // code canonique (nge, bas, dua, …)
   const rec = {
     client_id: (crypto.randomUUID && crypto.randomUUID()) || "c-" + Date.now(),
-    direction,
+    direction: fr2nge ? "fr2" + lid : lid + "2fr",   // direction qualifiée par le VRAI code
     langue: lid,
     source_lang: fr2nge ? "fr" : lid,
     target_lang: fr2nge ? lid : "fr",
@@ -2460,7 +2460,7 @@ async function pickRateCandidate() {
     if (!cands.length) return null;
     const e = cands[Math.floor(Math.random() * cands.length)];
     return { kind: "rate", word: (e.source_text || "").trim(),
-             target: (e.target_text || "").trim(), dir: e.direction || "fr2nge" };
+             target: (e.target_text || "").trim(), dir: dirCanon(e) };
   } catch (e) { return null; }
 }
 /** Choisit un item non fait (mots d'abord, puis phrases) + une référence sociale
@@ -3367,6 +3367,21 @@ function entryLang(e) {
 function canonLangId(id) {
   try { return resolveCanonicalId(id, knownLanguages()) || id; } catch (e) { return id; }
 }
+// ── ENCODAGE DES LANGUES (règle unique) ─────────────────────────────────────
+// Toute langue est identifiée par son CODE ≤3 lettres (nge, bas, dua, …) ; le nom
+// affiché (« Ngiemboon ») en dérive via _langNameById. La DIRECTION d'une entrée
+// s'encode donc « fr2<code> » / « <code>2fr » avec le VRAI code, jamais un « nge »
+// figé pour toutes les langues (ce littéral historique fusionnait à tort deux
+// langues partageant le même mot source dans Explorer).
+/** Orientation d'une direction, indépendante de la langue : "fr2l" (FR→langue) ou "l2fr". */
+function dirOrient(d) { return String(d || "").endsWith("2fr") ? "l2fr" : "fr2l"; }
+/** Direction CANONIQUE d'une entrée : fr2<code>/<code>2fr avec le vrai code de langue.
+ *  Rétro-compatible : reconstruit le code depuis langue/source_lang/target_lang si l'ancien
+ *  « fr2nge » a été stocké pour une autre langue. */
+function dirCanon(e) {
+  const code = canonLangId(entryLang(e));
+  return dirOrient(e && e.direction) === "l2fr" ? code + "2fr" : "fr2" + code;
+}
 /** Nettoie un texte pour le partage (une ligne, borné). */
 function shareClean(s, max) { return (s || "").toString().replace(/\s+/g, " ").trim().slice(0, max || 120); }
 /** Lien DIRECT vers une entrée d'Explorer (rouvre le mot visé). */
@@ -3480,8 +3495,8 @@ function applyExploreDeepLink() {
   const w = _deepWord, d = _deepDir; _deepWord = _deepDir = null;
   const sb = $("#explore-search"); if (sb) sb.value = w;
   renderExplore();
-  const key = (d || "fr2nge") + "::" + _normKey(w);
-  let g = _exploreGroups.find((x) => x.key === key)
+  // Match tolérant au littéral hérité : même mot source ET même orientation (fr→langue / langue→fr).
+  let g = _exploreGroups.find((x) => _normKey(x.source_text) === _normKey(w) && dirOrient(x.direction) === dirOrient(d))
        || _exploreGroups.find((x) => _normKey(x.source_text) === _normKey(w));
   if (g) openGroup(g.key);
 }
@@ -3517,9 +3532,10 @@ function _normKey(s) { return (s || "").toString().trim().toLowerCase().replace(
 function buildGroups(entries) {
   const map = new Map();
   for (const e of entries) {
-    const key = e.direction + "::" + _normKey(e.source_text);
+    const dc = dirCanon(e);
+    const key = dc + "::" + _normKey(e.source_text);
     let g = map.get(key);
-    if (!g) { g = { key, direction: e.direction, source_text: e.source_text || "", entries: [], _srcCount: {} }; map.set(key, g); }
+    if (!g) { g = { key, direction: dc, source_text: e.source_text || "", entries: [], _srcCount: {} }; map.set(key, g); }
     g.entries.push(e);
     // texte affiché = la casse d'origine la plus fréquente
     const sv = e.source_text || "";
@@ -3647,7 +3663,7 @@ function renderExplore() {
   const fv = $("#filter-variante") ? $("#filter-variante").value : "";
   const fdom = $("#filter-domaine") ? $("#filter-domaine").value : "";
   const match = (e) => {
-    if (fd && e.direction !== fd) return false;
+    if (fd && dirOrient(e.direction) !== dirOrient(fd)) return false;
     if (fr && e.role !== fr) return false;
     if (fv && e.variante !== fv) return false;
     if (fdom && e.domaine !== fdom) return false;
@@ -3660,7 +3676,7 @@ function renderExplore() {
   // Les groupes sont bâtis sur TOUTES les entrées (métriques + détail complets) ;
   // les filtres décident seulement quels cadres apparaissent.
   _exploreGroups = buildGroups(_exploreEntries);
-  const visKeys = new Set(_exploreEntries.filter(match).map((e) => e.direction + "::" + _normKey(e.source_text)));
+  const visKeys = new Set(_exploreEntries.filter(match).map((e) => dirCanon(e) + "::" + _normKey(e.source_text)));
   const groups = _exploreGroups.filter((g) => visKeys.has(g.key))
     .sort((a, b) => b.entries.length - a.entries.length || _normKey(a.source_text).localeCompare(_normKey(b.source_text)));
   if (status) status.textContent = ti(groups.length > 1 ? "exp.count.many" : "exp.count.one", { n: groups.length }) +
@@ -3757,8 +3773,11 @@ async function loadDriveAudioInto(audio, fileId, setStatus) {
   if (setStatus) setStatus(t("audio.unavail"));
 }
 function dirLabel(d) {
-  const code = getCurrentLangId().slice(0, 3).toUpperCase();
-  return d === "nge2fr" ? `${code} → FR` : `FR → ${code}`;
+  const l2fr = dirOrient(d) === "l2fr";
+  // code = le jeton non-FR de la direction (« fr2bas » → bas, « bas2fr » → bas) ; repli langue courante
+  const raw = l2fr ? String(d || "").slice(0, -3) : String(d || "").slice(3);
+  const code = canonLangId(raw || getCurrentLangId()).slice(0, 3).toUpperCase();
+  return l2fr ? `${code} → FR` : `FR → ${code}`;
 }
 /** NIVEAU 1 — un cadre par mot/expression, avec métriques agrégées. */
 function renderGroupCard(g) {
@@ -3884,8 +3903,8 @@ function renderProposal(e) {
     ${voteBarHtml(e)}
     <div class="entry-actions">
       <button type="button" class="entry-improve" data-id="${escapeHtml(e.id)}" data-orig="${escapeHtml(e.target_text || "")}"><img class="act-ico" src="icons/ni-suggestion.png" alt="" aria-hidden="true">${t("exp.improve")}</button>
-      <button type="button" class="entry-saymine" data-fr="${escapeHtml(e.direction === "nge2fr" ? (e.target_text || e.source_text || "") : (e.source_text || ""))}" title="${t("exp.saymine.title")}">${t("exp.saymine")}</button>
-      <button type="button" class="entry-share" data-src="${escapeHtml(e.source_text || "")}" data-tgt="${escapeHtml(e.target_text || "")}" data-dir="${escapeHtml(e.direction || "fr2nge")}" data-audio="${isPlayable(e.audio_url) ? "1" : "0"}" title="${t("exp.share.title")}" aria-label="${t("exp.share.aria")}"><img class="act-ico" src="icons/ni-share.png" alt="" aria-hidden="true">${t("exp.share")}</button>
+      <button type="button" class="entry-saymine" data-fr="${escapeHtml(dirOrient(e.direction) === "l2fr" ? (e.target_text || e.source_text || "") : (e.source_text || ""))}" title="${t("exp.saymine.title")}">${t("exp.saymine")}</button>
+      <button type="button" class="entry-share" data-src="${escapeHtml(e.source_text || "")}" data-tgt="${escapeHtml(e.target_text || "")}" data-dir="${escapeHtml(dirCanon(e))}" data-audio="${isPlayable(e.audio_url) ? "1" : "0"}" title="${t("exp.share.title")}" aria-label="${t("exp.share.aria")}"><img class="act-ico" src="icons/ni-share.png" alt="" aria-hidden="true">${t("exp.share")}</button>
     </div>
     <div class="entry-corr" hidden></div>
   </article>`;
@@ -4236,7 +4255,7 @@ function filterSendLists() {
   const nr = $("#send-noresult"); if (nr) nr.hidden = !(q && all.length > 0 && shown === 0);
 }
 function itemHtml(it, confirmed) {
-  const fr2nge = it.direction === "fr2nge";
+  const fr2nge = dirOrient(it.direction) === "fr2l";
   const kind = it.audioMeta && it.audioMeta.present
     ? (it.target_text ? "transcription + texte" : "transcription")
     : "traduction";
