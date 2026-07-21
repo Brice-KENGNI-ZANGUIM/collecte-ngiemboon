@@ -1,6 +1,10 @@
 {
-  "version": "v288",
+  "version": "v289",
   "changelog": {
+    "v289": [
+      "En-tête : chaque bouton reçoit une légère couleur de fond (sans bordure) pour qu'on distingue clairement les boutons, et le bouton des notifications affiche désormais le texte « Notifications » (placé en dernier)",
+      "Correctifs de langue : en mode anglais, le message de chargement de l'audio et les libellés d'enregistrement s'affichent bien en anglais (plus de français résiduel qui s'affichait à l'action)"
+    ],
     "v288": [
       "En-tête repensé : boutons de navigation regroupés en deux familles (navigation puis perso) avec un séparateur sur grand écran, style plus épuré (fini l'effet pastille au repos), et la page active nettement mise en évidence ; affichage entièrement responsive (ordinateur, tablette, téléphone)",
       "Bouton de partage : correction d'un affichage en contour vide sur certains iPhone (Safari ancien)"

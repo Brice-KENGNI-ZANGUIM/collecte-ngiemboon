@@ -31,7 +31,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v288";
+const APP_VERSION = "v289";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -3723,13 +3723,13 @@ function enhanceAudioPlayers(root) {
     let triedBlob = false;
     async function escalate() {
       if (!triedBlob) {
-        triedBlob = true; setStatus("Chargement de l'audio…");
+        triedBlob = true; setStatus(t("audio.loading.full"));
         try {
           const r = await fetch(src, { mode: "cors" });
           if (r.ok) { const b = await r.blob(); audio.src = URL.createObjectURL(b); audio.load(); setStatus(""); return; }
         } catch (e) { /* échec */ }
       }
-      setStatus("Lecture indisponible ici, réessaie plus tard.");
+      setStatus(t("audio.unavail"));
     }
     audio.addEventListener("error", escalate);
   });
@@ -3741,7 +3741,7 @@ const _driveAudioBlob = new Map();
 async function loadDriveAudioInto(audio, fileId, setStatus) {
   const cached = _driveAudioBlob.get(fileId);
   if (cached) { audio.src = cached; audio.load(); if (setStatus) setStatus(""); return; }
-  if (setStatus) setStatus("Chargement de l'audio…");
+  if (setStatus) setStatus(t("audio.loading.full"));
   try {
     const data = await fetchDriveAudio(fileId);
     if (data && data.ok && data.b64) {
@@ -3754,7 +3754,7 @@ async function loadDriveAudioInto(audio, fileId, setStatus) {
       return;
     }
   } catch (e) { /* endpoint absent (script non redéployé) ou échec réseau */ }
-  if (setStatus) setStatus("Lecture indisponible pour le moment.");
+  if (setStatus) setStatus(t("audio.unavail"));
 }
 function dirLabel(d) {
   const code = getCurrentLangId().slice(0, 3).toUpperCase();
@@ -3979,7 +3979,7 @@ async function toggleCorrections(entryEl, id, origText) {
   if (!panel) return;
   if (!panel.hidden) { panel.hidden = true; return; }
   panel.hidden = false;
-  panel.innerHTML = '<div class="corr-loading">Chargement des corrections…</div>';
+  panel.innerHTML = '<div class="corr-loading">' + t("corr.loading") + '</div>';
   try { renderCorrections(panel, id, origText, await fetchSuggestions(id)); }
   catch (e) { panel.innerHTML = '<div class="corr-empty">Impossible de charger les corrections (connexion ?).</div>'; }
 }
@@ -4140,7 +4140,7 @@ async function onCorrRec(btn) {
       const blob = new Blob(_corrChunks, { type: _corrRec.mimeType || "audio/webm" });
       panel._corrBlob = blob; panel._corrDur = Date.now() - _corrStartTs;
       stream.getTracks().forEach((t) => t.stop());
-      btn.classList.remove("is-recording"); btn.textContent = "🎙 Refaire";
+      btn.classList.remove("is-recording"); btn.textContent = t("corr.rec.redo");
       const t = panel.querySelector("[data-role='corr-timer']"); if (t) t.hidden = true;
       clearInterval(_corrTimerInt);
       const prev = panel.querySelector("[data-role='corr-preview']");
@@ -4148,7 +4148,7 @@ async function onCorrRec(btn) {
     };
     _corrStartTs = Date.now();
     _corrRec.start();
-    btn.classList.add("is-recording"); btn.textContent = "⏹ Arrêter";
+    btn.classList.add("is-recording"); btn.textContent = t("corr.rec.stop");
     const t = panel.querySelector("[data-role='corr-timer']");
     if (t) { t.hidden = false; t.textContent = "00:00"; clearInterval(_corrTimerInt); _corrTimerInt = setInterval(() => { t.textContent = fmtRec(Date.now() - _corrStartTs); }, 250); }
   } catch (e) {
@@ -4321,7 +4321,7 @@ async function reconcileTick() {
   if (c0.pending === 0) { _lastToastAllOk = false; return; }
   if (!profileComplete()) return;                    // rien à faire sans profil
   if (!navigator.onLine) {
-    setStatus("Hors connexion, renvoi automatique dès le retour du réseau.");
+    setStatus(t("send.offline.auto"));
     scheduleReconcile();
     return;
   }

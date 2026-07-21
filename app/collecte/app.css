@@ -340,17 +340,19 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
    léger fond + accent cyan au survol, page ACTIVE mise en évidence. Deux groupes
    (navigation | perso) séparés d'un fin trait quand ils sont côte à côte (grand écran). */
 .chip-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+/* Léger fond par bouton (SANS bordure visible) → l'œil distingue des boutons, pas une simple
+   suite d'icônes+texte. Repli rgba d'abord (vieux Safari), puis version thème. */
 .chips-nav .chip--btn {
-  border: 1px solid transparent; border-radius: 12px;
-  background: transparent; background-image: none; box-shadow: none; color: var(--text);
-}
+  border: 1px solid transparent; border-radius: 12px; background-image: none; box-shadow: none;
+  color: var(--text); background: rgba(255, 255, 255, .06); }
+:root[data-theme="light"] .chips-nav .chip--btn { background: rgba(18, 30, 46, .06); }
 .chips-nav .chip--btn:hover {
-  background: color-mix(in srgb, var(--cyan) 14%, transparent);
-  border-color: color-mix(in srgb, var(--cyan) 34%, transparent);
+  background: rgba(34, 211, 238, .16);
+  background: color-mix(in srgb, var(--cyan) 16%, transparent);
   color: var(--cyan); box-shadow: none; }
 .chips-nav .chip--btn.is-active {
-  background: color-mix(in srgb, var(--cyan) 18%, var(--panel));
-  border-color: color-mix(in srgb, var(--cyan) 55%, transparent);
+  background: rgba(34, 211, 238, .22);
+  background: color-mix(in srgb, var(--cyan) 22%, var(--panel));
   color: var(--cyan); font-weight: 700; }
 @media (min-width: 901px) {
   .chips-nav .chip-group--perso { margin-left: 8px; padding-left: 14px;
