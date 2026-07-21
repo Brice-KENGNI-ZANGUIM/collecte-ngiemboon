@@ -1,6 +1,9 @@
 {
-  "version": "v281",
+  "version": "v282",
   "changelog": {
+    "v282": [
+      "Popups plus lisibles : le nom du demandeur, le mot demandé et la langue cible sont mis en évidence (gras et couleur) d'un coup d'œil, et le bouton d'action indique la vraie destination (par ex. « Transcrire en medumba » au lieu de « Voir mes notifications »)"
+    ],
     "v281": [
       "Partage enrichi : TikTok ajouté aux réseaux, et des hashtags adaptés à chaque réseau (Facebook, X, LinkedIn, TikTok, Instagram). Sur ces réseaux le message prêt à publier est copié et la plateforme s'ouvre pour le coller ; WhatsApp et Telegram gardent un message simple sans hashtags. Vaut aussi pour le partage d'une entrée précise ou d'une demande"
     ],

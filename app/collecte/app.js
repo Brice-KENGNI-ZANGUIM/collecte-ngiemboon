@@ -30,7 +30,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v281";
+const APP_VERSION = "v282";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -2503,7 +2503,7 @@ function renderIncitation(pick) {
   // Variante « noter » : on invite à donner son avis sur une proposition non jugée.
   if (pick.kind === "rate") {
     bn.dataset.ptype = "rate"; _setImg("pop-rate-ill.webp");
-    const m = $("#incite-msg"); if (m) m.textContent = ti("incite.rate.msg", { w: wShow, lang: langName });
+    const m = $("#incite-msg"); if (m) m.innerHTML = ti("incite.rate.msg", { w: kw("word", wShow, true), lang: kw("lang", langName, true) });
     if (lis) { lis.hidden = true; lis.onclick = null; }
     if (go) { go.textContent = t("incite.rate.cta"); go.onclick = () => { _incMarkShown(); _incStopAudio(); bn.hidden = true; dismissPopup("incite"); startRateWord(pick.word, pick.dir); }; }
     bn.hidden = false;
@@ -2515,16 +2515,17 @@ function renderIncitation(pick) {
   // Dès qu'une VOIX est proposée (bouton écouter), on donne sa PROVENANCE : soit le nom de la
   // personne, soit « quelqu'un » (anonyme) + la LANGUE dans laquelle elle l'a dit. Puis on invite
   // à le dire dans SA propre langue. Sans voix ni référence, message générique.
+  const wKw = kw("word", wShow, true);   // mot demandé mis en évidence (gabarits déjà « … »)
   if (pick.ref && (pick.ref.name || pick.ref.audio)) {
     const ln = pick.ref.langId ? _incLangName(pick.ref.langId) : "";
-    const inlang = ln ? ti("incite.inlang", { l: ln }) : "";   // « en {langue} » seulement si connue
+    const inlang = ln ? ti("incite.inlang", { l: kw("lang", ln, true) }) : "";   // « en {langue} » seulement si connue
     text = pick.ref.name
-      ? ti("incite.msg.ref", { w: wShow, name: pick.ref.name, inlang })
-      : ti("incite.msg.refanon", { w: wShow, inlang });
+      ? ti("incite.msg.ref", { w: wKw, name: kw("who", pick.ref.name, true), inlang })
+      : ti("incite.msg.refanon", { w: wKw, inlang });
   } else {
-    text = ti("incite.msg", { w: wShow, lang: langName });
+    text = ti("incite.msg", { w: wKw, lang: kw("lang", langName, true) });
   }
-  const msg = $("#incite-msg"); if (msg) msg.textContent = text;   // textContent = anti-injection
+  const msg = $("#incite-msg"); if (msg) msg.innerHTML = text;   // mots clés en évidence ; valeurs échappées par kw()
   if (go) go.onclick = () => { _incMarkShown(); _incStopAudio(); bn.hidden = true; dismissPopup("incite"); startTranslateWord(w); };
   // Bouton « Écouter » : on peut entendre la version d'un AUTRE (dans sa langue) avant de la
   // dire dans la sienne. Affiché seulement si la contribution de référence a un audio jouable.
@@ -2597,31 +2598,55 @@ function updateNotifBadge(n) {
   else b.hidden = true;
 }
 /** Message lisible d'une notification (construit en TEXTE → anti-injection). */
-function notifText(n) {
+/** Enveloppe un mot clé de popup (nom du demandeur, mot demandé, langue cible) : en gras
+    + couleur dédiée quand `html` est vrai (mise en évidence), sinon texte brut (aria/listes
+    accessibles). Le texte utilisateur est TOUJOURS échappé. */
+function kw(cls, s, html) { return html ? '<b class="kw kw-' + cls + '">' + escapeHtml(s) + "</b>" : s; }
+/** Message d'une notification. `html=true` → mots clés mis en évidence (gras + couleur),
+    mot demandé entre guillemets ; `html=false` → texte brut sûr (aria-label, comparaisons). */
+function notifText(n, html) {
   const d = n.data || {};
-  const who = (d.actor || "").trim() || t("notif.someone");
+  const whoRaw = (d.actor || "").trim() || t("notif.someone");
+  const who = kw("who", whoRaw, html);
   const rawMot = (d.mot || d.texte || "").trim();
   // ADAPTATIF : le mot est affiché dans la langue du DESTINATAIRE. En anglais on
   // préfère l'équivalent fourni par le backend (base d'abord, sinon DeepL mémorisé),
   // sinon la base locale ; en français, le mot d'origine.
   const motEn = (d.mot_en || d.texte_en || "").trim();
-  const mot = (getUiLang() === "en") ? (motEn || wordInUiLang(rawMot)) : rawMot;
+  const motTxt = (getUiLang() === "en") ? (motEn || wordInUiLang(rawMot)) : rawMot;
+  const motW = (s) => kw("word", s, html);      // les gabarits portent déjà « … » : on ne fait que colorer/mettre en gras
   const ln = d.langue ? _incLangName(d.langue) : "";
   if (n.type === "vote") {
     const kindK = { ok: "notif.kind.ok", doubt: "notif.kind.doubt", no: "notif.kind.no" }[d.kind] || "notif.kind.ok";
-    return ti("notif.vote", { who, mot: mot || t("notif.your"), kind: t(kindK) });
+    return ti("notif.vote", { who, mot: motTxt ? motW(motTxt) : kw("word", t("notif.your"), html), kind: kw("kind", t(kindK), html) });
   }
-  if (n.type === "suggestion") return ti("notif.sugg", { who, mot: mot || t("notif.your") });
-  if (n.type === "milestone") return ti("notif.milestone", { lang: ln || t("notif.yourlang"), count: d.count || 0 });
+  if (n.type === "suggestion") return ti("notif.sugg", { who, mot: motTxt ? motW(motTxt) : kw("word", t("notif.your"), html) });
+  if (n.type === "milestone") return ti("notif.milestone", { lang: kw("lang", ln || t("notif.yourlang"), html), count: kw("num", String(d.count || 0), html) });
   if (n.type === "request" || n.type === "request_share") {
     // Sens PRÉCIS selon la nature de la demande : traduction, prononciation, ou les deux.
     const act = d.kind === "transcription" ? t("notif.req.act.transc")
       : d.kind === "les_deux" ? t("notif.req.act.both") : t("notif.req.act.trad");
     const lang = ln || _langNameById(d.langue) || t("notif.yourlang");
-    return ti(n.type === "request" ? "notif.request" : "notif.request_share", { who, act, mot: mot || "…", lang });
+    return ti(n.type === "request" ? "notif.request" : "notif.request_share", { who, act, mot: motW(motTxt || "…"), lang: kw("lang", lang, html) });
   }
-  if (n.type === "request_answered") return ti("notif.request_answered", { who, mot: mot || t("notif.your") });
-  return String(d.text || "");   // announce / types futurs porteurs d'un texte
+  if (n.type === "request_answered") return ti("notif.request_answered", { who, mot: motTxt ? motW(motTxt) : kw("word", t("notif.your"), html) });
+  return html ? escapeHtml(String(d.text || "")) : String(d.text || "");   // announce / types futurs
+}
+/** Libellé du bouton d'action d'un popup de notification : indique la DESTINATION réelle du
+    clic (traduire/transcrire dans la langue demandée, voir la réponse, la bibliothèque…),
+    pour ne pas laisser croire qu'on ouvre « mes notifications ». */
+function notifPopupCta(n) {
+  const d = n.data || {};
+  const lang = (d.langue ? (_incLangName(d.langue) || _langNameById(d.langue)) : "") || t("notif.yourlang");
+  if (n.type === "request") {
+    const key = d.kind === "transcription" ? "notif.cta.transc" : d.kind === "les_deux" ? "notif.cta.both" : "notif.cta.trad";
+    return ti(key, { lang });
+  }
+  if (n.type === "request_share") return t("notif.cta.relay");
+  if (n.type === "request_answered") return t("notif.cta.answer");
+  if (n.type === "vote" || n.type === "suggestion") return t("notif.cta.see_entry");
+  if (n.type === "milestone") return t("notif.cta.see_lib");
+  return t("notif.see");
 }
 function notifIcon(type) {
   return ({ vote: "🗳️", suggestion: "✍️", milestone: "🎉", announce: "📣",
@@ -2653,7 +2678,7 @@ function notifItemHtml(n) {
   return `<li class="notif ${unread ? "notif--unread" : ""}${act ? " notif--action" : ""}"` +
     (act ? ` role="button" tabindex="0" aria-label="${escapeHtml(notifText(n))}"` : "") + ` ${data}>` +
     `<span class="notif-ico" aria-hidden="true">${notifIcon(n.type)}</span>` +
-    `<div class="notif-body"><p class="notif-msg">${escapeHtml(notifText(n))}</p>` +
+    `<div class="notif-body"><p class="notif-msg">${notifText(n, true)}</p>` +
     `<span class="notif-time">${escapeHtml(relTime(n.ts))}</span></div>` +
     (act ? `<span class="notif-go" aria-hidden="true">→</span>` : "") + `</li>`;
 }
@@ -2756,7 +2781,8 @@ function _renderNotifPopup(n) {
   const pop = $("#notif-popup"), msg = $("#notif-popup-msg");
   if (!pop || !msg) return;
   _popupNotif = n;      // mémorisée pour que « Ouvrir » agisse selon son type
-  msg.textContent = notifText(n);
+  msg.innerHTML = notifText(n, true);   // mots clés (nom, mot « … », langue) mis en évidence
+  const go = $("#notif-popup-go"); if (go) go.textContent = notifPopupCta(n);   // libellé = destination réelle
   // Couleur + icône selon le TYPE : « request » = une demande de la communauté (cyan),
   // sinon « activity » = un retour sur TES contributions (violet). Voir CSS data-ptype.
   const isReq = (n.type === "request" || n.type === "request_answered");
