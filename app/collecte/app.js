@@ -55,7 +55,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v330";
+const APP_VERSION = "v331";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -3717,37 +3717,58 @@ async function downloadDict(fmt) {
   }
 }
 
+// Cache LOCAL de la bibliothèque (Explorer) : permet un affichage INSTANTANÉ du dernier contenu
+// connu à l'ouverture, sans écran de chargement vide, puis revalidation réseau en arrière-plan
+// (stale-while-revalidate au niveau des données). Garde-fou de taille (quota localStorage ~5 Mo).
+const _EXPLORE_CACHE_KEY = "langa-explore-cache";
+function _loadExploreCache() {
+  try { const o = JSON.parse(localStorage.getItem(_EXPLORE_CACHE_KEY) || "null"); return (o && Array.isArray(o.entries)) ? o.entries : null; } catch (e) { return null; }
+}
+function _saveExploreCache(entries) {
+  try {
+    const payload = JSON.stringify({ ts: Date.now(), entries: (entries || []).slice(0, 1500) });
+    if (payload.length < 2000000) localStorage.setItem(_EXPLORE_CACHE_KEY, payload);   // ~2 Mo max, sinon on n'encombre pas
+    else localStorage.removeItem(_EXPLORE_CACHE_KEY);
+  } catch (e) { /* quota plein : on ignore, la revalidation réseau reste la source de vérité */ }
+}
+/** Applique un jeu d'entrées à l'Explorer (filtre le contenu dégénéré, scope de langue,
+    apprentissage prédictif, filtres, rendu). Partagé par le rendu depuis le cache ET le réseau. */
+function _applyLibraryData(entries) {
+  // On ignore les entrées SANS AUCUN contenu (ni mot source, ni traduction, ni audio jouable ;
+  // de telles entrées dégénérées créaient un groupe « — » vide, cf. BUG-U-mrmae78s-7670).
+  _exploreAll = (entries || []).filter((e) => (e.source_text && e.source_text.trim()) ||
+    (e.target_text && e.target_text.trim()) || isPlayable(e.audio_url));
+  // Par DÉFAUT, Explorer se scope sur la langue de l'utilisateur ; sinon « Toutes les langues ».
+  if (_exploreLangFilter === null)
+    _exploreLangFilter = hasChosenLang() ? canonLangId(getCurrentLangId()) : "";
+  // Le clavier prédictif APPREND des contributions réelles de la langue de l'utilisateur.
+  const lid = hasChosenLang() ? canonLangId(getCurrentLangId()) : null;
+  if (predict && lid && usesDedicatedKeyboard(lid))
+    predict.learnFromEntries(_exploreAll.filter((e) => canonLangId(entryLang(e)) === lid), lid);
+  applyExploreLangScope();
+  populateExploreFilters();
+  renderExplore();
+}
 async function loadLibrary() {
   initExploreOnce();
   const status = $("#explore-status"), list = $("#explore-list");
-  if (status) status.textContent = t("exp.loading");
-  if (list) list.innerHTML = "";
+  // 1) RENDU INSTANTANÉ depuis le cache local, s'il existe (aucun écran de chargement vide).
+  const cached = _loadExploreCache();
+  const fromCache = !!(cached && cached.length);
+  if (fromCache) _applyLibraryData(cached);
+  else { if (status) status.textContent = t("exp.loading"); if (list) list.innerHTML = ""; }
+  // 2) REVALIDATION réseau en arrière-plan → met à jour l'affichage ET le cache.
   try {
     const data = await browseLibrary({ limit: 500, device_id: deviceId() });
-    // On charge TOUTES les langues (on ignore les entrées SANS AUCUN contenu : ni mot
-    // source, ni traduction, ni audio jouable ; de telles entrées dégénérées créaient un
-    // groupe « — » vide, trompeur et sans bouton, cf. BUG-U-mrmae78s-7670).
-    _exploreAll = (((data && data.entries) || []))
-      .filter((e) => (e.source_text && e.source_text.trim()) ||
-                     (e.target_text && e.target_text.trim()) || isPlayable(e.audio_url));
-    // Par DÉFAUT, Explorer se scope sur la langue de l'utilisateur (il ne voit d'emblée
-    // que SA langue) ; il peut ensuite choisir une autre langue ou « Toutes les langues »
-    // via le sélecteur. Résolution canonique : une langue fusionnée s'affiche sous celle
-    // qui l'a absorbée. Sans langue déclarée, on part sur « Toutes les langues ».
-    if (_exploreLangFilter === null)
-      _exploreLangFilter = hasChosenLang() ? canonLangId(getCurrentLangId()) : "";
-    // Le clavier prédictif APPREND des contributions réelles (mots + fréquences) de la
-    // langue de l'utilisateur, pour toute langue à clavier dédié (moteur générique).
-    const lid = hasChosenLang() ? canonLangId(getCurrentLangId()) : null;
-    if (predict && lid && usesDedicatedKeyboard(lid))
-      predict.learnFromEntries(_exploreAll.filter((e) => canonLangId(entryLang(e)) === lid), lid);
-    applyExploreLangScope();
-    populateExploreFilters();
-    renderExplore();
+    _applyLibraryData((data && data.entries) || []);
+    _saveExploreCache(_exploreAll);
   } catch (e) {
-    _exploreAll = []; _exploreEntries = [];
-    if (status) status.textContent = "";
-    if (list) list.innerHTML = `<div class="explore-empty"><img class="empty-illus" src="icons/state-offline.webp" alt="" aria-hidden="true"><div class="empty-msg">${t("exp.loadfail")}</div></div>`;
+    if (!fromCache) {   // rien à montrer ET le réseau échoue → message hors-ligne
+      _exploreAll = []; _exploreEntries = [];
+      if (status) status.textContent = "";
+      if (list) list.innerHTML = `<div class="explore-empty"><img class="empty-illus" src="icons/state-offline.webp" alt="" aria-hidden="true"><div class="empty-msg">${t("exp.loadfail")}</div></div>`;
+    }
+    // si on avait déjà le cache affiché, on le garde tel quel (pas d'erreur intrusive hors-ligne)
   }
   applyExploreDeepLink();   // lien direct #/explorer?w=…&d=… → ouvre l'entrée visée
 }

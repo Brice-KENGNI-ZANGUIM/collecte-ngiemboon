@@ -1,6 +1,9 @@
 {
-  "version": "v330",
+  "version": "v331",
   "changelog": {
+    "v331": [
+      "Vitesse : la bibliothèque (Explorer) s'affiche instantanément avec le dernier contenu connu dès l'ouverture, puis se met à jour discrètement en arrière-plan, au lieu d'attendre le réseau devant un écran vide"
+    ],
     "v330": [
       "Vitesse : le démarrage est encore plus fluide, les préparatifs non essentiels (visite guidée, outil de découpe, boutons de partage) se mettent en place juste après l'affichage de l'écran au lieu de le retarder"
     ],
