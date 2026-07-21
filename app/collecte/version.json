@@ -1,6 +1,9 @@
 {
-  "version": "v274",
+  "version": "v275",
   "changelog": {
+    "v275": [
+      "Outil de d\u00e9coupe audio am\u00e9lior\u00e9 : l'onde montre clairement les zones de forte amplitude (barres cyan vives), et un curseur de progression suit la lecture quand tu \u00e9coutes la s\u00e9lection"
+    ],
     "v274": [
       "Image des popups : le fond flou derri\u00e8re l'illustration est d\u00e9sormais un voile blanc l\u00e9ger (plus assombri), plus doux et coh\u00e9rent"
     ],

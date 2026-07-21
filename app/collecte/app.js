@@ -30,7 +30,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v274";
+const APP_VERSION = "v275";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -682,7 +682,8 @@ async function openTrim() {
 function trimClose() {
   const m = $("#trim-modal"); if (m) m.hidden = true;
   const a = $("#trim-audio"); if (a) { try { a.pause(); } catch (e) { /* ok */ } }
-  _trimChannels = null; _trimDrag = null;
+  if (_trimRaf) cancelAnimationFrame(_trimRaf);
+  _trimRaf = 0; _trimPlayhead = null; _trimChannels = null; _trimDrag = null;
 }
 function clampTrim() {
   _trimStart = Math.max(0, Math.min(_trimStart, _trimTotal));
@@ -694,26 +695,38 @@ function syncTrimInputs() {
   if (ei) { ei.max = _trimTotal.toFixed(2); ei.value = _trimEnd.toFixed(2); }
   if (du) du.textContent = t("trim.dur").replace("{d}", Math.max(0, _trimEnd - _trimStart).toFixed(2));
 }
+let _trimPlayhead = null, _trimRaf = 0;
 function drawTrimWave() {
   const cv = $("#trim-wave"); if (!cv || !_trimChannels || _trimTotal <= 0) return;
   const g = cv.getContext("2d"), W = cv.width, H = cv.height, mid = H / 2;
   const cs = getComputedStyle(document.documentElement);
   const cyan = (cs.getPropertyValue("--cyan") || "#22d3ee").trim();
+  const gold = (cs.getPropertyValue("--gold") || "#e5c07b").trim();
   const muted = (cs.getPropertyValue("--muted") || "#88a").trim();
   g.clearRect(0, 0, W, H);
   const ch = _trimChannels[0] || new Float32Array(0), n = ch.length;
-  g.strokeStyle = muted; g.globalAlpha = 0.7; g.beginPath();
+  const xa = _trimStart / _trimTotal * W, xb = _trimEnd / _trimTotal * W;
+  // Barres d'amplitude BIEN VISIBLES : DANS la sélection = cyan vif (on repère les zones fortes),
+  // DEHORS = grisé estompé. Hauteur minimale 1px pour toujours voir la ligne médiane.
   for (let x = 0; x < W; x++) {
     const i0 = Math.floor(x / W * n), i1 = Math.floor((x + 1) / W * n);
     let mx = 0; for (let i = i0; i < i1; i++) { const v = Math.abs(ch[i] || 0); if (v > mx) mx = v; }
-    const h = mx * (mid - 4);
-    g.moveTo(x + 0.5, mid - h); g.lineTo(x + 0.5, mid + h);
+    const h = Math.max(1, mx * (mid - 4));
+    const inSel = x >= xa && x <= xb;
+    g.strokeStyle = inSel ? cyan : muted; g.globalAlpha = inSel ? 0.95 : 0.42;
+    g.beginPath(); g.moveTo(x + 0.5, mid - h); g.lineTo(x + 0.5, mid + h); g.stroke();
   }
-  g.stroke(); g.globalAlpha = 1;
-  const xa = _trimStart / _trimTotal * W, xb = _trimEnd / _trimTotal * W;
-  g.fillStyle = cyan; g.globalAlpha = 0.16; g.fillRect(xa, 0, Math.max(0, xb - xa), H); g.globalAlpha = 1;
+  g.globalAlpha = 1;
+  // Voile de sélection + poignées.
+  g.fillStyle = cyan; g.globalAlpha = 0.10; g.fillRect(xa, 0, Math.max(0, xb - xa), H); g.globalAlpha = 1;
   g.strokeStyle = cyan; g.lineWidth = 2; g.fillStyle = cyan;
   for (const x of [xa, xb]) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); g.fillRect(x - 3, mid - 13, 6, 26); }
+  // CURSEUR de progression pendant l'écoute (comme le lecteur principal).
+  if (_trimPlayhead != null) {
+    const xp = Math.max(0, Math.min(W, _trimPlayhead / _trimTotal * W));
+    g.strokeStyle = gold; g.lineWidth = 2.5; g.beginPath(); g.moveTo(xp, 0); g.lineTo(xp, H); g.stroke();
+    g.fillStyle = gold; g.beginPath(); g.arc(xp, mid, 4.5, 0, Math.PI * 2); g.fill();
+  }
 }
 function trimXToTime(clientX) {
   const cv = $("#trim-wave"), r = cv.getBoundingClientRect();
@@ -739,13 +752,25 @@ function trimSelectionBlob() {
   return { blob: new Blob([encodeWavBytes(sl.channels, sl.sampleRate)], { type: "audio/wav" }),
            durMs: Math.round(sl.durationSec * 1000) };
 }
+function _trimStopPlayhead() {
+  if (_trimRaf) cancelAnimationFrame(_trimRaf);
+  _trimRaf = 0; _trimPlayhead = null; drawTrimWave();
+}
 function trimPlaySelection() {
   const sel = trimSelectionBlob();
   if (!sel) { toast(t("trim.empty"), "warn"); return; }
   const a = $("#trim-audio"); if (!a) return;
   if (a._url) URL.revokeObjectURL(a._url);
   a._url = URL.createObjectURL(sel.blob); a.src = a._url;
-  a.play().catch(() => { /* geste utilisateur requis parfois : sans gravité */ });
+  // Curseur de progression : on plaque le temps de lecture (relatif à la sélection) sur l'onde.
+  const loop = () => {
+    _trimPlayhead = _trimStart + (a.currentTime || 0);
+    drawTrimWave();
+    if (!a.paused && !a.ended) _trimRaf = requestAnimationFrame(loop); else _trimRaf = 0;
+  };
+  a.onended = _trimStopPlayhead; a.onpause = _trimStopPlayhead;
+  a.play().then(() => { if (_trimRaf) cancelAnimationFrame(_trimRaf); _trimRaf = requestAnimationFrame(loop); })
+    .catch(() => { _trimStopPlayhead(); /* geste utilisateur requis parfois : sans gravité */ });
 }
 function trimKeep() {
   const sel = trimSelectionBlob();
