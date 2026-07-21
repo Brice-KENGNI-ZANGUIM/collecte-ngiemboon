@@ -1,6 +1,9 @@
 {
-  "version": "v299",
+  "version": "v300",
   "changelog": {
+    "v300": [
+      "Onglets Transcrire, Traduire, Explorer et Demander : hauteur encore réduite de 5%, alignement conservé avec le header"
+    ],
     "v299": [
       "Liste des langues : chaque langue montre sa région d'origine avec le pays entre parenthèses (et sans doublon si le pays figure déjà dans la région)",
       "Onglets Transcrire, Traduire, Explorer et Demander : hauteur encore réduite et parfaitement alignés avec les boutons du haut, sans chevauchement ni débordement"
