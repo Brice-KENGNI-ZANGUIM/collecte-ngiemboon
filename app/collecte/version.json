@@ -1,6 +1,9 @@
 {
-  "version": "v310",
+  "version": "v311",
   "changelog": {
+    "v311": [
+      "Démarrage nettement plus rapide : le gros corpus de mots (dictionnaire) n'est plus chargé au lancement mais seulement à l'ouverture de Traduire/Transcrire (aucune image compressée ni modifiée)"
+    ],
     "v310": [
       "Explorer : les icônes de « Ton avis » et du bouton « Améliorer/voter » sont agrandies (deux fois plus grandes) pour être bien visibles"
     ],

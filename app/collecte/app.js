@@ -11,7 +11,17 @@ import { reconcile, checkServer, serverStats, modeGoogle, browseLibrary,
   proposeMerge, respondMerge, mergesForDevice, fetchNotifications,
   fetchRequests, fetchRequestsToTranslate, postRequest, postAnswer, translateWord,
   submitTestimonial, fetchTestimonials, updateContribution } from "./sync.js";
-import { PROPOSITIONS } from "./propositions.js";
+// PROPOSITIONS (1,37 Mo, dont ~68k mots de dictionnaire) n'est utilisé QUE dans le flux
+// Traduire/Transcrire (et l'incitation), jamais pour le rendu de l'accueil. On l'importe
+// DYNAMIQUEMENT → son parse ne bloque plus le premier rendu (démarrage nettement plus rapide,
+// surtout sur mobile). Il est préchargé en arrière-plan juste après l'affichage de l'accueil.
+let PROPOSITIONS = null;
+let _propsPromise = null;
+function ensurePropositions() {
+  if (PROPOSITIONS) return Promise.resolve(PROPOSITIONS);
+  if (!_propsPromise) _propsPromise = import("./propositions.js").then((m) => { PROPOSITIONS = m.PROPOSITIONS; return PROPOSITIONS; });
+  return _propsPromise;
+}
 import { BUGS } from "./bugs.js";
 import { CONFIG } from "./config.js";
 import { currentLang, getCurrentLangId, setCurrentLangId, usesDedicatedKeyboard,
@@ -31,7 +41,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v310";
+const APP_VERSION = "v311";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -295,6 +305,7 @@ function markDoneText(txt) {
 }
 let ALL_PROPS = null;
 function allProps() {
+  if (!PROPOSITIONS) return [];   // pas encore chargé (import dynamique) → vide, sans crasher
   if (!ALL_PROPS) {
     const base = 1000000; // ids synthétiques pour les mots du dictionnaire
     const dico = (PROPOSITIONS.dictionnaire || []).map((t, i) =>
@@ -314,6 +325,7 @@ function allProps() {
 const GROUP_ORDER = ["mots", "phrases", "lettres", "chiffres", "nombres", "dictionnaire"];
 let _BY_CAT = null;
 function byCat() {
+  if (!PROPOSITIONS) return {};   // pas encore chargé → NE PAS mettre en cache un résultat vide
   if (!_BY_CAT) {
     _BY_CAT = {};
     for (const it of allProps()) { (_BY_CAT[it.cat] = _BY_CAT[it.cat] || []).push(it); }
@@ -328,7 +340,7 @@ function groupLabel(key) {
   const k = "grp." + key;
   const s = t(k);
   if (s !== k) return s;                        // libellé i18n connu (FR/EN)
-  const c = (PROPOSITIONS.categories || []).find((x) => x.key === key);
+  const c = ((PROPOSITIONS && PROPOSITIONS.categories) || []).find((x) => x.key === key);
   return c ? c.label : key;
 }
 /** Premier groupe (dans l'ORDRE) ayant encore des items non faits par l'user. */
@@ -344,8 +356,9 @@ function resolveGroup() {
 }
 function initPropCategories() {
   const sel = $("#prop-cat");
+  const cats = (PROPOSITIONS && PROPOSITIONS.categories) || [];
   const opts = [`<option value="auto">${t("prop.auto")}</option>`].concat(
-    PROPOSITIONS.categories.map((c) => `<option value="${c.key}">${groupLabel(c.key)} (${c.n})</option>`)
+    cats.map((c) => `<option value="${c.key}">${groupLabel(c.key)} (${c.n})</option>`)
   );
   sel.innerHTML = opts.join("");
   sel.value = propCat;
@@ -1575,6 +1588,10 @@ function enterHub() {
   // notification « on veut une trad/transcription dans telle langue » → rechargement dans
   // cette langue → on rouvre ici la page de travail avec le mot imposé).
   try { resumePendingRequestAnswer(); } catch (e) { /* jamais bloquant */ }
+  // Précharge le corpus (import dynamique de propositions.js, 1,37 Mo) HORS du chemin critique,
+  // une fois l'accueil affiché : le premier rendu reste rapide, et le corpus est prêt quand
+  // l'utilisateur ouvre Traduire/Transcrire ou quand l'incitation se déclenche.
+  setTimeout(() => { ensurePropositions().catch(() => {}); }, 700);
   // Notifications : rafraîchit la pastille, puis propose un popup si une activité
   // récente concerne l'utilisateur (prioritaire sur l'invitation générique).
   setTimeout(() => { refreshNotifs().then(() => { try { maybeShowNotifPopup(); } catch (e) { /* ok */ } }); }, 1000);
@@ -2332,7 +2349,7 @@ function _revealOptional(zoneSel, btnSel, focusSel) {
   if (btn) btn.hidden = true;
   if (focusSel) { const f = $(focusSel); if (f) keepScroll(() => { try { f.focus({ preventScroll: true }); } catch (e) { /* ok */ } }); }
 }
-function enterWork(act, forceMode) {
+async function enterWork(act, forceMode) {
   if (!requireProfile(act === "transcribe"
     ? "Crée ton profil pour enregistrer des prononciations."
     : "Crée ton profil pour proposer des traductions.")) return;
@@ -2340,6 +2357,8 @@ function enterWork(act, forceMode) {
   mode = forceMode || "proposer";   // PAR DÉFAUT « se faire proposer un mot » (Brice) ; « libre » seulement
                                     // pour les entrées spéciales (réponse à une demande, « dis-le dans ta langue »).
   setActivity(act);
+  await ensurePropositions();   // le corpus (import dynamique) doit être prêt avant de proposer un mot
+  initPropCategories();         // (re)peuple le sélecteur de groupes maintenant que le corpus est chargé
   applyMode();   // applique le mode (affiche la barre de proposition + propose un mot si « proposer »)
   refreshDoneTexts();   // liste des mots déjà faits par l'utilisateur (pour la détection de doublon en mode libre)
   // Consignes de l'activité, affichées les 3 premières fois (Transcrire ET Traduire).
@@ -2690,6 +2709,7 @@ function _incDismiss() { _incStopAudio(); const bn = $("#incite-banner"); if (bn
 /** À appeler quand on arrive sur l'accueil : ENFILE l'invitation si elle est due (la file l'affiche). */
 async function maybeShowIncitation() {
   if (!incitationDue()) return;
+  try { await ensurePropositions(); } catch (e) { return; }   // corpus requis (import dynamique) avant de choisir un mot
   let pick = null; try { pick = await pickIncitation(); } catch (e) { pick = null; }
   if (!pick || !incitationDue()) return;          // re-vérifie après l'await (course éventuelle)
   // Résout l'équivalent dans la langue de l'UI AVANT d'afficher (jamais de FR à un anglophone).
