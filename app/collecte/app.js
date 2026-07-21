@@ -31,7 +31,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v286";
+const APP_VERSION = "v287";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -193,7 +193,7 @@ function applyLanguage() {
   if (dS) dS.textContent = t("hub.desc.transcribe").replace("{lang}", L.nom);
   const dE = document.querySelector('.hub-card[data-go="explore"] .hub-desc');
   if (dE) dE.textContent = t("hub.card.explore.desc");
-  const chipName = $("#lang-chip-name"); if (chipName) chipName.textContent = L.nom;
+  const chipName = $("#lang-chip-name"); if (chipName) chipName.textContent = hasChosenLang() ? L.nom : t("chip.langues");
   updateWorkLang();
   applyDirection();
 }
@@ -1143,9 +1143,14 @@ function showView(name) {
   // Cloche de notifications : visible dès qu'un profil existe (comme « Mon profil »).
   const bn = $("#btn-notifs");
   if (bn) bn.hidden = !profileComplete();
-  // Sélecteur de langue : visible dès qu'une langue est choisie, partout, sans exception.
+  // Bouton des langues : TOUJOURS visible (accès à la page des langues même sans langue choisie).
+  // Sans langue → libellé générique « Langues » ; avec une langue → son nom.
   const lc = $("#lang-chip");
-  if (lc) lc.hidden = !hasChosenLang();
+  if (lc) {
+    lc.hidden = false;
+    const cn = $("#lang-chip-name");
+    if (cn && !hasChosenLang()) cn.textContent = t("chip.langues");
+  }
   try { injectBannerShare(name); } catch (e) { /* jamais bloquant */ }
   window.scrollTo(0, 0);
 }

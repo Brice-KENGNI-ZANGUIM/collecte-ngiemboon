@@ -32,6 +32,7 @@ export const STR = {
   "srv.connected": { fr: "serveur : connecté", en: "server: connected" },
   "srv.unreachable": { fr: "serveur : hors d'atteinte", en: "server: unreachable" },
   "chip.lang": { fr: "Langue", en: "Language" },
+  "chip.langues": { fr: "Langues", en: "Languages" },
   "chip.about": { fr: "À propos", en: "About" },
   "chip.help": { fr: "Aide", en: "Help" },
   "chip.bugs": { fr: "Bugs", en: "Bugs" },

@@ -1,6 +1,11 @@
 {
-  "version": "v286",
+  "version": "v287",
   "changelog": {
+    "v287": [
+      "En-tête épuré et plus lisible sur ordinateur : « · Collecte » retiré, boutons de navigation de gauche agrandis, bouton clair/sombre mieux dimensionné",
+      "Bouton des langues toujours visible dans l'en-tête (libellé « Langues » tant qu'aucune langue n'est choisie), pour atteindre la page des langues depuis n'importe quel appareil",
+      "Page À propos : l'illustration du milieu passe en photo réelle"
+    ],
     "v286": [
       "Bouton clair/sombre : illustration africaine soleil et lune (à la place des symboles génériques) ; bannières Traduire et Transcrire mises à jour depuis les visuels fournis"
     ],

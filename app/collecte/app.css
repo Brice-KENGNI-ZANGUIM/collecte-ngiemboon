@@ -326,6 +326,15 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 .chip--btn:active { transform: translateY(0); box-shadow: inset 0 2px 5px -2px rgba(0,0,0,.45); }
 .chip--btn .chip-ico { transition: filter .16s ease; }
 .chip--btn:hover .chip-ico { filter: drop-shadow(0 0 6px rgba(34,211,238,.7)); }
+/* PC : boutons de NAVIGATION de gauche (.chips-nav) plus grands et lisibles. Les boutons de
+   droite (FR/EN, thème, pastilles d'état) restent inchangés. Demande Brice : sur PC les chips
+   de nav paraissaient trop petits. */
+@media (min-width: 901px) {
+  .chips-nav .chip--btn { font-size: .95rem; padding: 9px 16px; gap: 9px; }
+  .chips-nav .chip--btn .chip-ico { width: 28px; height: 28px; }
+  .chips-nav .chip--icon { padding: 8px 13px; }
+  .chips-nav .chip--icon .chip-ico { width: 28px; height: 28px; }
+}
 
 /* --- Header MOBILE / TABLETTE (≤900px) : réorganisation lisible -----------------
    Nom LANGIAL agrandi (≈ hauteur du logo) ; boutons de nav AVEC leur texte (l'icône
