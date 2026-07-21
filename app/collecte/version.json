@@ -1,6 +1,9 @@
 {
-  "version": "v321",
+  "version": "v322",
   "changelog": {
+    "v322": [
+      "Conjugaison : ajout du conditionnel et du passé composé (14 verbes désormais à 5 temps), avec les accords corrects et l'équivalent anglais adapté"
+    ],
     "v321": [
       "Conjugaison enrichie : 14 verbes courants (être, avoir, aller, faire, dire, voir, venir, prendre, pouvoir, vouloir, savoir, donner, manger, parler) à trois temps, avec leur équivalent anglais correct"
     ],
