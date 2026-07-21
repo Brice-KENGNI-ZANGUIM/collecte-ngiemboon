@@ -2760,13 +2760,15 @@ function _renderNotifPopup(n) {
   // Couleur + icône selon le TYPE : « request » = une demande de la communauté (cyan),
   // sinon « activity » = un retour sur TES contributions (violet). Voir CSS data-ptype.
   const isReq = (n.type === "request" || n.type === "request_answered");
-  pop.dataset.ptype = isReq ? "request" : "activity";
+  const isMile = (n.type === "milestone");
+  pop.dataset.ptype = isMile ? "rate" : (isReq ? "request" : "activity");   // jalon = teinte or (célébration)
   const _ico = pop.querySelector(".incite-ico");
-  // Illustrations RONDES (personne entière, contain) sur fond flouté : demande = appel à la
-  // communauté ; activité = deux personnes qui échangent. NB : on utilise hub-request-ill (illustration
-  // TRANSPARENTE, ~44 % de vide) et non pop-request-ill qui est OPAQUE (le fond blanc flouté ne
-  // transparaissait pas → frost absent sur ce seul popup, cf. bug #68).
-  if (_ico) _ico.innerHTML = _popIllHTML(isReq ? "hub-request-ill.webp" : "two-talk-ill.webp");
+  // Illustrations RONDES (contain) sur fond flouté : jalon = badge de célébration (illustration
+  // fournie) ; demande = appel à la communauté ; activité = deux personnes qui échangent. NB : on
+  // utilise hub-request-ill (illustration TRANSPARENTE, ~44 % de vide) et non pop-request-ill qui est
+  // OPAQUE (le fond blanc flouté ne transparaissait pas → frost absent sur ce seul popup, cf. bug #68).
+  const _img = isMile ? "milestone-badge.webp" : (isReq ? "hub-request-ill.webp" : "two-talk-ill.webp");
+  if (_ico) _ico.innerHTML = _popIllHTML(_img);
   pop.hidden = false;
 }
 // « Plus tard »/fermer : retrait de la file pour cette session (revient au prochain chargement).
