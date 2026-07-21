@@ -3136,3 +3136,48 @@ textarea, [contenteditable="true"] { cursor: text; }
 .btn--primary, .btn--next, .btn--send:not(:disabled),
 .lang-search-btn, .lang-declare-cta, .corr-submit, .tour-next,
 #btn-mic-test, .tr-guide-open { animation-name: ngCtaGlowLite !important; }   /* glow CTA moins intense */
+
+/* ============================================================================
+   COMPATIBILITÉ SAFARI ANCIEN (< 16.2) : color-mix() n'y est PAS supporté → toute
+   déclaration « background: color-mix(...) » devient invalide et laisse le fond VIDE
+   (transparent), et les bordures color-mix disparaissent. Ce bloc, appliqué UNIQUEMENT
+   par les navigateurs SANS color-mix, redonne des fonds/bordures SOLIDES aux surfaces
+   visibles et cliquables. Les navigateurs modernes l'ignorent (l'@supports est faux).
+   (#78 — signalé : bouton de partage vu en ovale creux sur iPhone.)
+   ============================================================================ */
+@supports not (color: color-mix(in srgb, red, blue)) {
+  /* Pilules / chips du header + états */
+  .chip { background-color: var(--panel); border-color: var(--border); }
+  .chips-nav .chip--btn { background: rgba(127,127,127,.12); border-color: transparent; }
+  :root[data-theme="light"] .chips-nav .chip--btn { background: rgba(18,30,46,.06); }
+  .chips-nav .chip--btn:hover, .chips-nav .chip--btn.is-active { background: rgba(34,211,238,.20); color: var(--cyan); border-color: rgba(34,211,238,.5); }
+  .chip--on { border-color: var(--green); }
+  /* Bascules FR|EN et thème */
+  .lang-switch, .theme-switch { border-color: var(--border); }
+  .lang-switch .lang-seg { background: var(--panel); }
+  .lang-switch[data-active="fr"] .lang-seg[data-seg="fr"], .lang-switch[data-active="en"] .lang-seg[data-seg="en"] { background: var(--green); color: var(--bg); }
+  /* Onglets d'activité : fond solide + bordure = couleur d'activité (var solide, OK) */
+  .nav-tab { background: var(--panel); border-color: var(--acc); }
+  /* Boutons d'action */
+  .btn { background: var(--panel); border-color: var(--border); }
+  .btn--primary, .btn--next, .btn--send { background: var(--cyan); border-color: var(--cyan); color: var(--bg); }
+  .btn--rec { background: var(--red); border-color: var(--red); color: #fff; }
+  .banner-share { background: var(--cyan); border-color: var(--cyan); }
+  /* Cadres / cartes / popups */
+  .card { background: var(--card-bg); border-color: var(--border); }
+  .tr-guide-card, .incite-banner, .notif-popup, .share-panel-card, .profile-gate-card,
+  .lang-declare, .sendgrp, .dup-warn, .req-item, .about-vision, .about-cell, .hub-card,
+  .aplayer, .grp-card, .entry-card { background: var(--panel); border-color: var(--border); }
+  /* Réseaux de partage (icônes rondes à fond clair) */
+  .share-ico { background: var(--share-ico-bg, #ffffff); border-color: var(--border); }
+  /* Actions d'une entrée (partager, améliorer, voter) */
+  .entry-share, .corr-vote, .mini-btn, .grp-back, .entry-improve { background: var(--panel); border-color: var(--border); }
+  /* Champs de saisie / sélecteurs */
+  input, select, textarea, .field input, .combo, .enhanced-select { background: var(--panel); border-color: var(--border); }
+  /* Vote 3 états : bordures solides selon l'état */
+  .ev-btn { background: var(--panel); border-color: var(--border); }
+  .ev-ok.is-mine { border-color: var(--green); color: var(--green); }
+  .ev-no.is-mine { border-color: var(--red); color: var(--red); }
+  /* Repère de vote / puces : couleur solide */
+  .kw-word { color: var(--cyan); } .kw-who { color: var(--gold); } .kw-lang { color: var(--green); }
+}

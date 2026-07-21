@@ -1,6 +1,9 @@
 {
-  "version": "v292",
+  "version": "v293",
   "changelog": {
+    "v293": [
+      "Compatibilité avec les anciens iPhone (Safari ancien) : les boutons, cadres et popups qui apparaissaient parfois vides (contour seul) s'affichent désormais correctement avec un fond plein"
+    ],
     "v292": [
       "En-tête et onglets d'activité forment désormais un seul bloc : espacement resserré et uniforme (l'écart entre les boutons du header et les onglets égale l'écart entre les deux lignes de boutons), bordures des onglets affinées et hauteur légèrement réduite",
       "Sur téléphone : FR/EN et le bouton clair/sombre plaqués à droite, Profil et Notifications à gauche, le tout sur 2 lignes"
