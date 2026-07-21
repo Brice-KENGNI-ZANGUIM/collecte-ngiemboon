@@ -41,7 +41,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v313";
+const APP_VERSION = "v314";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1594,6 +1594,8 @@ function enterHub() {
   // une fois l'accueil affiché : le premier rendu reste rapide, et le corpus est prêt quand
   // l'utilisateur ouvre Traduire/Transcrire ou quand l'incitation se déclenche.
   setTimeout(() => { ensurePropositions().catch(() => {}); }, 700);
+  // Mot du jour (R10) : peuplé en async une fois le corpus prêt (n'impacte pas le 1er rendu).
+  setTimeout(() => { renderWordOfDay().catch(() => {}); }, 750);
   // Notifications : rafraîchit la pastille, puis propose un popup si une activité
   // récente concerne l'utilisateur (prioritaire sur l'invitation générique).
   setTimeout(() => { refreshNotifs().then(() => { try { maybeShowNotifPopup(); } catch (e) { /* ok */ } }); }, 1000);
@@ -2717,6 +2719,26 @@ async function maybeShowIncitation() {
   // Résout l'équivalent dans la langue de l'UI AVANT d'afficher (jamais de FR à un anglophone).
   try { pick.wordUi = await resolveWordUi(pick.word); } catch (e) { /* repli sync */ }
   enqueuePopup("incite", () => renderIncitation(pick));   // jamais deux popups à la fois : la file gère
+}
+
+// --- MOT DU JOUR (R10) -------------------------------------------------------
+// Un mot du corpus, choisi de façon DÉTERMINISTE par la date : le MÊME pour tout le
+// monde ce jour-là, et il change chaque jour (habitude/rétention). Invite à le dire
+// dans sa langue (réutilise startTranslateWord). Peuplé en ASYNC (le corpus est en
+// import dynamique) → n'impacte pas la vitesse d'affichage de l'accueil.
+function _dayIndex() { try { return Math.floor(Date.now() / 86400000); } catch (e) { return 0; } }
+async function renderWordOfDay() {
+  const host = $("#word-of-day"), wEl = $("#wod-word"), cta = $("#wod-cta");
+  if (!host || !wEl) return;
+  try { await ensurePropositions(); } catch (e) { host.hidden = true; return; }
+  const mots = groupItems("mots");
+  if (!mots.length) { host.hidden = true; return; }
+  const fr = mots[_dayIndex() % mots.length].texte;
+  let show = fr;
+  try { show = wordInUiLang(fr) || fr; } catch (e) { /* repli FR */ }
+  wEl.textContent = show;
+  if (cta) cta.onclick = () => startTranslateWord(fr);
+  host.hidden = false;
 }
 
 // --- Notifications : centre horodaté + pastille de non-lues + popup --------

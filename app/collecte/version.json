@@ -1,6 +1,9 @@
 {
-  "version": "v313",
+  "version": "v314",
   "changelog": {
+    "v314": [
+      "Nouveau : « Mot du jour » sur l'accueil, un mot proposé chaque jour (le même pour tous) à dire dans ta langue en un clic"
+    ],
     "v313": [
       "Cohérence finale du nom LANGIAL et du domaine langial.com partout (dernières références internes mises à jour)"
     ],

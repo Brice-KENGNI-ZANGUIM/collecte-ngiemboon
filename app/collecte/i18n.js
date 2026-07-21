@@ -107,6 +107,8 @@ export const STR = {
   "mc.saved": { fr: "Langue corrigée", en: "Language fixed" },
   "mc.err": { fr: "Correction impossible", en: "Could not fix" },
   "mc.audio": { fr: "(contribution vocale)", en: "(voice contribution)" },
+  "wod.eye": { fr: "◆ Mot du jour", en: "◆ Word of the day" },
+  "wod.cta": { fr: "Dis-le dans ta langue →", en: "Say it in your language →" },
   "lang.f.reqlegend": { fr: "Les champs marqués <span class=\"req\">*</span> sont obligatoires.", en: "Fields marked <span class=\"req\">*</span> are required." },
   "lang.f.req.err": { fr: "Le nom, la région, le pays et la famille/groupe sont obligatoires.", en: "Name, region, country and family/group are required." },
   "lang.f.autonym": { fr: "Autonyme (optionnel)", en: "Endonym (optional)" },
