@@ -1,6 +1,9 @@
 {
-  "version": "v290",
+  "version": "v291",
   "changelog": {
+    "v291": [
+      "Icônes africaines dans la bibliothèque : les boutons Partager et Améliorer/voter, ainsi que le repère de vote, utilisent désormais les illustrations fournies (cauris, calame) au lieu d'émojis génériques"
+    ],
     "v290": [
       "En-tête finalisé : tous les boutons tiennent sur 2 lignes (ordinateur, tablette et téléphone) ; Bugs rejoint le groupe de navigation, le groupe perso se limite à Profil et Notifications ; icône Profil agrandie ; bouton clair/sombre à la même hauteur que FR/EN",
       "Pied de page : la mention « Créé par » a été retirée"

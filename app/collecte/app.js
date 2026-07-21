@@ -31,7 +31,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v290";
+const APP_VERSION = "v291";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -3883,9 +3883,9 @@ function renderProposal(e) {
     <div class="entry-foot">${credit} ${date}</div>
     ${voteBarHtml(e)}
     <div class="entry-actions">
-      <button type="button" class="entry-improve" data-id="${escapeHtml(e.id)}" data-orig="${escapeHtml(e.target_text || "")}">${t("exp.improve")}</button>
+      <button type="button" class="entry-improve" data-id="${escapeHtml(e.id)}" data-orig="${escapeHtml(e.target_text || "")}"><img class="act-ico" src="icons/ni-suggestion.png" alt="" aria-hidden="true">${t("exp.improve")}</button>
       <button type="button" class="entry-saymine" data-fr="${escapeHtml(e.direction === "nge2fr" ? (e.target_text || e.source_text || "") : (e.source_text || ""))}" title="${t("exp.saymine.title")}">${t("exp.saymine")}</button>
-      <button type="button" class="entry-share" data-src="${escapeHtml(e.source_text || "")}" data-tgt="${escapeHtml(e.target_text || "")}" data-dir="${escapeHtml(e.direction || "fr2nge")}" data-audio="${isPlayable(e.audio_url) ? "1" : "0"}" title="${t("exp.share.title")}" aria-label="${t("exp.share.aria")}">${t("exp.share")}</button>
+      <button type="button" class="entry-share" data-src="${escapeHtml(e.source_text || "")}" data-tgt="${escapeHtml(e.target_text || "")}" data-dir="${escapeHtml(e.direction || "fr2nge")}" data-audio="${isPlayable(e.audio_url) ? "1" : "0"}" title="${t("exp.share.title")}" aria-label="${t("exp.share.aria")}"><img class="act-ico" src="icons/ni-share.png" alt="" aria-hidden="true">${t("exp.share")}</button>
     </div>
     <div class="entry-corr" hidden></div>
   </article>`;
@@ -3901,7 +3901,7 @@ function voteBarHtml(e) {
   const btns = VOTE_KINDS.map(([val, sym, cls]) =>
     `<button type="button" class="ev-btn ev-${cls}${mine === val ? " is-mine" : ""}" data-v="${val}" data-id="${escapeHtml(e.id)}"
        title="${t("vote." + val + ".title")}" aria-pressed="${mine === val}">${sym} <b class="ev-n">${(v[val] || 0)}</b></button>`).join("");
-  return `<div class="entry-vote" role="group" aria-label="${t("vote.aria")}"><span class="ev-lbl">${t("vote.lbl")}</span>${btns}</div>`;
+  return `<div class="entry-vote" role="group" aria-label="${t("vote.aria")}"><span class="ev-lbl"><img class="act-ico act-ico--vote" src="icons/ni-vote.png" alt="" aria-hidden="true">${t("vote.lbl")}</span>${btns}</div>`;
 }
 function _voteCounts(bar) {
   const o = {};
@@ -4011,14 +4011,14 @@ function renderCorrections(panel, id, origText, data) {
     ? `<div class="corr-sub">${t("corr.sub.translations")}</div>` + [...cands].sort((a, b) => b.votes - a.votes).map((c) =>
         `<div class="corr-cand${win && c.id === win.id ? " is-win" : ""}">
           <span class="corr-cand-txt">${escapeHtml(c.texte)}${c.isOrig ? ` <span class="corr-tag">${t("corr.original")}</span>` : ""}</span>
-          <button type="button" class="corr-vote" data-cible="${escapeHtml(c.id)}">👍 ${c.votes}</button>
+          <button type="button" class="corr-vote" data-cible="${escapeHtml(c.id)}"><img class="act-ico" src="icons/ni-vote.png" alt="" aria-hidden="true">${c.votes}</button>
         </div>`).join("")
     : "";
   const audioHtml = audioAlts.length
     ? `<div class="corr-sub">${t("corr.sub.audio")}</div>` + audioAlts.map((s) =>
         `<div class="corr-cand">
           <span class="corr-cand-txt">${playableAudio(s.audio, s.duree_ms || s.audio_duree_ms)}${s.credit ? ` <span class="corr-credit">· ${escapeHtml(s.credit)}</span>` : ""}</span>
-          <button type="button" class="corr-vote" data-cible="${escapeHtml(s.id)}">👍 ${s.votes}</button>
+          <button type="button" class="corr-vote" data-cible="${escapeHtml(s.id)}"><img class="act-ico" src="icons/ni-vote.png" alt="" aria-hidden="true">${s.votes}</button>
         </div>`).join("")
     : "";
   const comHtml = comments.length

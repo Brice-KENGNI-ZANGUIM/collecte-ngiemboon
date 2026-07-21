@@ -330,9 +330,10 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
    droite (FR/EN, thème, pastilles d'état) restent inchangés. Demande Brice : sur PC les chips
    de nav paraissaient trop petits. */
 @media (min-width: 901px) {
-  /* Icônes bien visibles sans élargir le bouton (padding horizontal serré, vertical réduit). */
-  .chips-nav .chip--btn { font-size: .9rem; padding: 6px 12px; gap: 8px; }
-  .chips-nav .chip--btn .chip-ico { width: 38px; height: 38px; }
+  /* Icônes plus GRANDES à hauteur de bouton CONSTANTE : padding vertical réduit d'autant
+     (icône 44 + 2×3 = 50, comme avant 38 + 2×6). */
+  .chips-nav .chip--btn { font-size: .9rem; padding: 3px 12px; gap: 8px; }
+  .chips-nav .chip--btn .chip-ico { width: 44px; height: 44px; }
 }
 /* --- STYLE PLAT + DEUX GROUPES (demande Brice : 1+2) ------------------------------
    Les boutons de nav ne sont plus des « pilules » de verre : fond transparent au repos,
@@ -393,14 +394,19 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
      2 lignes. Structure imposée : groupe NAV = 1re ligne (pleine largeur), groupe PERSO + outils
      (FR/EN, thème) = 2e ligne, collés ensemble (pas de margin-left:auto qui les séparait). */
   .chips-nav { gap: 4px 3px; }
-  .chips-nav .chip--btn { border-radius: 5px; padding: 3px 5px; gap: 4px; font-size: .72rem; }
-  .chips-nav .chip--btn .chip-ico { width: 20px; height: 20px; }
+  /* Icônes plus grandes à hauteur constante (padding vertical minimal). */
+  .chips-nav .chip--btn { border-radius: 5px; padding: 1px 5px; gap: 4px; font-size: .72rem; }
+  .chips-nav .chip--btn .chip-ico { width: 26px; height: 26px; }
   /* Groupes « transparents » sur mobile : leurs boutons deviennent enfants directs de .chips-nav
      → l'enroulement se fait bouton par bouton (efficace) et tout tient sur 2 lignes. Le séparateur
      n'apparaît de toute façon que sur grand écran. Outils (FR/EN, thème) sans margin-left:auto pour
      rester collés à la suite des boutons. */
-  .chip-group { display: contents; }
-  .chips-tools { margin-left: 3px; gap: 4px; }
+  /* Structure claire : le groupe NAV occupe la 1re ligne (pleine largeur) ; sur la 2e ligne, le
+     groupe PERSO (Profil, Notifications) reste À GAUCHE et les outils (FR/EN, thème) sont plaqués
+     À DROITE (margin-left:auto) → deux groupes distincts, même ligne, séparés par l'espace. */
+  .chip-group { display: flex; gap: 4px; }
+  .chip-group--nav { flex: 1 1 100%; }
+  .chips-tools { margin-left: auto; gap: 4px; }
 }
 /* Téléphone étroit : la marque et les deux pastilles d'état doivent tenir sur UNE ligne,
    avec leur libellé (« en ligne », « Drive : prêt ») et le point clignotant. */
@@ -1348,7 +1354,10 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
    --text garde le contraste lisible dans les deux thèmes. Le choix du locuteur
    ressort (is-mine : rempli + halo). Re-clic sur son choix = annulation. */
 .entry-vote { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; margin: 9px 0 2px; }
-.ev-lbl { font-size: .8rem; color: var(--muted); margin-right: 1px; }
+.ev-lbl { font-size: .8rem; color: var(--muted); margin-right: 1px; display: inline-flex; align-items: center; }
+/* Petites icônes africaines fournies posées dans les boutons d'action (partage, vote…). */
+.act-ico { width: 20px; height: 20px; object-fit: contain; vertical-align: middle; margin-right: 4px; flex: 0 0 auto; }
+.act-ico--vote { width: 22px; height: 22px; margin-right: 5px; }
 .ev-ok    { --evc: var(--green); }
 .ev-doubt { --evc: var(--gold); }
 .ev-no    { --evc: var(--red); }
