@@ -305,6 +305,9 @@ async function postOp(payload) {
 }
 export function postSuggestion(s) { return postOp(Object.assign({ op: "suggest" }, s)); }
 export function postVote(v) { return postOp(Object.assign({ op: "vote" }, v)); }
+/** Couche 3 : corrige une de SES propres contributions (langue…). Le backend vérifie
+ *  device_id + jeton de propriété avant d'appliquer un patch sur liste blanche. */
+export function updateContribution(u) { return postOp(Object.assign({ op: "update_contribution" }, u)); }
 
 /** Signale un bug (partagé). Même canal que les contributions ; idempotent par id. */
 export function postBug(b) { return postOp(Object.assign({ op: "bug" }, b)); }
