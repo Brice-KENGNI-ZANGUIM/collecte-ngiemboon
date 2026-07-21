@@ -1,6 +1,9 @@
 {
-  "version": "v317",
+  "version": "v318",
   "changelog": {
+    "v318": [
+      "Notifications : icônes agrandies (1,5 fois plus grandes) pour être mieux visibles"
+    ],
     "v317": [
       "Nouveau groupe : Pluriels (formes au pluriel à traduire, avec le singulier associé) ; équivalents anglais corrects y compris irréguliers (pieds→feet, femmes→women, souris→mice, cheveux→hair)"
     ],
