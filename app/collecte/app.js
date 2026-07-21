@@ -30,7 +30,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v272";
+const APP_VERSION = "v273";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1355,9 +1355,9 @@ function enterHub() {
   if (_currentView === "profile") collectContributeur();
   const c = loadContributeur();
   const nom = c.prenom || c.nom || "";
-  const wu = $("#welcome-user"); if (wu) wu.textContent = nom ? `${t("hub.greeting.hello")} ${nom} 👋` : "";
+  const wu = $("#welcome-user"); if (wu) wu.textContent = nom ? `${t("hub.greeting.hello")} ${nom} 👋🏾` : "";
   const ht = $("#hub-title");
-  if (ht) ht.textContent = nom ? `${t("hub.greeting.hello")} ${nom} 👋` : t("hub.greeting.solo");
+  if (ht) ht.textContent = nom ? `${t("hub.greeting.hello")} ${nom} 👋🏾` : t("hub.greeting.solo");
   showView("hub");
   // Reprise d'une réponse à une demande interrompue par une bascule de langue (clic sur une
   // notification « on veut une trad/transcription dans telle langue » → rechargement dans
@@ -2488,7 +2488,7 @@ function notifText(n) {
 }
 function notifIcon(type) {
   return ({ vote: "🗳️", suggestion: "✍️", milestone: "🎉", announce: "📣",
-            request: "🙋", request_share: "🔗", request_answered: "🎉" })[type] || "🔔";
+            request: "🙋🏾", request_share: "🔗", request_answered: "🎉" })[type] || "🔔";
 }
 function relTime(ts) {
   if (!ts) return "";
