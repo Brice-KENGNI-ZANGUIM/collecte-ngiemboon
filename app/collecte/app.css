@@ -2135,10 +2135,19 @@ body.kb-docked { padding-bottom: var(--kb-h, 50vh); }
    grand avatar rond cerclé de la couleur du type, qui DÉBORDE volontairement en haut et
    à gauche du popup (l'overflow reste visible, le halo fond joliment le débord). */
 .incite-ico { overflow: visible; }
-.incite-ico .pop-photo { display: block; width: 104px; height: 104px; border-radius: 50%;
-  object-fit: cover; border: 2.5px solid color-mix(in srgb, var(--pop-acc) 80%, transparent);
+/* Illustration RONDE : la personne est montrée ENTIÈREMENT (object-fit: contain, pas de
+   recadrage) ; les parties vides/transparentes sont comblées par la MÊME image agrandie et
+   FLOUTÉE (flou gaussien) → aucun « trou » à travers l'illustration. Déborde joliment du coin. */
+.incite-ico .pop-ill { display: block; position: relative; width: 104px; height: 104px;
+  border-radius: 50%; overflow: hidden; isolation: isolate;
+  border: 2.5px solid color-mix(in srgb, var(--pop-acc) 80%, transparent);
   box-shadow: 0 0 22px -2px var(--pop-acc), 0 8px 22px -6px rgba(0,0,0,.5);
+  background: color-mix(in srgb, var(--pop-acc) 14%, var(--card));
   margin: -30px 2px -8px -34px; }
+.incite-ico .pop-ill-bg { position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; transform: scale(1.28); filter: blur(9px) saturate(1.15) brightness(.82); }
+.incite-ico .pop-photo { position: relative; display: block; width: 100%; height: 100%;
+  object-fit: contain; }
 /* Bouton principal et bouton « Écouter » : teintés dans la couleur du type. */
 .incite-banner .btn--primary { background: var(--pop-acc); border-color: var(--pop-acc); color: var(--bg);
   box-shadow: 0 8px 22px -8px var(--pop-acc); }

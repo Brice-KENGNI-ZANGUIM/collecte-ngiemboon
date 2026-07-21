@@ -29,7 +29,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v265";
+const APP_VERSION = "v266";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1304,6 +1304,9 @@ function enterHub() {
   setTimeout(() => { refreshNotifs().then(() => { try { maybeShowNotifPopup(); } catch (e) { /* ok */ } }); }, 1000);
   // Invitation à contribuer (au plus 1×/jour) : apparaît en douceur après l'arrivée.
   setTimeout(() => { try { maybeShowIncitation(); } catch (e) { /* jamais bloquant */ } }, 1400);
+  // Les deux ci-dessus ENFILENT leurs popups ; la file les affiche un par un, en alternance,
+  // après le délai de grâce (jamais deux à la fois, persistant au rafraîchissement).
+  startPopupQueue();
 }
 /** Accueil = le hub aux trois portes (Traduire, Transcrire, Explorer). Si le profil
     n'est pas encore complet, l'accueil obligatoire reste la vue Profil (aucun
@@ -2088,6 +2091,65 @@ function _incShownSlots() {
   try { const o = JSON.parse(localStorage.getItem(INCITE_KEY) || "{}");
     return (o && o.date === _incTodayStr() && Array.isArray(o.slots)) ? o.slots : []; } catch (e) { return []; }
 }
+// ===== FILE d'attente des popups : JAMAIS deux à la fois =====================
+// Les popups (invitation à contribuer, à noter, demande de la communauté…) n'apparaissent
+// jamais simultanément. Ils entrent dans une file et s'ALTERNENT : chacun s'affiche
+// ~POPUP_ROTATE_MS, puis cède la place au suivant, en boucle, jusqu'à ce que l'utilisateur
+// clique une ACTION (le popup quitte alors définitivement la file). « Plus tard »/fermer =
+// retrait de la file pour cette session (il revient au prochain chargement). Persistant au
+// rafraîchissement : après un refresh, on attend POPUP_GRACE_MS avant la 1re apparition.
+const POPUP_ROTATE_MS = 60000;   // 1 min par popup avant de passer au suivant
+const POPUP_GRACE_MS = 18000;    // délai après (re)chargement avant la 1re apparition
+let _pq = [];                    // [{ id, show }]
+let _pqIdx = 0, _pqTimer = 0, _pqCurrent = null, _pqStarted = false;
+function _pqHideAllEls() {
+  const inc = $("#incite-banner"); if (inc) inc.hidden = true;
+  const np = $("#notif-popup"); if (np) np.hidden = true;
+  _incStopAudio();
+}
+function _pqShow() {
+  if (!_pq.length) { _pqCurrent = null; _pqHideAllEls(); return; }
+  _pqIdx = ((_pqIdx % _pq.length) + _pq.length) % _pq.length;
+  const item = _pq[_pqIdx];
+  _pqHideAllEls();
+  try { item.show(); _pqCurrent = item.id; } catch (e) { _pqCurrent = null; }
+}
+function _pqAdvance() { if (_pq.length) { _pqIdx++; _pqShow(); } }
+function _pqRestartTimer() {
+  clearInterval(_pqTimer); _pqTimer = 0;
+  if (_pq.length > 1) _pqTimer = setInterval(_pqAdvance, POPUP_ROTATE_MS);
+}
+/** Enfile un popup (sans doublon d'id). `show` rend + affiche l'élément quand son tour vient. */
+function enqueuePopup(id, show) {
+  if (_pq.some((x) => x.id === id)) return;
+  _pq.push({ id, show });
+  if (_pqStarted) { if (_pq.length === 1) _pqShow(); _pqRestartTimer(); }
+}
+/** Retire un popup de la file (session). Si c'était l'actuel, on affiche le suivant. */
+function dismissPopup(id) {
+  const wasCurrent = _pqCurrent === id;
+  const before = _pq.length;
+  _pq = _pq.filter((x) => x.id !== id);
+  if (_pq.length === before) { if (wasCurrent) _pqHideAllEls(); return; }
+  if (!_pq.length) { clearInterval(_pqTimer); _pqTimer = 0; _pqCurrent = null; _pqHideAllEls(); return; }
+  if (wasCurrent) { if (_pqIdx >= _pq.length) _pqIdx = 0; _pqShow(); }
+  _pqRestartTimer();
+}
+/** Démarre la rotation APRÈS le délai de grâce (appelé une fois, au chargement). */
+function startPopupQueue() {
+  if (_pqStarted) return;
+  setTimeout(() => { _pqStarted = true; if (_pq.length) { _pqShow(); _pqRestartTimer(); } }, POPUP_GRACE_MS);
+}
+/** Illustration ronde d'un popup : la personne ENTIÈRE (contain) sur un fond FLOUTÉ (la même
+    image agrandie et floutée comble les parties vides/transparentes). */
+function _popIllHTML(file) {
+  const u = "icons/" + file;
+  return '<span class="pop-ill">' +
+    '<img class="pop-ill-bg" src="' + u + '" alt="" aria-hidden="true">' +
+    '<img class="pop-photo" src="' + u + '" alt="" aria-hidden="true">' +
+    "</span>";
+}
+
 function incitationDue() {
   if (!profileComplete() || !hasChosenLang()) return false;
   const slot = _incSlot(); if (!slot) return false;
@@ -2166,8 +2228,8 @@ function renderIncitation(pick) {
   // Type visuel du popup (couleur + icône) : « rate » = évaluer/voter (or), sinon
   // « contribute » = on t'invite à donner un mot dans ta langue (vert). Voir CSS data-ptype.
   const _setIco = (e) => { const i = bn.querySelector(".incite-ico"); if (i) i.textContent = e; };
-  // Illustration réaliste (avatar rond) selon le type, plutôt qu'un emoji (préférence Brice).
-  const _setImg = (file) => { const i = bn.querySelector(".incite-ico"); if (i) i.innerHTML = '<img class="pop-photo" src="icons/' + file + '" alt="" aria-hidden="true" width="52" height="52">'; };
+  // Illustration RONDE (personne entière, contain) sur fond flouté, selon le type.
+  const _setImg = (file) => { const i = bn.querySelector(".incite-ico"); if (i) i.innerHTML = _popIllHTML(file); };
   const w = pick.word;                                  // mot CANONIQUE (français) pour l'action
   // BUG corrigé : en mode anglais, on AFFICHE le mot dans la langue de l'interface
   // (jamais de mot français à un anglophone). `wordInUiLang` interroge d'abord la base
@@ -2177,14 +2239,14 @@ function renderIncitation(pick) {
   const go = $("#incite-go"), lis = $("#incite-listen");
   // Variante « noter » : on invite à donner son avis sur une proposition non jugée.
   if (pick.kind === "rate") {
-    bn.dataset.ptype = "rate"; _setImg("pop-rate.webp");
+    bn.dataset.ptype = "rate"; _setImg("pop-rate-ill.webp");
     const m = $("#incite-msg"); if (m) m.textContent = ti("incite.rate.msg", { w: wShow, lang: langName });
     if (lis) { lis.hidden = true; lis.onclick = null; }
-    if (go) { go.textContent = t("incite.rate.cta"); go.onclick = () => { _incMarkShown(); _incStopAudio(); bn.hidden = true; startRateWord(pick.word, pick.dir); }; }
+    if (go) { go.textContent = t("incite.rate.cta"); go.onclick = () => { _incMarkShown(); _incStopAudio(); bn.hidden = true; dismissPopup("incite"); startRateWord(pick.word, pick.dir); }; }
     bn.hidden = false;
     return;
   }
-  bn.dataset.ptype = "contribute"; _setImg("pop-contribute.webp");
+  bn.dataset.ptype = "contribute"; _setImg("pop-contribute-ill.webp");
   if (go) go.textContent = t("incite.cta");   // rétablit le libellé « traduire » (peut avoir été changé)
   let text;
   if (pick.ref && pick.ref.name) {
@@ -2195,7 +2257,7 @@ function renderIncitation(pick) {
     text = ti("incite.msg", { w: wShow, lang: langName });
   }
   const msg = $("#incite-msg"); if (msg) msg.textContent = text;   // textContent = anti-injection
-  if (go) go.onclick = () => { _incMarkShown(); _incStopAudio(); bn.hidden = true; startTranslateWord(w); };
+  if (go) go.onclick = () => { _incMarkShown(); _incStopAudio(); bn.hidden = true; dismissPopup("incite"); startTranslateWord(w); };
   // Bouton « Écouter » : on peut entendre la version d'un AUTRE (dans sa langue) avant de la
   // dire dans la sienne. Affiché seulement si la contribution de référence a un audio jouable.
   if (lis) {
@@ -2218,16 +2280,18 @@ async function _incPlayAudio(url) {
   else { try { au.src = url; au.load(); } catch (e) { /* ok */ } }
   try { await au.play(); } catch (e) { /* politique autoplay : le clic utilisateur devrait suffire */ }
 }
-function _incDismiss() { _incMarkShown(); _incStopAudio(); const bn = $("#incite-banner"); if (bn) bn.hidden = true; }
-/** À appeler quand on arrive sur l'accueil : montre l'invitation si elle est due. */
+// « Plus tard »/fermer : retrait de la FILE pour cette session (il reviendra au prochain
+// chargement, après le délai de grâce). On ne marque PAS « vu » : seul un clic d'ACTION le retire
+// définitivement (comportement demandé : les popups persistent tant qu'on ne les a pas actionnés).
+function _incDismiss() { _incStopAudio(); const bn = $("#incite-banner"); if (bn) bn.hidden = true; dismissPopup("incite"); }
+/** À appeler quand on arrive sur l'accueil : ENFILE l'invitation si elle est due (la file l'affiche). */
 async function maybeShowIncitation() {
   if (!incitationDue()) return;
   let pick = null; try { pick = await pickIncitation(); } catch (e) { pick = null; }
   if (!pick || !incitationDue()) return;          // re-vérifie après l'await (course éventuelle)
-  if (($("#notif-popup") || {}).hidden === false) return;   // ne pas empiler sur un popup de notif
   // Résout l'équivalent dans la langue de l'UI AVANT d'afficher (jamais de FR à un anglophone).
   try { pick.wordUi = await resolveWordUi(pick.word); } catch (e) { /* repli sync */ }
-  renderIncitation(pick);
+  enqueuePopup("incite", () => renderIncitation(pick));   // jamais deux popups à la fois : la file gère
 }
 
 // --- Notifications : centre horodaté + pastille de non-lues + popup --------
@@ -2417,25 +2481,26 @@ async function maybeShowNotifPopup() {
     && (n.ts || 0) > seen && (n.ts || 0) > lastPop);
   if (!fresh.length) return;
   const n = fresh[0];   // la plus récente (liste triée décroissante)
+  enqueuePopup("notif", () => _renderNotifPopup(n));   // jamais deux popups à la fois : la file gère
+}
+/** Rendu + affichage du popup de notification (appelé par la file quand son tour vient). */
+function _renderNotifPopup(n) {
   const pop = $("#notif-popup"), msg = $("#notif-popup-msg");
   if (!pop || !msg) return;
   _popupNotif = n;      // mémorisée pour que « Ouvrir » agisse selon son type
   msg.textContent = notifText(n);
-  // Couleur + icône selon le TYPE : « request » = une demande de la communauté (cyan, 📣),
-  // sinon « activity » = un retour sur TES contributions (violet, 🔔). Voir CSS data-ptype.
+  // Couleur + icône selon le TYPE : « request » = une demande de la communauté (cyan),
+  // sinon « activity » = un retour sur TES contributions (violet). Voir CSS data-ptype.
   const isReq = (n.type === "request" || n.type === "request_answered");
   pop.dataset.ptype = isReq ? "request" : "activity";
   const _ico = pop.querySelector(".incite-ico");
-  if (_ico) {
-    // Illustrations réalistes (avatars ronds) : demande = appel à la communauté ;
-    // activité = deux personnes qui échangent. Plutôt que des emojis (préférence Brice).
-    if (isReq) { _ico.innerHTML = '<img class="pop-photo" src="icons/pop-request.webp" alt="" aria-hidden="true" width="52" height="52">'; }
-    else { _ico.innerHTML = '<img class="pop-photo" src="icons/two-talk.webp" alt="" aria-hidden="true" width="52" height="52">'; }
-  }
+  // Illustrations RONDES (personne entière, contain) sur fond flouté : demande = appel à la
+  // communauté ; activité = deux personnes qui échangent.
+  if (_ico) _ico.innerHTML = _popIllHTML(isReq ? "pop-request-ill.webp" : "two-talk-ill.webp");
   pop.hidden = false;
-  try { localStorage.setItem(NOTIF_POPUP_KEY, String(n.ts || Date.now())); } catch (e) { /* ok */ }
 }
-function _notifPopupClose() { const p = $("#notif-popup"); if (p) p.hidden = true; }
+// « Plus tard »/fermer : retrait de la file pour cette session (revient au prochain chargement).
+function _notifPopupClose() { const p = $("#notif-popup"); if (p) p.hidden = true; dismissPopup("notif"); }
 
 // --- Porte « Demander » : entraide communautaire de traduction/transcription --
 // Un utilisateur demande un mot/phrase dans une langue précise ; les locuteurs sont
@@ -5142,7 +5207,10 @@ function initEvents() {
   // Popup de notif : « Ouvrir » agit directement si la notif est actionnable (demande →
   // y répondre), sinon ouvre le centre de notifications.
   const npGo = $("#notif-popup-go"); if (npGo) npGo.addEventListener("click", () => {
-    const n = _popupNotif; _notifPopupClose();
+    const n = _popupNotif;
+    // Action cliquée → ce popup ne revient plus (marqué au timestamp de la notif).
+    if (n) { try { localStorage.setItem(NOTIF_POPUP_KEY, String(n.ts || Date.now())); } catch (e) { /* ok */ } }
+    _notifPopupClose();
     if (n && notifActionable(n)) { routeNotif(n.type, n.data || {}); return; }
     openNotifs();
   });

@@ -1,6 +1,10 @@
 {
-  "version": "v265",
+  "version": "v266",
   "changelog": {
+    "v266": [
+      "Les popups ne se superposent plus jamais : ils s'affichent un par un, \u00e0 tour de r\u00f4le (environ une minute chacun), en boucle, jusqu'\u00e0 ce que tu cliques une action ; apr\u00e8s un rechargement ils reviennent en douceur, pas tout de suite",
+      "Illustrations des popups en version dessin\u00e9e, rondes, montrant la personne enti\u00e8re sur un fond l\u00e9g\u00e8rement flout\u00e9"
+    ],
     "v265": [
       "Lecteur audio : pendant que le son se charge, un indicateur clair (bouton en rotation, onde gris\u00e9e et mention Chargement) montre qu'il faut patienter, au lieu de laisser croire que le bouton ne r\u00e9pond pas",
       "D\u00e9cor de fond plus vivant : une lueur douce balaie lentement le motif Ndop"
