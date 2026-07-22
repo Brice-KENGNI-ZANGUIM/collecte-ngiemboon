@@ -6,7 +6,7 @@
 <title>LANGIAL · Numériser les langues d'Afrique</title>
 <style>
   :root{
-    /* Indigo Ndop (nuit) — neutres teintés bleu, choisis. */
+    /* Indigo Ndop (nuit) : neutres teintés bleu, choisis. */
     --ink:#0a0f1a; --ink2:#0c1322; --panel:#111a2c; --panel2:#152135;
     --line:rgba(210,225,245,.10); --line2:rgba(210,225,245,.16);
     --tx:#eaf1f8; --mut:#94a7be; --dim:#6f839b; --strong:#ffffff; --body:#cdd9e8;
@@ -21,7 +21,7 @@
     --lattice-url:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='156' height='156' viewBox='0 0 156 156'><g fill='none' stroke='%23e2b56f' stroke-opacity='0.13' stroke-width='1.1'><path d='M78 6 150 78 78 150 6 78Z'/></g><g fill='none' stroke='%232ad4ee' stroke-opacity='0.11' stroke-width='1'><path d='M78 42 114 78 78 114 42 78Z'/></g><circle cx='78' cy='78' r='1.8' fill='%23e2b56f' fill-opacity='0.17'/><circle cx='0' cy='78' r='1.8' fill='%232ad4ee' fill-opacity='0.12'/><circle cx='156' cy='78' r='1.8' fill='%232ad4ee' fill-opacity='0.12'/></svg>");
     --font:"Segoe UI Semibold","Segoe UI",system-ui,-apple-system,"Noto Sans","DejaVu Sans",sans-serif;
   }
-  /* ===== THÈME CLAIR — colorimétrie assombrie pour un contraste WCAG AA sur
+  /* ===== THÈME CLAIR : colorimétrie assombrie pour un contraste WCAG AA sur
      fond clair : le texte se lit sans forcer. Mêmes formes, mêmes motifs Ndop. ===== */
   .sheet--light{
     --ink:#e9eff6; --ink2:#f6f9fc; --panel:#eef3f9; --panel2:#f7fafd;
@@ -127,7 +127,8 @@
   .way .ic img{width:46px; height:46px; object-fit:contain; display:block}
   .way h3{font-size:34.5px; font-weight:800; letter-spacing:-.01em; color:var(--strong)}
   .way p{margin-top:9px; font-size:20px; line-height:1.55; color:var(--body)}
-  .way:nth-child(1){--a:#e2b56f} .way:nth-child(2){--a:#a78bfa} .way:nth-child(3){--a:#2dd4bf}
+  /* Couleurs d'activité = celles de l'app : Traduire vert, Transcrire violet, Explorer or (var → suit le thème). */
+  .way:nth-child(1){--a:var(--gr)} .way:nth-child(2){--a:#a78bfa} .way:nth-child(3){--a:var(--brass)}
   .way:nth-child(3) p{font-size:23px}
   .note{margin-top:20px; text-align:center; font-size:20.7px; color:var(--dim); letter-spacing:.01em}
   .note b{color:var(--mut); font-weight:700}
@@ -236,7 +237,7 @@
       <div class="vision">
         <span class="vb">◆ La vision : nos langues d'Afrique, texte et voix</span>
         <p class="v-lede">Un projet <b>ouvert à tous</b> pour rassembler <b>les mots et les voix</b> de <b>nos langues</b>, et bâtir ensemble <b>les outils</b> qui les font vivre : <b>des dictionnaires, des claviers et des intelligences artificielles</b></p>
-        <p>LANGIAL donne une voix numérique à <b>nos langues d'Afrique</b>. Le <b>ngiemboon</b> est la langue la plus avancée — clavier dédié et corpus le plus riche — mais la plateforme accueille déjà plusieurs langues, et chacun peut y ajouter la sienne. Où que tu sois, un simple <b>téléphone ou ordinateur</b> suffit pour y contribuer</p>
+        <p>LANGIAL donne une voix numérique à <b>nos langues d'Afrique</b>. Le <b>ngiemboon</b> est la langue la plus avancée (clavier dédié et corpus le plus riche), mais la plateforme accueille déjà plusieurs langues, et chacun peut y ajouter la sienne. Où que tu sois, un simple <b>téléphone ou ordinateur</b> suffit pour y contribuer</p>
       </div>
     </section>
 
