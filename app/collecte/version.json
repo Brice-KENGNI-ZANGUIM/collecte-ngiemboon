@@ -1,6 +1,9 @@
 {
-  "version": "v342",
+  "version": "v343",
   "changelog": {
+    "v343": [
+      "Cartes de l'accueil et bas de page réécrits dans l'esprit héritage / transmission / apprentissage (« Laisse ta voix en héritage », « Transmets ta langue », « Apprends des autres »…)"
+    ],
     "v342": [
       "Page « À propos » et titres des pages réécrits autour des 3 piliers : héritage, transmission, apprentissage",
       "Les 3 raisons de participer sont désormais : Héritage (un cadeau aux générations futures), Transmission (ceux qui savent transmettent), Apprentissage (chacun apprend des autres)"
