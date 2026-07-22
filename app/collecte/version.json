@@ -1,6 +1,10 @@
 {
-  "version": "v339",
+  "version": "v340",
   "changelog": {
+    "v340": [
+      "Chaque langue a un sigle court (≤ 3 lettres, ex. NGE, SWA, BAS) affiché sur sa carte ; toute langue nouvellement ajoutée en reçoit un automatiquement",
+      "Bouton « Laisser un mot sur LANGIAL » : fond plein bien visible (correction du fond transparent qui le rendait trop discret)"
+    ],
     "v339": [
       "Le bouton pour ajouter sa langue (page Langues) est désormais bien plus visible, avec un halo lumineux, pour qu'on le remarque tout de suite si sa langue n'est pas dans la liste",
       "Renommage plus parlant : « Ajouter ma langue » au lieu de « Déclarer ma langue » (partout dans l'app)",

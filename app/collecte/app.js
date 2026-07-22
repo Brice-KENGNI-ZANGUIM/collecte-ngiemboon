@@ -55,7 +55,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v339";
+const APP_VERSION = "v340";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1856,7 +1856,7 @@ function renderLangChoice() {
   const cur = getCurrentLangId();
   // Les langues fusionnées dans une autre ne s'affichent plus dans la grille (Phase C).
   const cards = visibleLanguages(knownLanguages()).map((l) => {
-    const emb = escapeHtml((l.nom || "?").trim().slice(0, 1).toUpperCase() || "?");
+    const emb = escapeHtml(String(l.id || "?").toUpperCase().slice(0, 3) || "?");   // SIGLE (≤3 lettres)
     const kb = (usesDedicatedKeyboard(l.id) ? t("lang.dedicated") : t("lang.standard"))
       + (l.provisoire ? t("lang.provisoire") : "");
     // Chaîne de recherche normalisée (nom + autonyme + région), sans accents/casse.
@@ -2060,14 +2060,48 @@ function chooseLang(id) {
   location.reload();
 }
 /** Slug d'id de langue à partir du nom, unique dans le registre. */
+// ── SIGLE DE LANGUE (≤3 lettres) — critères validés Brice 2026-07-23 ─────────
+// 1) code standard ISO 639 si connu (table curée : 639-1 « fr/en », sinon 639-3 « nge/bas… ») ;
+// 2) sinon, 3 premières lettres du nom (accents retirés) ; 3) collision → consonnes, puis
+// variantes de lettres, puis chiffre ; toujours ≤3 ; 4) figé à la déclaration (stocké dans l'id) ;
+// 5) affiché en MAJUSCULES comme pastille. Le nom complet dérive de l'id via _langNameById/le registre.
+const LANG_CODE_TABLE = {
+  francais: "fr", french: "fr", anglais: "en", english: "en", espagnol: "es", spanish: "es",
+  portugais: "pt", portuguese: "pt", arabe: "ar", arabic: "ar",
+  ngiemboon: "nge", nguiemboon: "nge", swahili: "swa", kiswahili: "swa",
+  bassa: "bas", basaa: "bas", douala: "dua", duala: "dua",
+  fulfulde: "ful", "fulfulde peul": "ful", peul: "ful", fula: "ful", fulani: "ful",
+  haoussa: "hau", hausa: "hau", ewondo: "ewo", bamoun: "bax", yemba: "ybb",
+  ghomala: "bbj", medumba: "byv", fefe: "fmp", feefee: "fmp", nufi: "fmp",
+  lingala: "lin", wolof: "wol", yoruba: "yor", igbo: "ibo", zulu: "zul", amharique: "amh", amharic: "amh",
+};
+function _langNorm(nom) {
+  return String(nom || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z]/g, "");
+}
+function langCode(nom) {
+  const key = String(nom || "").normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .toLowerCase().replace(/[^a-z ]/g, "").replace(/\s+/g, " ").trim();
+  if (LANG_CODE_TABLE[key]) return LANG_CODE_TABLE[key];
+  return _langNorm(nom).slice(0, 3) || "lng";
+}
+/** Sigle ≤3 lettres UNIQUE pour une langue (ISO si connu, sinon dérivé du nom + résolution de
+    collision, toujours ≤3). Figé à la déclaration. */
 function slugLang(nom) {
-  let s = (nom || "").normalize("NFD").replace(/[̀-ͯ]/g, "")
-    .toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-  if (!s) s = "langue";
-  const ids = new Set(knownLanguages().map((l) => l.id));
-  let id = s, n = 2;
-  while (ids.has(id)) id = s + "-" + (n++);
-  return id;
+  const ids = new Set(knownLanguages().map((l) => String(l.id)));
+  const base = langCode(nom);
+  if (!ids.has(base)) return base;
+  const L = _langNorm(nom), noV = L.replace(/[aeiouy]/g, "");
+  const cands = [
+    noV.slice(0, 3),                       // consonnes (Bassa → bss)
+    (L[0] || "") + noV.slice(0, 2),        // 1re lettre + 2 consonnes
+    L.slice(0, 2) + (L[3] || ""),          // lettres 1,2,4
+    (L[0] || "") + L.slice(2, 4),          // lettres 1,3,4
+  ];
+  for (const c of cands) { if (c && c.length >= 2 && c.length <= 3 && !ids.has(c)) return c; }
+  const b2 = (base.slice(0, 2) || L.slice(0, 2) || "l");
+  for (let i = 2; i <= 9; i++) { const c = b2 + i; if (!ids.has(c)) return c; }
+  for (let cc = 97; cc <= 122; cc++) { const c = b2 + String.fromCharCode(cc); if (!ids.has(c)) return c; }
+  return base;   // improbable
 }
 /** POST best-effort de la déclaration au backend (visible par tous). Silencieux si
     le backend n'est pas joignable : la langue reste dispo en local en attendant. */
@@ -3177,10 +3211,8 @@ function _onReqLangueChange() {
   box.hidden = sel.value !== "__new__";
   if (!box.hidden) { const n = $("#req-nl-nom"); if (n) n.focus(); }
 }
-function _slugLang(nom) {
-  const s = String(nom || "").normalize("NFD").replace(/[^a-zA-Z]+/g, "").toLowerCase();
-  return (s.slice(0, 3) || "lng") + (s.length > 3 ? s.length : "");
-}
+// Même règle que slugLang (sigle ISO/≤3 lettres, unique) pour la déclaration légère (porte Demander).
+function _slugLang(nom) { return slugLang(nom); }
 /** Déclaration LÉGÈRE d'une langue depuis la porte Demander : enregistre la langue
     (nom, région, pays) SANS amorce, l'ajoute au registre local, et la sélectionne. */
 async function _declareNewLangForRequest() {
