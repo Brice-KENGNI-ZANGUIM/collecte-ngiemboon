@@ -21,7 +21,7 @@ function sourceEn(fr) { return _sourceEnFn ? _sourceEnFn(fr) : null; }
 import { DB } from "./db.js";
 import { reconcile, checkServer, serverStats, modeGoogle, browseLibrary,
   fetchSuggestions, postSuggestion, postVote, postBug, fetchBugs,
-  fetchLanguages, declareLanguage, declareUser, fetchDriveAudio,
+  fetchLanguages, declareLanguage, declareUser, fetchMyContributions, fetchDriveAudio,
   proposeMerge, respondMerge, mergesForDevice, fetchNotifications,
   fetchRequests, fetchRequestsToTranslate, postRequest, postAnswer, translateWord,
   submitTestimonial, fetchTestimonials, updateContribution } from "./sync.js";
@@ -55,7 +55,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v336";
+const APP_VERSION = "v337";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1594,7 +1594,40 @@ function openProfile(edit) {
   $("#btn-profile-continue").textContent = edit ? t("profile.save") : t("profile.continue");
   showView("profile");
   updateProfileGate();
-  renderMyContributions();   // Couche 3 : liste de ses contributions envoyées (correction de langue)
+  rehydrateMyContributions();   // #114 : restitue l'historique depuis le serveur (par personne) + Couche 3
+}
+
+/** #114 — Ré-hydrate « mes contributions » depuis le SERVEUR (par PERSONNE) : sur un nouvel appareil,
+    un utilisateur reconnu (même e-mail/nom, via la cascade backend) RETROUVE tout son historique.
+    Importe dans la base locale les contributions confirmées absentes (dédup par server_id), puis
+    réaffiche. Best-effort, silencieux hors ligne (on garde alors l'affichage purement local). */
+async function rehydrateMyContributions() {
+  const c = loadContributeur();
+  if (!c || !c.consentement) { renderMyContributions(); return; }
+  let owner_hash = "", device_pubkey = "";
+  try { owner_hash = await ownerHash(); } catch (e) { /* ok */ }
+  try { device_pubkey = await ensureDeviceKey(); } catch (e) { /* ok */ }
+  let res = null;
+  try { res = await fetchMyContributions({ device_id: deviceId(), owner_hash, device_pubkey, contributeur: c }); }
+  catch (e) { res = null; }
+  if (res && Array.isArray(res.contributions) && res.contributions.length) {
+    let known = new Set();
+    try { known = new Set((await DB.all()).map((r) => String(r.server_id || ""))); } catch (e) { /* ok */ }
+    for (const s of res.contributions) {
+      const sid = String(s.id_contribution || s.server_id || "").trim();
+      if (!sid || known.has(sid)) continue;   // déjà en local → on ne duplique pas
+      try {
+        await DB.put({
+          client_id: "srv-" + sid, server_id: sid,
+          source_text: s.source_text || "", target_text: s.target_text || "",
+          langue: s.langue || "", direction: s.direction || "",
+          audio_url: s.audio_url || "", domaine: s.domaine || "", note: s.note || "",
+          created_at: s.cree_le || s.recu_le || s.date || "", _rehydrated: true,
+        });
+      } catch (e) { /* quota/erreur : sans gravité */ }
+    }
+  }
+  renderMyContributions();
 }
 
 /** COUCHE 3 — contributions ENVOYÉES par cet appareil (base locale ; server_id présent = confirmée),

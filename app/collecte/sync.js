@@ -164,6 +164,16 @@ export function declareUser(rec) {
   return postOp(Object.assign({ op: "declare_user" }, rec));
 }
 
+/** #114 — RESTITUTION PAR PERSONNE : le serveur renvoie TOUTES les contributions de la personne
+    (résolue par ses signaux : device/pubkey/owner_hash + e-mail/tél/nom), quel que soit l'appareil
+    d'origine. Permet de ré-hydrater « mes contributions » sur un nouvel appareil (rien perdu). */
+export async function fetchMyContributions(rec) {
+  try {
+    const r = await postOp(Object.assign({ op: "my_contributions" }, rec || {}));
+    return (r && Array.isArray(r.contributions)) ? r : null;
+  } catch (e) { return null; }
+}
+
 /** Propose la fusion (jumelage) de deux langues jugées identiques. La fusion n'est
     appliquée qu'après confirmation des déclarants concernés (gouvernance Phase C). */
 export function proposeMerge(m) {
