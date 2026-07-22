@@ -1,6 +1,9 @@
 {
-  "version": "v343",
+  "version": "v344",
   "changelog": {
+    "v344": [
+      "Popups d'invitation et page Explorer réécrits dans l'esprit transmission / héritage / apprentissage (« transmets-le dans la tienne », « laisse-le en héritage », « apprends de la communauté »)"
+    ],
     "v343": [
       "Cartes de l'accueil et bas de page réécrits dans l'esprit héritage / transmission / apprentissage (« Laisse ta voix en héritage », « Transmets ta langue », « Apprends des autres »…)"
     ],
