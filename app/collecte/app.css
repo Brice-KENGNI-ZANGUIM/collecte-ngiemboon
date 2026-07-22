@@ -1495,6 +1495,14 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 .contrib summary { cursor: pointer; font-weight: 600; }
 .hint-inline { color: var(--muted); font-weight: 400; font-size: .8rem; }
 .contrib-why { color: var(--muted); font-size: .8rem; line-height: 1.5; margin: 10px 0 2px; }
+/* #3 (mode clair) : ce texte est posé DIRECTEMENT sur la trame Ndop clairci (hors cadre).
+   En clair on l'assombrit vers --text, on l'épaissit et on ajoute un léger halo blanc pour le
+   détacher du motif → nettement plus lisible, sans toucher au décor (voulu bien visible). */
+:root[data-theme="light"] .contrib-why { color: color-mix(in srgb, var(--text) 82%, var(--muted));
+  font-weight: 500; text-shadow: 0 1px 0 rgba(255, 255, 255, .55); }
+/* Idem pour les textes de statut/vide d'Explorer, eux aussi posés sur le fond. */
+:root[data-theme="light"] .explore-status,
+:root[data-theme="light"] .explore-empty { color: color-mix(in srgb, var(--text) 70%, var(--muted)); }
 .req { color: var(--red); font-weight: 700; }
 /* Bouton d'amorce sous le seuil : « M'arrêter pour l'instant » (le travail est gardé, langue
    provisoire à compléter). Aspect secondaire NEUTRE (pas destructif). */

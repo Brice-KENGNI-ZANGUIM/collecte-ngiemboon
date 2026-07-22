@@ -55,7 +55,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v334";
+const APP_VERSION = "v335";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -4493,7 +4493,7 @@ function updateCreditUI() {
     const mode = on ? ($("#c-credit-format").value || "prenom") : "none";
     const disp = computeCredit(mode, $("#c-prenom").value, $("#c-nom").value);
     prev.textContent = on
-      ? (disp ? `Apparaîtra comme : « ${disp} »` : "Renseigne ton nom/prénom pour l'aperçu")
+      ? (disp ? ti("credit.preview.as", { name: disp }) : t("credit.preview.hint"))
       : "";
   }
 }

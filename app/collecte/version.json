@@ -1,6 +1,11 @@
 {
-  "version": "v334",
+  "version": "v335",
   "changelog": {
+    "v335": [
+      "Mode clair : les textes d'introduction posés sur le fond (accueil, profil, Explorer, etc.) sont plus foncés et nettement plus lisibles",
+      "Signalement de bug : beaucoup plus de choix pour la « zone concernée » (Traduire, Transcrire, Explorer, Demander, Notifications, Profil, Langues, Partage, Design, Vitesse…)",
+      "Traduction : l'aperçu du nom dans le profil s'affiche en anglais quand l'interface est en anglais (« Will appear as… »)"
+    ],
     "v334": [
       "Nouvelles icônes soignées pour la recherche, l'enregistrement audio, le découpage, l'export et le mode présentation (à la place des symboles génériques)"
     ],

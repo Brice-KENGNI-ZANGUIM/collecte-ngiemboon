@@ -12,6 +12,36 @@
 // Auteur : Brice Kengni Zanguim
 export const BUGS = [
   {
+    id: "BUG-U-mrvvamtx-5393", titre: "Textes peu lisibles en mode clair (hors cadre, sur le fond)",
+    titre_en: "Hard-to-read texts in light mode (outside frames, over the background)",
+    description: "En mode clair, certains textes placés directement sur l'arrière-plan (hors cadre), comme les phrases d'introduction des pages, manquaient de contraste et étaient difficiles à lire.",
+    description_en: "In light mode, some texts placed directly over the background (outside frames), such as page intro lines, lacked contrast and were hard to read.",
+    statut: "resolu", severite: "majeur", zone: "Interface", zone_en: "Interface",
+    detecte_le: "2026-07-22", resolu_le: "2026-07-22", version: "v335",
+    correctif: "En mode clair, ces textes sur fond sont désormais assombris, légèrement épaissis et détachés du motif par un léger halo : le contraste est nettement meilleur, sans réduire la visibilité du décor.",
+    correctif_en: "In light mode, these on-background texts are now darker, slightly bolder and lifted off the pattern by a subtle halo: much better contrast, without reducing the decorative pattern's visibility.",
+  },
+  {
+    id: "BUG-U-mrvvdqx9-517", titre: "Trop peu de choix dans « Zone concernée » du signalement",
+    titre_en: "Too few choices in the bug report's “Area concerned”",
+    description: "Le menu « Zone concernée » du formulaire de signalement ne proposait que quelques catégories, insuffisantes pour bien situer un problème.",
+    description_en: "The “Area concerned” menu in the bug report form offered only a few categories, too few to properly locate an issue.",
+    statut: "resolu", severite: "majeur", zone: "Interface", zone_en: "Interface",
+    detecte_le: "2026-07-22", resolu_le: "2026-07-22", version: "v335",
+    correctif: "La liste des zones a été enrichie (Traduire, Transcrire, Explorer, Demander, Notifications, Profil, Langues, Partage, Design, Traduction de l'app, Vitesse…) pour situer précisément chaque signalement.",
+    correctif_en: "The list of areas was expanded (Translate, Transcribe, Explore, Request, Notifications, Profile, Languages, Sharing, Design, App translation, Speed…) to pinpoint each report.",
+  },
+  {
+    id: "BUG-U-mrw5ad2f-6561", titre: "Texte resté en français en mode anglais (« Apparaîtra comme »)",
+    titre_en: "Text stayed in French in English mode (“Apparaîtra comme”)",
+    description: "Sur la page Profil, dans la section « Nom affiché dans la bibliothèque », l'aperçu du nom affichait « Apparaîtra comme : » en français même quand l'interface était en anglais.",
+    description_en: "On the Profile page, in the “Name shown in the library” section, the name preview showed “Apparaîtra comme:” in French even when the interface was in English.",
+    statut: "resolu", severite: "critique", zone: "Interface", zone_en: "Interface",
+    detecte_le: "2026-07-22", resolu_le: "2026-07-22", version: "v335",
+    correctif: "L'aperçu du nom passe désormais par le système de traduction : « Apparaîtra comme… » en français, « Will appear as… » en anglais, selon la langue choisie.",
+    correctif_en: "The name preview now goes through the translation system: “Apparaîtra comme…” in French, “Will appear as…” in English, depending on the chosen language.",
+  },
+  {
     id: "BUG-U-mrmae78s-7670", titre: "Deux propositions vides regroupées, sans mot ni bouton, dans Explorer",
     titre_en: "Two empty entries grouped together, with no word or button, in Explorer",
     description: "Dans Explorer, deux propositions apparaissaient regroupées en une seule sans mot indiqué, et en les ouvrant on voyait deux cadres vides, sans bouton pour écouter l'audio ni afficher la traduction.",
@@ -130,15 +160,5 @@ export const BUGS = [
     detecte_le: "2026-07-12", resolu_le: "2026-07-12", version: "v54",
     correctif: "Remise à zéro du travail en cours (texte, note, domaine, audio) à chaque changement de mot ou d'espace.",
     correctif_en: "Resets the work in progress (text, note, domain, audio) on every word or space change.",
-  },
-  {
-    id: "BUG-U-mrmae78s-7670", titre: "Entrée « fantôme » dans Explorer (sans mot, ni audio, ni traduction)",
-    titre_en: "“Ghost” entry in Explore (no word, no audio, no translation)",
-    description: "Dans Explorer, deux propositions apparaissaient regroupées sans que le mot à transcrire soit indiqué ; en les ouvrant, deux cadres s'affichaient sans bouton d'écoute audio ni traduction. En cause : des contributions vides (ni texte source, ni traduction, ni audio) issues d'un envoi malformé, regroupées sous une clé vide.",
-    description_en: "In Explore, two suggestions appeared grouped without the word to transcribe shown; opening them, two frames displayed with no audio play button or translation. Cause: empty contributions (no source text, no translation, no audio) from a malformed send, grouped under an empty key.",
-    statut: "resolu", severite: "mineur", zone: "Explorer", zone_en: "Explore",
-    detecte_le: "2026-07-15", resolu_le: "2026-07-15", version: "v113",
-    correctif: "Explorer ignore désormais toute entrée sans aucun contenu (ni mot, ni traduction, ni audio jouable), et une contribution vide est refusée à l'enregistrement.",
-    correctif_en: "Explore now ignores any entry with no content (no word, no translation, no playable audio), and an empty contribution is refused at save time.",
   },
 ];
