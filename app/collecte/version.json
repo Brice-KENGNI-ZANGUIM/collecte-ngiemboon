@@ -1,6 +1,9 @@
 {
-  "version": "v335",
+  "version": "v336",
   "changelog": {
+    "v336": [
+      "Popups : quand tu ouvres une invitation à traduire ou une demande de la communauté, le mot à traduire ou à prononcer est désormais déjà rempli dans la case ; tu n'as plus qu'à donner ta traduction ou ta voix"
+    ],
     "v335": [
       "Mode clair : les textes d'introduction posés sur le fond (accueil, profil, Explorer, etc.) sont plus foncés et nettement plus lisibles",
       "Signalement de bug : beaucoup plus de choix pour la « zone concernée » (Traduire, Transcrire, Explorer, Demander, Notifications, Profil, Langues, Partage, Design, Vitesse…)",

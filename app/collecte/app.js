@@ -55,7 +55,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v335";
+const APP_VERSION = "v336";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -2566,12 +2566,14 @@ function loadRequestIntoSource(item) {
     langue de l'utilisateur. Redirige vers profil (si absent), écran des langues (si aucune choisie),
     sinon ouvre Traduire en mode libre pré-rempli. Nouveau canal : regarder ce qu'ont fait les
     autres, puis le refaire dans sa langue. */
-function startTranslateWord(frWord) {
+async function startTranslateWord(frWord) {
   const w = shareClean(frWord, 200);
   if (!w) return;
   if (!requireProfile(t("req.profile.translate"))) return;   // pas de profil → l'ouvre d'abord
   if (!hasChosenLang()) { openLangChoice(); return; }         // pas de langue → écran des langues
-  enterWork("translate", "libre");                            // « libre » : on va imposer le mot nous-mêmes
+  await enterWork("translate", "libre");                      // « libre » : on va imposer le mot nous-mêmes.
+  // IMPORTANT : on ATTEND enterWork (async : await ensurePropositions puis applyMode qui VIDE la source
+  // en mode libre). Sans await, on posait le mot puis applyMode l'effaçait → case vide (bug popup).
   if (direction !== "fr2nge") { direction = "fr2nge"; applyDirection(); }
   const s = $("#source");
   if (s) { delete s.dataset.canon; s.value = w; s.readOnly = false; s.dispatchEvent(new Event("input", { bubbles: true })); }
@@ -3031,10 +3033,10 @@ function startRequestAnswer(d) {
   _openWorkForRequest(item);
 }
 const PENDING_REQ_KEY = "langa-pending-req";
-function _openWorkForRequest(item) {
+async function _openWorkForRequest(item) {
   const act = (item.kind === "transcription" || item.kind === "les_deux") ? "transcribe" : "translate";
-  enterWork(act, "libre");   // « libre » : pas de proposition auto (le mot est imposé par la demande)
-  loadRequestIntoSource(item);
+  await enterWork(act, "libre");   // ATTENDRE enterWork (async) : sa fin appelle applyMode qui VIDE la source ;
+  loadRequestIntoSource(item);     // on charge le mot APRÈS, sinon il est effacé (bug popup notif « demande »).
 }
 /** Au démarrage : si une réponse à une demande était en attente d'un changement de langue,
     on la reprend automatiquement une fois l'app rechargée dans la bonne langue. */
