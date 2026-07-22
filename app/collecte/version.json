@@ -1,6 +1,10 @@
 {
-  "version": "v341",
+  "version": "v342",
   "changelog": {
+    "v342": [
+      "Page « À propos » et titres des pages réécrits autour des 3 piliers : héritage, transmission, apprentissage",
+      "Les 3 raisons de participer sont désormais : Héritage (un cadeau aux générations futures), Transmission (ceux qui savent transmettent), Apprentissage (chacun apprend des autres)"
+    ],
     "v341": [
       "Nouveau slogan : « Nos langues, un héritage à transmettre » (sur l'accueil)",
       "Toute la communication (accroche d'accueil, textes de partage) est réorientée autour de 3 idées fortes : l'héritage laissé aux générations futures, la transmission par ceux qui savent, et l'apprentissage par tous"
