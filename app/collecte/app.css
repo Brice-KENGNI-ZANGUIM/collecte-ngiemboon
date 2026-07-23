@@ -585,6 +585,9 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   background: color-mix(in srgb, var(--cyan) 12%, var(--panel)); }
 .mc-play:hover { background: var(--cyan); color: var(--bg); box-shadow: 0 0 16px -5px var(--cyan); }
 .mc-play:active { transform: translateY(1px); }
+.mc-play.is-loading { opacity: .85; cursor: progress; animation: incListenPulse 1s ease-in-out infinite; }
+.mc-play.is-playing { background: var(--cyan); color: var(--bg); box-shadow: 0 0 16px -5px var(--cyan); }
+@media (prefers-reduced-motion: reduce) { .mc-play.is-loading { animation: none; } }
 .mc-item { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
   padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--panel); }
 .mc-word { font-weight: 600; min-width: 0; }
@@ -1260,8 +1263,28 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
   filter: drop-shadow(0 4px 10px rgba(0,0,0,.4)); }
 /* Bandeau d'accueil (illustration fournie welcome-first) en tête du popup « profil requis ». */
 .pgate-hero { display: block; width: 100%; height: 158px; object-fit: cover; object-position: 50% 42%; }
-.tr-guide-card h2 { margin: 2px 0 4px; font-size: 1.32rem; color: var(--text); }
-.tr-guide-lead { margin: 0; color: var(--muted); font-size: .92rem; }
+.tr-guide-card h2 { margin: 2px 0 4px; font-size: 1.16rem; color: var(--text); }
+.tr-guide-lead { margin: 0; color: var(--muted); font-size: .9rem; }
+/* MOBILE : réduction des polices/paddings des popups & modales pour qu'elles n'envahissent
+   plus l'écran et ne débordent plus (choix Brice 2026-07-23). Conservateur, mobile uniquement. */
+@media (max-width: 560px) {
+  .tr-guide-card h2 { font-size: 1.02rem; }
+  .tr-guide-lead { font-size: .82rem; }
+  .tr-guide-head { padding: 18px 16px 13px; }
+  .tr-guide-rules { padding: 14px 14px 2px; gap: 9px; }
+  .tr-guide-rule { padding: 10px 12px; }
+  .tr-guide-rtext b { font-size: .92rem; }
+  .tr-guide-rtext span { font-size: .8rem; }
+  .tr-guide-ex-txt { font-size: .95rem; }
+  .tr-guide-ex-label { font-size: .66rem; }
+  .tour-title { font-size: .92rem; }
+  .tour-text { font-size: .76rem; }
+  .incite-msg { font-size: .86rem; }
+  .incite-actions .btn--primary { font-size: .84rem; padding: 8px 14px; }
+  .update-title { font-size: .92rem; }
+  .update-sub, .update-notes { font-size: .76rem; }
+  .field--consent span { font-size: .84rem; }
+}
 /* Règles en cartes, avec icône + mots-clés surlignés */
 .tr-guide-rules { padding: 18px 20px 2px; display: flex; flex-direction: column; gap: 11px; }
 .tr-guide-rule { display: flex; align-items: flex-start; gap: 13px; text-align: left; padding: 12px 14px; border-radius: 14px;

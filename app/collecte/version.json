@@ -1,6 +1,11 @@
 {
-  "version": "v354",
+  "version": "v355",
   "changelog": {
+    "v355": [
+      "Correction de langue possible depuis n'importe quel appareil enregistré (autorisation renforcée)",
+      "Le bouton Écouter d'une contribution indique « Chargement… » puis « Lecture… », comme dans les popups",
+      "Popups et fenêtres : police réduite sur mobile pour ne plus envahir l'écran"
+    ],
     "v354": [
       "Profil : le bouton Corriger la langue fonctionne désormais depuis n'importe quel appareil (fini le \"correction impossible\")",
       "Profil : chaque contribution indique si c'est une prononciation et/ou une traduction, avec un bouton Écouter pour la voix"

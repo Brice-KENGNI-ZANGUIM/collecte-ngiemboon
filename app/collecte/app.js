@@ -55,7 +55,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v354";
+const APP_VERSION = "v355";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1694,6 +1694,34 @@ function _mcPaint(q) {
     + (query && !matches.length ? `<div class="mc-empty">${escapeHtml(t("mc.noresult"))}</div>` : "")
     + (matches.length > CAP ? `<div class="mc-more">${escapeHtml(ti("mc.more", { n: CAP, total: matches.length }))}</div>` : "");
   refreshEnhancedSelects();   // habille les <select> comme le reste
+}
+let _mcAudioEl = null, _mcPlayingBtn = null;
+/** Écoute d'une contribution depuis la liste du profil, AVEC le même dynamisme que les popups :
+    « Chargement… » pendant le téléchargement (l'audio Drive a de la latence), puis « Lecture… »,
+    et restauration du libellé à la fin. Un seul lecteur partagé ; on restaure le bouton précédent. */
+async function _mcPlay(btn, url) {
+  if (!btn || !url) return;
+  if (!_mcAudioEl) _mcAudioEl = new Audio();
+  const au = _mcAudioEl;
+  const dflt = "▶ " + t("mc.listen");
+  if (_mcPlayingBtn && _mcPlayingBtn !== btn) {
+    const p = _mcPlayingBtn; p.disabled = false; p.classList.remove("is-loading", "is-playing");
+    p.textContent = p.dataset.label || dflt;
+  }
+  if (!btn.dataset.label) btn.dataset.label = btn.textContent || dflt;
+  const restore = () => { btn.disabled = false; btn.classList.remove("is-loading", "is-playing"); btn.textContent = btn.dataset.label; if (_mcPlayingBtn === btn) _mcPlayingBtn = null; };
+  const setStatus = (m) => { if (m) btn.textContent = m; };
+  try { au.pause(); } catch (e) { /* ok */ }
+  _mcPlayingBtn = btn;
+  btn.disabled = true; btn.classList.add("is-loading"); btn.textContent = t("audio.loading");
+  const did = driveFileId(url);
+  try { if (did) { await loadDriveAudioInto(au, did, setStatus); } else { au.src = url; au.load(); } }
+  catch (e) { /* on tente quand même la lecture */ }
+  try {
+    await au.play();
+    btn.disabled = false; btn.classList.remove("is-loading"); btn.classList.add("is-playing"); btn.textContent = t("audio.playing");
+  } catch (e) { restore(); return; }
+  au.onended = restore; au.onpause = restore; au.onerror = restore;
 }
 async function _mcSave(sid, newLid, itemEl) {
   const lid = canonLangId(newLid);
@@ -6087,7 +6115,7 @@ function initEvents() {
   const mcList = $("#mc-list");
   if (mcList) mcList.addEventListener("click", (e) => {
     const play = e.target.closest(".mc-play");
-    if (play) { e.preventDefault(); const u = play.dataset.audio; if (u) keepScroll(() => _incPlayAudio(u)); return; }
+    if (play) { e.preventDefault(); const u = play.dataset.audio; if (u) keepScroll(() => _mcPlay(play, u)); return; }
     const b = e.target.closest(".mc-save"); if (!b) return;
     const item = b.closest(".mc-item"); if (!item) return;
     const sel = item.querySelector(".mc-lang-sel");
