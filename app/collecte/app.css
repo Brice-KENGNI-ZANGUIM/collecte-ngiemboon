@@ -1066,13 +1066,14 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
    proéminente, cliquable, toujours visible sur la vue de travail. */
 .work-lang {
   display: inline-flex; align-items: center; gap: 8px; margin: 10px 0 0;
-  padding: 7px 12px; border-radius: 999px; cursor: pointer;
-  border: 1.5px solid color-mix(in srgb, var(--cyan) 55%, var(--border));
-  background:
-    radial-gradient(120% 120% at 0% 0%, color-mix(in srgb, var(--cyan) 15%, transparent), transparent 62%),
-    color-mix(in srgb, var(--cyan) 8%, var(--card));
+  padding: 8px 14px; border-radius: 999px; cursor: pointer;
+  border: 1.5px solid var(--cyan);
+  /* Fond PLEIN (bien visible, pas transparent) : bouton central pour confirmer la bonne langue. */
+  background: color-mix(in srgb, var(--cyan) 22%, var(--panel));
   color: var(--text); font-size: .9rem; line-height: 1;
-  box-shadow: inset 0 1px 0 var(--card-sheen), 0 0 20px -10px var(--cyan);
+  box-shadow: inset 0 1px 0 var(--card-sheen), 0 6px 20px -10px var(--cyan);
+  --spot-a: rgba(34, 211, 238, .5); --spot-b: rgba(34, 211, 238, .8);
+  animation: ngCtaSpotlight 2.6s ease-in-out infinite;
   transition: border-color .2s, box-shadow .2s, background .2s;
 }
 .work-lang:hover { border-color: var(--cyan); box-shadow: inset 0 1px 0 var(--card-sheen), 0 0 24px -6px var(--cyan); }
@@ -1084,10 +1085,9 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 /* Tant que la langue n'a pas été confirmée cette session : teinte d'alerte ambrée + halo qui
    respire pour attirer l'œil (respecte prefers-reduced-motion). */
 .work-lang.is-unconfirmed {
-  border-color: color-mix(in srgb, var(--gold) 65%, var(--border));
-  background:
-    radial-gradient(120% 120% at 0% 0%, color-mix(in srgb, var(--gold) 18%, transparent), transparent 62%),
-    color-mix(in srgb, var(--gold) 9%, var(--card));
+  border-color: var(--gold);
+  /* Fond PLEIN doré (pas transparent) : langue non confirmée = à confirmer, bien visible. */
+  background: color-mix(in srgb, var(--gold) 24%, var(--panel));
   animation: worklang-breathe 2.4s ease-in-out infinite;
 }
 .work-lang.is-unconfirmed .work-lang-name { color: color-mix(in srgb, var(--gold) 78%, var(--text)); }
@@ -3257,8 +3257,15 @@ textarea, [contenteditable="true"] { cursor: text; }
 }
 #testi-open:hover { background: color-mix(in srgb, var(--green) 88%, #ffffff); color: #04121a;
   border-color: var(--green); transform: translateY(-1px); }
+/* CTA d'ACTION centraux de chaque page (Envoyer, Prochain mot, Publier ma demande, Rechercher…) :
+   halo FORT (spotlight) pour qu'ils sautent aux yeux, au lieu du glow discret « lite ». */
+.btn--primary, .btn--send:not(:disabled), .btn--next, .lang-search-btn {
+  --spot-a: rgba(34, 211, 238, .5); --spot-b: rgba(34, 211, 238, .82);
+  animation: ngCtaSpotlight 2.5s ease-in-out infinite !important;
+}
 @media (prefers-reduced-motion: reduce) {
-  .lang-declare-cta, #testi-open { animation: none !important; }
+  .lang-declare-cta, #testi-open, .work-lang,
+  .btn--primary, .btn--send, .btn--next, .lang-search-btn { animation: none !important; }
 }
 
 /* ============================================================================

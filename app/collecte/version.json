@@ -1,6 +1,10 @@
 {
-  "version": "v346",
+  "version": "v347",
   "changelog": {
+    "v347": [
+      "Le bouton « Langue de ta contribution » a un fond plein bien visible (fini le fond transparent)",
+      "Les boutons d'action centraux de chaque page (Envoyer, Prochain mot, Publier, Rechercher…) sont mis en lumière par un halo qui attire l'œil"
+    ],
     "v346": [
       "Notifications : le compteur de non-lues est enfin correct. Ouvrir la page ne les marque plus toutes comme lues ; une notification passe en « lue » seulement quand tu la lis (ou via « Tout marquer comme lu »). Fini le compteur qui gonflait avec le temps.",
       "Les notifications non lues restent bien en évidence tant que tu ne les as pas lues"
