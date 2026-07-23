@@ -1,6 +1,10 @@
 {
-  "version": "v345",
+  "version": "v346",
   "changelog": {
+    "v346": [
+      "Notifications : le compteur de non-lues est enfin correct. Ouvrir la page ne les marque plus toutes comme lues ; une notification passe en « lue » seulement quand tu la lis (ou via « Tout marquer comme lu »). Fini le compteur qui gonflait avec le temps.",
+      "Les notifications non lues restent bien en évidence tant que tu ne les as pas lues"
+    ],
     "v345": [
       "Le flyer se télécharge désormais dans TA langue (français ou anglais) ET ton thème (clair ou sombre)",
       "Le mode présentation s'affiche dans ta langue et porte le slogan « Nos langues, un héritage à transmettre »"

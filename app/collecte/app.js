@@ -55,7 +55,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v345";
+const APP_VERSION = "v346";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -2951,6 +2951,26 @@ function creditDisplay() {
 function _notifSeenTs() { const v = parseInt(localStorage.getItem(NOTIF_SEEN_KEY) || "0", 10); return v > 0 ? v : 0; }
 function _setNotifSeenTs(ts) { try { localStorage.setItem(NOTIF_SEEN_KEY, String(ts || 0)); } catch (e) { /* ok */ } }
 
+// ── LECTURE PAR NOTIFICATION (correctif) ────────────────────────────────────
+// Le compteur = nombre de NON LUES, où « lue » est un état PAR notification (pas un simple
+// horodatage). Ouvrir la page ne marque plus tout lu : une notif passe en clair (lue) quand on
+// LA lit (clic) ou via « Tout marquer comme lu ». Ensemble d'ids lus persisté (borné à 1000).
+const NOTIF_READ_KEY = "langa-notif-read";
+let _notifReadCache = null;
+function _notifKey(n) { return String((n && (n.id || (String(n.type || "") + ":" + (n.ts || 0)))) || ""); }
+function _notifReadSet() {
+  if (!_notifReadCache) { try { _notifReadCache = new Set(JSON.parse(localStorage.getItem(NOTIF_READ_KEY) || "[]")); } catch (e) { _notifReadCache = new Set(); } }
+  return _notifReadCache;
+}
+function _saveNotifRead(set) {
+  let arr = [...set]; if (arr.length > 1000) arr = arr.slice(-1000);
+  _notifReadCache = new Set(arr);
+  try { localStorage.setItem(NOTIF_READ_KEY, JSON.stringify(arr)); } catch (e) { /* quota */ }
+}
+function _isNotifRead(n) { return _notifReadSet().has(_notifKey(n)); }
+function _markNotifRead(n) { const s = _notifReadSet(); const k = _notifKey(n); if (k && !s.has(k)) { s.add(k); _saveNotifRead(s); } }
+function notifUnreadCount() { return _notifs.filter((n) => !_isNotifRead(n)).length; }
+
 /** Récupère les notifications + met à jour la pastille (silencieux, à l'ouverture). */
 async function refreshNotifs() {
   if (!profileComplete()) return;
@@ -2958,9 +2978,7 @@ async function refreshNotifs() {
   try { data = await fetchNotifications(deviceId(), _notifSeenTs()); } catch (e) { data = null; }
   if (!data) return;
   _notifs = data.notifications || [];
-  const unread = (typeof data.unread === "number") ? data.unread
-    : _notifs.filter((n) => (n.ts || 0) > _notifSeenTs()).length;
-  updateNotifBadge(unread);
+  updateNotifBadge(notifUnreadCount());   // non lues = celles jamais lues (état par notification)
 }
 function updateNotifBadge(n) {
   const b = $("#notif-badge"); if (!b) return;
@@ -3040,15 +3058,15 @@ function notifActionable(n) {
   return ["request", "request_share", "request_answered", "vote", "suggestion", "milestone"].includes(n.type);
 }
 function notifItemHtml(n) {
-  const unread = (n.ts || 0) > _notifSeenTs();
+  const unread = !_isNotifRead(n);   // état de lecture PAR notification (plus un simple horodatage)
   const d = n.data || {};
   const act = notifActionable(n);
   const mot = (d.mot || d.texte || "").toString();
   const data = `data-ntype="${escapeHtml(n.type)}" data-reqid="${escapeHtml(d.req_id || "")}"` +
     ` data-mot="${escapeHtml(mot)}" data-moten="${escapeHtml(d.texte_en || d.mot_en || "")}"` +
-    ` data-lang="${escapeHtml(d.langue || "")}" data-kind="${escapeHtml(d.kind || "")}"`;
+    ` data-lang="${escapeHtml(d.langue || "")}" data-kind="${escapeHtml(d.kind || "")}" data-nkey="${escapeHtml(_notifKey(n))}"`;
   return `<li class="notif ${unread ? "notif--unread" : ""}${act ? " notif--action" : ""}"` +
-    (act ? ` role="button" tabindex="0" aria-label="${escapeHtml(notifText(n))}"` : "") + ` ${data}>` +
+    ` role="button" tabindex="0" aria-label="${escapeHtml(notifText(n))}"` + ` ${data}>` +
     `<span class="notif-ico" aria-hidden="true">${notifIcon(n.type)}</span>` +
     `<div class="notif-body"><p class="notif-msg">${notifText(n, true)}</p>` +
     `<span class="notif-time">${escapeHtml(relTime(n.ts))}</span></div>` +
@@ -3056,10 +3074,18 @@ function notifItemHtml(n) {
 }
 /** Clic sur une notification du CENTRE : reconstruit la donnée depuis le DOM et route. */
 function onNotifAction(li) {
-  routeNotif(li.dataset.ntype, {
-    req_id: li.dataset.reqid, mot: li.dataset.mot, texte: li.dataset.mot,
-    texte_en: li.dataset.moten, langue: li.dataset.lang, kind: li.dataset.kind,
-  });
+  // 1) marque CETTE notification comme lue (état par notif) → ligne en clair + pastille décrémentée.
+  const k = li.dataset.nkey;
+  if (k) { const s = _notifReadSet(); if (!s.has(k)) { s.add(k); _saveNotifRead(s); } }
+  li.classList.remove("notif--unread");
+  updateNotifBadge(notifUnreadCount());
+  // 2) si elle est actionnable, on emmène l'utilisateur là où agir.
+  if (li.classList.contains("notif--action")) {
+    routeNotif(li.dataset.ntype, {
+      req_id: li.dataset.reqid, mot: li.dataset.mot, texte: li.dataset.mot,
+      texte_en: li.dataset.moten, langue: li.dataset.lang, kind: li.dataset.kind,
+    });
+  }
 }
 /** ROUTEUR de notification — le cœur de l'intermédiation entre utilisateurs. Selon la
     nature de la notification, on emmène l'utilisateur EXACTEMENT là où agir :
@@ -3128,16 +3154,18 @@ async function renderNotifs() {
   if (data) { _notifs = data.notifications || []; paint(); }
 }
 /** Tout marquer comme lu = mémoriser l'horodatage courant (les suivantes seront « non lues »). */
+/** « Tout marquer comme lu » (bouton) : marque TOUTES les notifications chargées comme lues. */
 function markNotifsRead() {
-  const top = _notifs.length ? Math.max.apply(null, _notifs.map((n) => n.ts || 0)) : Date.now();
-  _setNotifSeenTs(Math.max(top, Date.now()));
+  const s = _notifReadSet();
+  _notifs.forEach((n) => { const k = _notifKey(n); if (k) s.add(k); });
+  _saveNotifRead(s);
   updateNotifBadge(0);
   const feed = $("#notif-feed"); if (feed) feed.querySelectorAll(".notif--unread").forEach((el) => el.classList.remove("notif--unread"));
 }
 function openNotifs() {
   if (_currentView !== "notifs") _notifsReturn = _currentView;
   showView("notifs");
-  renderNotifs().then(markNotifsRead);
+  renderNotifs();   // n'auto-marque PLUS tout lu : les non lues restent en évidence jusqu'à lecture réelle.
 }
 /** Popup à l'ouverture s'il y a une notif personnelle fraîche jamais encore montrée en popup. */
 async function maybeShowNotifPopup() {
@@ -3146,7 +3174,7 @@ async function maybeShowNotifPopup() {
   const lastPop = parseInt(localStorage.getItem(NOTIF_POPUP_KEY) || "0", 10) || 0;
   const POP_TYPES = { vote: 1, suggestion: 1, milestone: 1, request: 1, request_answered: 1 };
   const fresh = _notifs.filter((n) => POP_TYPES[n.type]
-    && (n.ts || 0) > seen && (n.ts || 0) > lastPop);
+    && (n.ts || 0) > seen && (n.ts || 0) > lastPop && !_isNotifRead(n));   // jamais un popup pour une notif déjà lue
   if (!fresh.length) return;
   const n = fresh[0];   // la plus récente (liste triée décroissante)
   enqueuePopup("notif", () => _renderNotifPopup(n));   // jamais deux popups à la fois : la file gère
@@ -5918,9 +5946,9 @@ function initEvents() {
   // ouvrir le mot concerné dans Explorer). Corrige BUG-U-mrtcyz9u-8933.
   const nFeed = $("#notif-feed");
   if (nFeed) {
-    nFeed.addEventListener("click", (e) => { const li = e.target.closest(".notif--action"); if (li) onNotifAction(li); });
+    nFeed.addEventListener("click", (e) => { const li = e.target.closest(".notif"); if (li) onNotifAction(li); });
     nFeed.addEventListener("keydown", (e) => {
-      const li = e.target.closest(".notif--action");
+      const li = e.target.closest(".notif");
       if (li && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); onNotifAction(li); }
     });
   }
