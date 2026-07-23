@@ -54,6 +54,7 @@ import { applyI18n, getUiLang, setUiLang, t, tToast } from "./i18n.js";
 // à l'ouverture de la vue légale / au clic d'export (voir openLegal / downloadDict).
 import { shareCardText, shareTitle, mountShareBar } from "./share.js";
 import { shareMessage, shareSubject } from "./sharecopy.js";
+import { pickThanksContent } from "./thanks.js";
 import { findSimilarLanguages } from "./langsim.js";
 import { findDuplicatePairs, pickCanonical, resolveCanonicalId, visibleLanguages } from "./langmerge.js";
 import { AMORCE, AMORCE_MIN } from "./amorce.js";
@@ -64,7 +65,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v363";
+const APP_VERSION = "v364";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -4981,6 +4982,9 @@ async function reconcileTick() {
   _reconcileRunning = false;
   await refresh();
   const c1 = await DB.counts();
+  // Remerciement : seulement quand le SERVEUR vient de confirmer un envoi (pas au simple
+  // enregistrement local, déjà couvert par `celebrate()` sur #btn-save).
+  if (res && res.confirmes > 0) openThanksModal(c1.sent, res.confirmes);
 
   if (c1.pending === 0) {
     setStatus("");
@@ -5119,6 +5123,54 @@ function celebrate(originEl) {
     }
     setTimeout(() => layer.remove(), 1300);
   } catch (e) { /* décoratif : jamais bloquant */ }
+}
+
+/** Popup de remerciement, affiché quand une contribution vient d'être CONFIRMÉE en base (pas au
+    simple enregistrement local : `reconcileTick` l'appelle une fois le serveur ayant réellement
+    reçu l'envoi). Contenu (texte + visuel) choisi par `pickThanksContent` : 1re contribution,
+    palier rond ou envoi courant (pool tourné au hasard, jamais deux fois d'affilée le même
+    enchaînement). Créé une seule fois puis réutilisé, même façon que `openSharePanel`. */
+let _thanksModalEl = null;
+function openThanksModal(total, justConfirmed) {
+  try {
+    if (!_thanksModalEl) {
+      const ov = document.createElement("div");
+      ov.id = "thanks-modal"; ov.className = "tr-guide"; ov.hidden = true;
+      ov.setAttribute("role", "dialog"); ov.setAttribute("aria-modal", "true");
+      ov.setAttribute("aria-labelledby", "thanks-title");
+      ov.innerHTML = '<div class="tr-guide-card thanks-card">' +
+        '<button class="incite-close" type="button" aria-label="Fermer">✕</button>' +
+        '<div class="thanks-hero-wrap"></div>' +
+        '<div class="thanks-body-wrap">' +
+        '<h2 class="thanks-title" id="thanks-title"></h2>' +
+        '<p class="thanks-body"></p></div>' +
+        '<div class="pg-actions"><button class="btn btn--primary thanks-ok" type="button"></button></div>' +
+        '</div>';
+      document.body.appendChild(ov);
+      const close = () => { ov.hidden = true; };
+      ov.querySelector(".incite-close").addEventListener("click", close);
+      ov.querySelector(".thanks-ok").addEventListener("click", close);
+      ov.addEventListener("click", (e) => { if (e.target === ov) close(); });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !ov.hidden) close(); });
+      _thanksModalEl = ov;
+    }
+    const ov = _thanksModalEl;
+    const c = pickThanksContent(total, justConfirmed, getUiLang());
+    const hero = ov.querySelector(".thanks-hero-wrap");
+    if (c.visual === "photo") {
+      hero.innerHTML = '<img class="thanks-hero-img" src="icons/celebrate-thanks.webp" alt="" aria-hidden="true">';
+    } else if (c.visual === "milestone") {
+      hero.innerHTML = '<div class="thanks-milestone"><span class="thanks-milestone-n"></span></div>';
+      hero.querySelector(".thanks-milestone-n").textContent = String(c.n);
+    } else {
+      hero.innerHTML = '<div class="thanks-emoji-badge"></div>';
+      hero.querySelector(".thanks-emoji-badge").textContent = c.icon || "🎉";
+    }
+    ov.querySelector(".thanks-title").textContent = c.title;
+    ov.querySelector(".thanks-body").textContent = c.body;
+    ov.querySelector(".thanks-ok").textContent = t("thanks.ok");
+    ov.hidden = false;
+  } catch (e) { /* jamais bloquant : une contribution reste confirmée même si ce popup échoue */ }
 }
 
 /** Mode présentation : affichage plein écran pour montrer le projet (événements,

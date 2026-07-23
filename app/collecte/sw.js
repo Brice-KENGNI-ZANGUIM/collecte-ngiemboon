@@ -7,7 +7,7 @@
 // qui PRÉCACHE la coquille FRAÎCHE (`cache: "reload"`, contourne le cache HTTP de
 // GitHub Pages), et le bouton « Mettre à jour » purge les caches avant de
 // recharger. Aucun fichier périmé ne peut donc survivre à une mise à jour.
-const CACHE = "collecte-nge-v363";
+const CACHE = "collecte-nge-v364";
 const SHELL = [
   "./",
   "./index.html",
@@ -24,6 +24,7 @@ const SHELL = [
   "./build/export.js",
   "./build/share.js",
   "./build/sharecopy.js",
+  "./build/thanks.js",
   "./build/langsim.js",
   "./build/langmerge.js",
   "./build/amorce.js",

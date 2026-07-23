@@ -1299,8 +1299,73 @@ body {
 .tr-guide-ico--img { width: auto; height: auto; background: none; box-shadow: none; }
 .tr-guide-ico--img img { width: 66px; height: 66px; display: block;
   filter: drop-shadow(0 4px 10px rgba(0,0,0,.4)); }
-/* Bandeau d'accueil (illustration fournie welcome-first) en tête du popup « profil requis ». */
-.pgate-hero { display: block; width: 100%; height: 158px; object-fit: cover; object-position: 50% 42%; }
+/* Bandeau d'accueil (illustration fournie welcome-first) en tête du popup « profil requis ».
+   L'illustration est un détourage à fond TRANSPARENT (silhouettes en damier) : sans arrière-plan
+   elle tombait à plat sur le panneau uni du popup. On lui donne le MÊME habillage que le reste
+   de la plateforme (trame Ndop + halo « torche » cyan/vert, cf. .bg-motif/body::before) plutôt
+   qu'un décor inventé à part, cohérent en clair ET en sombre (le thème peut basculer). Un halo
+   doré au centre, façon torche qui les éclaire, complète l'effet « bienvenue ». */
+.pgate-hero-wrap, .thanks-hero-wrap { position: relative; width: 100%; overflow: hidden; background: var(--bg); }
+.pgate-hero-wrap { height: 158px; }
+.thanks-hero-wrap { height: 130px; }
+.pgate-hero-wrap::before, .thanks-hero-wrap::before {
+  content: ""; position: absolute; inset: 0;
+  background: url("icons/bg-pattern-light.jpg") center / 260px auto repeat; opacity: .5;
+}
+:root[data-theme="dark"] .pgate-hero-wrap::before, :root[data-theme="dark"] .thanks-hero-wrap::before { background-image: url("icons/bg-pattern-dark.jpg"); opacity: .55; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .pgate-hero-wrap::before,
+  :root:not([data-theme="light"]) .thanks-hero-wrap::before { background-image: url("icons/bg-pattern-dark.jpg"); opacity: .5; }
+}
+.pgate-hero-wrap::after, .thanks-hero-wrap::after {
+  content: ""; position: absolute; inset: -35% -8%;
+  background:
+    radial-gradient(46% 62% at 50% 62%, color-mix(in srgb, var(--gold) 55%, transparent), transparent 68%),
+    radial-gradient(52% 70% at 12% 10%, var(--aurora-a), transparent 65%),
+    radial-gradient(52% 70% at 88% 92%, var(--aurora-b), transparent 65%);
+}
+.pgate-hero {
+  position: relative; z-index: 1; display: block; width: 100%; height: 100%;
+  object-fit: cover; object-position: 50% 42%;
+  /* Fondu doux vers le panneau en bas : l'image s'intègre à la carte au lieu de finir en arête vive. */
+  -webkit-mask-image: linear-gradient(180deg, #000 78%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 78%, transparent 100%);
+}
+/* ===== Popup de remerciement (contribution CONFIRMÉE en base) ===== */
+.thanks-card { position: relative; text-align: center; }
+.thanks-hero-img {
+  position: relative; z-index: 1; display: block; height: 100%; width: auto; max-width: 80%; margin: 0 auto;
+  object-fit: contain; object-position: 50% 100%;
+  -webkit-mask-image: linear-gradient(180deg, #000 82%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 82%, transparent 100%);
+}
+.thanks-emoji-badge {
+  position: relative; z-index: 1; width: 82px; height: 82px; margin: 24px auto 0; border-radius: 50%;
+  display: grid; place-items: center; font-size: 2.3rem;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--gold) 32%, var(--panel)), var(--panel));
+  border: 1px solid color-mix(in srgb, var(--gold) 46%, var(--border));
+  box-shadow: 0 0 32px -8px var(--gold);
+  animation: thanksPop .5s cubic-bezier(.34, 1.56, .64, 1);
+}
+.thanks-milestone {
+  position: relative; z-index: 1; width: 104px; height: 104px; margin: 13px auto 0;
+  background: url("icons/milestone-badge.webp") center / contain no-repeat;
+  display: grid; place-items: center;
+  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, .35));
+  animation: thanksPop .5s cubic-bezier(.34, 1.56, .64, 1);
+}
+.thanks-milestone-n { font-weight: 900; font-size: 1.5rem; color: #3a2a05; text-shadow: 0 1px 0 rgba(255, 255, 255, .35); }
+@keyframes thanksPop { from { transform: scale(.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .thanks-emoji-badge, .thanks-milestone { animation: none; } }
+.thanks-body-wrap { padding: 20px 22px 4px; }
+.thanks-title { margin: 0 0 6px; font-size: 1.14rem; color: var(--text); }
+.thanks-body { margin: 0; color: var(--muted); font-size: .92rem; line-height: 1.5; }
+.thanks-card .pg-actions { padding: 16px 20px 20px; margin-top: 4px; }
+@media (max-width: 560px) {
+  .thanks-hero-wrap { height: 108px; }
+  .thanks-title { font-size: 1.02rem; }
+  .thanks-body { font-size: .84rem; }
+}
 .tr-guide-card h2 { margin: 2px 0 4px; font-size: 1.16rem; color: var(--text); }
 .tr-guide-lead { margin: 0; color: var(--muted); font-size: .9rem; }
 /* MOBILE : réduction des polices/paddings des popups & modales pour qu'elles n'envahissent
@@ -3361,6 +3426,8 @@ textarea, [contenteditable="true"] { cursor: text; }
   :root[data-theme="light"] .chips-nav .chip--btn { background: rgba(18,30,46,.06); }
   .chips-nav .chip--btn:hover, .chips-nav .chip--btn.is-active { background: rgba(34,211,238,.20); color: var(--cyan); border-color: rgba(34,211,238,.5); }
   .chip--on { border-color: var(--green); }
+  /* Badge emoji du popup de remerciement */
+  .thanks-emoji-badge { background: var(--gold); border-color: var(--gold); }
   /* Bascules FR|EN et thème */
   .lang-switch, .theme-switch { border-color: var(--border); }
   .lang-switch .lang-seg { background: var(--panel); }

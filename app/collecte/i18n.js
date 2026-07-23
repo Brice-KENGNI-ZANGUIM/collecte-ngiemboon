@@ -333,6 +333,7 @@ export const STR = {
   "pgate.r3.d": { fr: "Un profil par personne garde la base propre et évite les répétitions : chaque voix compte une fois", en: "One profile per person keeps the database clean and avoids repetitions: each voice counts once" },
   "pgate.ok": { fr: "Créer mon profil →", en: "Create my profile →" },
   "pgate.later": { fr: "Plus tard", en: "Later" },
+  "thanks.ok": { fr: "Continuer", en: "Continue" },
   "about.say.h": { fr: "Ils parlent de nous", en: "What people say" },
   "say.anon": { fr: "Un membre de la communauté", en: "A community member" },
   // Témoignages « Laisser un mot » (publication auto avec garde-fous)

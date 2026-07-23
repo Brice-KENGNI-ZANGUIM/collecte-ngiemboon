@@ -1,6 +1,10 @@
 {
-  "version": "v363",
+  "version": "v364",
   "changelog": {
+    "v364": [
+      "L'image d'accueil du popup « créer un profil » a maintenant un arrière-plan cohérent avec le reste de l'application",
+      "Un petit message de remerciement, varié et personnalisé, apparaît quand une contribution est bien enregistrée dans la base"
+    ],
     "v363": [
       "Les 4 onglets Transcrire/Traduire/Explorer/Demander restent visibles sur toutes les pages, y compris l'accueil"
     ],
