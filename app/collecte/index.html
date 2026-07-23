@@ -73,35 +73,35 @@
     <p class="app-loader-txt" data-i18n="loader.txt">Chargement…</p>
   </div>
   <header class="topbar">
-    <div class="brand brand--home" id="brand-home" role="link" tabindex="0"
+    <a class="brand brand--home" id="brand-home" href="#/accueil"
          data-i18n-title="brand.home.title" title="Revenir à l'accueil" aria-label="Revenir à l'accueil : Traduire, Transcrire, Explorer">
       <span class="brand-mark"><img src="./icons/logo.svg" alt="LANGIAL" width="52" height="52" /></span>
       <div class="brand-txt">
         <h1>LANGIAL</h1>
-        <p class="tagline" data-i18n="tagline">Numériser les langues d'Afrique, texte et voix, par leurs communautés</p>
+        <p class="tagline" data-i18n="tagline">Nos langues, un héritage à transmettre</p>
       </div>
-    </div>
+    </a>
     <!-- Header en 2 niveaux : NAV (boutons d'action, avec texte) sur une ligne, MÉTA
          (état + version + langue + thème) sur l'autre. Cf. .topbar en grille. -->
     <div class="chips-nav">
       <!-- GROUPE 1 : navigation / découverte -->
       <div class="chip-group chip-group--nav">
-        <button id="home-link" class="chip chip--btn" type="button" data-i18n-title="chip.home.title"
-                title="Retour à l'accueil" aria-label="Retour à l'accueil"><img class="chip-ico" src="icons/ui/hi-home.png" alt="" aria-hidden="true"><span data-i18n="chip.home">Accueil</span></button>
-        <button id="lang-chip" class="chip chip--btn" type="button" data-i18n-title="chip.lang.title"
-                title="Changer de langue" aria-label="Changer de langue"><img class="chip-ico" src="icons/ui/hi-lang.png" alt="" aria-hidden="true"><span id="lang-chip-name">Langues</span></button>
-        <button id="about-link" class="chip chip--btn" type="button" data-i18n-title="chip.about.title"
-                title="À propos du projet" aria-label="À propos du projet"><img class="chip-ico" src="icons/ui/hi-about.png" alt="" aria-hidden="true"><span data-i18n="chip.about">À propos</span></button>
+        <a id="home-link" class="chip chip--btn" href="#/accueil" data-i18n-title="chip.home.title"
+                title="Retour à l'accueil" aria-label="Retour à l'accueil"><img class="chip-ico" src="icons/ui/hi-home.png" alt="" aria-hidden="true"><span data-i18n="chip.home">Accueil</span></a>
+        <a id="lang-chip" class="chip chip--btn" href="#/langue" data-i18n-title="chip.lang.title"
+                title="Changer de langue" aria-label="Changer de langue"><img class="chip-ico" src="icons/ui/hi-lang.png" alt="" aria-hidden="true"><span id="lang-chip-name">Langues</span></a>
+        <a id="about-link" class="chip chip--btn" href="#/apropos" data-i18n-title="chip.about.title"
+                title="À propos du projet" aria-label="À propos du projet"><img class="chip-ico" src="icons/ui/hi-about.png" alt="" aria-hidden="true"><span data-i18n="chip.about">À propos</span></a>
         <button id="help-btn" class="chip chip--btn" type="button" data-i18n-title="chip.help.title"
                 title="Visite guidée de cette page" aria-label="Visite guidée"><img class="chip-ico" src="icons/ui/hi-help.png" alt="" aria-hidden="true"><span data-i18n="chip.help">Aide</span></button>
-        <button id="bugs-link" class="chip chip--btn" type="button" data-i18n-title="chip.bugs.title"
-                title="Suivi des bugs" aria-label="Suivi des bugs"><img class="chip-ico" src="icons/ui/hi-bug.png" alt="" aria-hidden="true"><span data-i18n="chip.bugs">Bugs</span></button>
+        <a id="bugs-link" class="chip chip--btn" href="#/bugs" data-i18n-title="chip.bugs.title"
+                title="Suivi des bugs" aria-label="Suivi des bugs"><img class="chip-ico" src="icons/ui/hi-bug.png" alt="" aria-hidden="true"><span data-i18n="chip.bugs">Bugs</span></a>
       </div>
       <!-- GROUPE 2 : perso (profil, notifications). Notifications EN DERNIER (libellé le plus long). -->
       <div class="chip-group chip-group--perso">
-        <button id="btn-open-profile" class="chip chip--btn" type="button" hidden><img class="chip-ico" src="icons/ui/hi-profile.png" alt="" aria-hidden="true"><span data-i18n="chip.profile">Profil</span></button>
-        <button id="btn-notifs" class="chip chip--btn chip--notif" type="button" hidden data-i18n-title="chip.notifs.title"
-                title="Mes notifications" aria-label="Mes notifications"><img class="chip-ico" src="icons/ui/hi-notif.png" alt="" aria-hidden="true"><span data-i18n="chip.notifs">Notifications</span><span id="notif-badge" class="notif-badge" hidden aria-hidden="true">0</span></button>
+        <a id="btn-open-profile" class="chip chip--btn" href="#/profil" hidden><img class="chip-ico" src="icons/ui/hi-profile.png" alt="" aria-hidden="true"><span data-i18n="chip.profile">Profil</span></a>
+        <a id="btn-notifs" class="chip chip--btn chip--notif" href="#/notifications" hidden data-i18n-title="chip.notifs.title"
+                title="Mes notifications" aria-label="Mes notifications"><img class="chip-ico" src="icons/ui/hi-notif.png" alt="" aria-hidden="true"><span data-i18n="chip.notifs">Notifications</span><span id="notif-badge" class="notif-badge" hidden aria-hidden="true">0</span></a>
       </div>
       <!-- Outils (version + langue d'interface + thème) : poussés À DROITE de la ligne
            de nav (margin-left:auto). Ils basculent proprement à la ligne suivante,
@@ -130,10 +130,10 @@
          grandes portes du hub jouent déjà ce rôle. -->
     <nav id="main-nav" class="main-nav" hidden>
       <div class="nav-tabs" role="tablist" aria-label="Espaces">
-        <button id="tab-transcrire" class="nav-tab" type="button"><img class="nav-ico" src="icons/mic-real.png" alt="" aria-hidden="true"><span data-i18n="nav.transcribe">Transcrire</span></button>
-        <button id="tab-traduire" class="nav-tab" type="button"><img class="nav-ico" src="icons/act-translate.svg" alt="" aria-hidden="true"><span data-i18n="nav.translate">Traduire</span></button>
-        <button id="tab-explorer" class="nav-tab" type="button"><img class="nav-ico" src="icons/act-explore.svg" alt="" aria-hidden="true"><span data-i18n="nav.explore">Explorer</span></button>
-        <button id="tab-demander" class="nav-tab" type="button"><img class="nav-ico" src="icons/act-request.png" alt="" aria-hidden="true"><span data-i18n="nav.demander">Demander</span></button>
+        <a id="tab-transcrire" class="nav-tab" href="#/transcrire" role="tab"><img class="nav-ico" src="icons/mic-real.png" alt="" aria-hidden="true"><span data-i18n="nav.transcribe">Transcrire</span></a>
+        <a id="tab-traduire" class="nav-tab" href="#/traduire" role="tab"><img class="nav-ico" src="icons/act-translate.svg" alt="" aria-hidden="true"><span data-i18n="nav.translate">Traduire</span></a>
+        <a id="tab-explorer" class="nav-tab" href="#/explorer" role="tab"><img class="nav-ico" src="icons/act-explore.svg" alt="" aria-hidden="true"><span data-i18n="nav.explore">Explorer</span></a>
+        <a id="tab-demander" class="nav-tab" href="#/demander" role="tab"><img class="nav-ico" src="icons/act-request.png" alt="" aria-hidden="true"><span data-i18n="nav.demander">Demander</span></a>
       </div>
     </nav>
   </header>
@@ -351,7 +351,7 @@
       </div>
       <div class="ndop-sep" aria-hidden="true"><i></i></div>
       <div class="hub-cards">
-        <button class="hub-card hub-card--illus" type="button" data-go="transcribe">
+        <a class="hub-card hub-card--illus" href="#/transcrire" data-go="transcribe">
           <span class="hub-text">
             <span class="hub-card-head">
               <img class="hub-ico" src="icons/mic-real.png" alt="" aria-hidden="true">
@@ -361,8 +361,8 @@
             <span class="hub-go" data-i18n="hub.start">Commencer →</span>
           </span>
           <span class="hub-illus-wrap"><img class="hub-illus" src="icons/hub-transcribe-ill.webp" alt="" aria-hidden="true"></span>
-        </button>
-        <button class="hub-card hub-card--illus" type="button" data-go="translate">
+        </a>
+        <a class="hub-card hub-card--illus" href="#/traduire" data-go="translate">
           <span class="hub-text">
             <span class="hub-card-head">
               <img class="hub-ico" src="icons/act-translate.svg" alt="" aria-hidden="true">
@@ -372,8 +372,8 @@
             <span class="hub-go" data-i18n="hub.start">Commencer →</span>
           </span>
           <span class="hub-illus-wrap"><img class="hub-illus" src="icons/hub-translate-ill.webp" alt="" aria-hidden="true"></span>
-        </button>
-        <button class="hub-card hub-card--illus" type="button" data-go="explore">
+        </a>
+        <a class="hub-card hub-card--illus" href="#/explorer" data-go="explore">
           <span class="hub-text">
             <span class="hub-card-head">
               <img class="hub-ico" src="icons/act-explore.svg" alt="" aria-hidden="true">
@@ -383,8 +383,8 @@
             <span class="hub-go" data-i18n="hub.open">Ouvrir →</span>
           </span>
           <span class="hub-illus-wrap"><img class="hub-illus" src="icons/hub-explore-ill.webp" alt="" aria-hidden="true"></span>
-        </button>
-        <button class="hub-card hub-card--illus" type="button" data-go="demander">
+        </a>
+        <a class="hub-card hub-card--illus" href="#/demander" data-go="demander">
           <span class="hub-text">
             <span class="hub-card-head">
               <img class="hub-ico" src="icons/act-request.png" alt="" aria-hidden="true">
@@ -394,7 +394,7 @@
             <span class="hub-go" data-i18n="hub.ask">Demander →</span>
           </span>
           <span class="hub-illus-wrap"><img class="hub-illus" src="icons/hub-request-ill.webp" alt="" aria-hidden="true"></span>
-        </button>
+        </a>
       </div>
       <div class="hub-share">
         <span class="share-lead" data-i18n="share.hub">Aide nos langues à rayonner, partage LANGIAL :</span>
@@ -979,14 +979,14 @@
 
   <footer class="site-footer">
     <div class="foot-inner">
-      <div class="foot-brand foot-brand--home" id="foot-home" role="link" tabindex="0"
+      <a class="foot-brand foot-brand--home" id="foot-home" href="#/accueil"
            data-i18n-title="brand.home.title" title="Revenir à l'accueil" aria-label="Revenir à l'accueil : Traduire, Transcrire, Explorer">
         <span class="foot-mark"><img src="./icons/logo.svg" alt="LANGIAL" width="52" height="52" /></span>
         <div>
           <div class="foot-title">LANGIAL <span>· Collecte</span></div>
-          <div class="foot-sub" data-i18n-html="foot.sub">Numériser les langues d'Afrique,<br>texte et voix, par leurs communautés</div>
+          <div class="foot-sub" data-i18n-html="foot.sub">Un héritage à transmettre :<br>les mots et les voix de nos langues d'Afrique</div>
         </div>
-      </div>
+      </a>
       <nav class="foot-nav" aria-label="Accès rapide">
         <div class="foot-nav-col">
           <span class="foot-nav-title" data-i18n="footnav.spaces">Les espaces</span>

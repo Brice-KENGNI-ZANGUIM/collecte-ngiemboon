@@ -360,7 +360,6 @@ body {
    (hauteur) ~1.2× celle des autres chips pour mieux la repérer sans dominer. */
 .chip--icon { padding: 7px 11px; }
 .chip--icon .chip-ico { width: 21px; height: 21px; }
-a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weight: 600; }
 .chip--btn:hover { color: var(--cyan); border-color: var(--cyan);
   box-shadow: inset 0 1px 0 var(--card-sheen), 0 0 16px -2px rgba(34,211,238,.45); transform: translateY(-1px); }
 .chip--btn:active { transform: translateY(0); box-shadow: inset 0 2px 5px -2px rgba(0,0,0,.45); }
@@ -745,6 +744,13 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 .hub-head { text-align: left; margin-bottom: 4px; }
 /* 4 portes : 2 par ligne (PC / tablette), 1 par ligne en mobile étroit. Image à hauteur
    pleine du cadre dans tous les cas. */
+/* Contrôles de NAVIGATION réels <a href="#/…"> (clic droit → « ouvrir dans un nouvel onglet »
+   pointe enfin vers la bonne page, pas vers l'image du bouton). On neutralise les styles par
+   défaut du navigateur pour <a> (bleu, souligné) afin de préserver EXACTEMENT l'apparence
+   précédente (bouton/div) : ces classes portent déjà toute leur propre mise en forme. */
+.hub-card, .nav-tab, .chip, .brand--home, .foot-brand--home {
+  text-decoration: none; color: inherit;
+}
 .hub-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
 @media (max-width: 560px) { .hub-cards { grid-template-columns: 1fr; } }
 /* Chaque porte porte SA couleur d'identité (assortie à son icône et au mode

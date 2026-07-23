@@ -1,6 +1,10 @@
 {
-  "version": "v357",
+  "version": "v358",
   "changelog": {
+    "v358": [
+      "Les boutons de navigation (logo, cartes d'accueil, onglets, menu) sont maintenant de vrais liens : clic droit -> ouvrir dans un nouvel onglet fonctionne enfin, comme sur les autres sites",
+      "Le slogan « Nos langues, un héritage à transmettre » apparaît sous le nom LANGIAL dans le header et le pied de page"
+    ],
     "v357": [
       "Corrige un bug qui affichait sans cesse la même mise à jour (le fichier livré restait décalé d'une version)",
       "Profil : la traduction écrite est modifiable directement, et la voix peut être ré-enregistrée",

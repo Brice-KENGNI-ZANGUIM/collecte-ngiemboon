@@ -55,7 +55,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v357";
+const APP_VERSION = "v358";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -6107,32 +6107,25 @@ function initEvents() {
     // l'étape précédente (choix de la langue), jamais sur un accueil inaccessible.
     if (profileComplete()) enterHub(); else openLangChoice();
   });
-  $("#btn-open-profile").addEventListener("click", () => openProfile(true));
-  // Cartes de l'accueil : onde (ripple) lumineuse au clic + navigation
+  // #btn-open-profile est maintenant une vraie ancre <a href="#/profil"> : la navigation
+  // passe par hashchange (aucun handler direct nécessaire, cf. plus bas).
+  // Cartes de l'accueil : VRAIES ancres <a href="#/…"> désormais (navigation via hashchange) ;
+  // on garde seulement l'onde (ripple) lumineuse, effet purement visuel.
   document.querySelectorAll(".hub-card").forEach((card) =>
-    card.addEventListener("click", (ev) => {
-      spawnRipple(card, ev);
-      const go = card.dataset.go;
-      if (go === "explore") enterExplore();
-      else if (go === "demander") enterDemander();
-      else enterWork(go);
-    })
+    card.addEventListener("click", (ev) => spawnRipple(card, ev))
   );
-  // Onglets de navigation permanents
-  const nt = $("#tab-traduire"); if (nt) nt.addEventListener("click", () => enterWork("translate"));
-  const nx = $("#tab-transcrire"); if (nx) nx.addEventListener("click", () => enterWork("transcribe"));
-  const ne = $("#tab-explorer"); if (ne) ne.addEventListener("click", enterExplore);
-  const nd = $("#tab-demander"); if (nd) nd.addEventListener("click", () => enterDemander());
+  // Onglets de navigation permanents : VRAIES ancres <a href="#/…"> désormais, la navigation
+  // passe par l'écouteur hashchange global (plus de handler de clic direct ici).
   const rsl = $("#req-strip-list"); if (rsl) rsl.addEventListener("click", onReqStripClick);   // lot 5 : clic sur une demande
   const eCsv = $("#export-csv"); if (eCsv) eCsv.addEventListener("click", () => downloadDict("csv"));
   const eJson = $("#export-json"); if (eJson) eJson.addEventListener("click", () => downloadDict("json"));
   const eLift = $("#export-lift"); if (eLift) eLift.addEventListener("click", () => downloadDict("lift"));
   const eCldf = $("#export-cldf"); if (eCldf) eCldf.addEventListener("click", () => downloadDict("cldf"));
   const eElan = $("#export-elan"); if (eElan) eElan.addEventListener("click", () => downloadDict("elan"));
-  // Page « À propos » (vraie vue de l'app, avec header/footer/fond partagés)
-  const aboutLink = $("#about-link"); if (aboutLink) aboutLink.addEventListener("click", openAbout);
+  // Page « À propos » (vraie vue de l'app, avec header/footer/fond partagés) : #about-link
+  // est une vraie ancre <a href="#/apropos"> désormais, navigation via hashchange.
   const aboutBack = $("#about-back"); if (aboutBack) aboutBack.addEventListener("click", () => showView(_aboutReturn || "hub"));
-  const bugsLink = $("#bugs-link"); if (bugsLink) bugsLink.addEventListener("click", openBugs);
+  // #bugs-link idem : vraie ancre <a href="#/bugs">.
   const bugsBack = $("#bugs-back"); if (bugsBack) bugsBack.addEventListener("click", () => showView(_bugsReturn || "hub"));
   // Pages légales : liens du pied de page + navigation interne + retour.
   document.querySelectorAll(".foot-legal-link").forEach((a) =>
@@ -6148,8 +6141,8 @@ function initEvents() {
   // Invitation à contribuer : « Plus tard » et « Fermer » l'écartent pour la journée.
   const inLater = $("#incite-later"); if (inLater) inLater.addEventListener("click", _incDismiss);
   const inClose = $("#incite-close"); if (inClose) inClose.addEventListener("click", _incDismiss);
-  // Notifications : cloche (ouvre le centre), retour, tout marquer comme lu, popup.
-  const bNotif = $("#btn-notifs"); if (bNotif) bNotif.addEventListener("click", openNotifs);
+  // Notifications : cloche = vraie ancre <a href="#/notifications">, navigation via hashchange.
+  // (retour, tout marquer comme lu, popup restent des actions, pas de la navigation.)
   const nBack = $("#notif-back"); if (nBack) nBack.addEventListener("click", () => showView(_notifsReturn || "hub"));
   const nMark = $("#notif-markall"); if (nMark) nMark.addEventListener("click", markNotifsRead);
   // Une notification est CLIQUABLE : elle mène là où agir (répondre à une demande, ou
@@ -6194,8 +6187,7 @@ function initEvents() {
   const aboutStart = $("#about-start"); if (aboutStart) aboutStart.addEventListener("click", () => { if (profileComplete()) enterHub(); else openProfile(false); });
   const micTestBtn = $("#btn-mic-test");
   if (micTestBtn) micTestBtn.addEventListener("click", testMic);
-  // Bouton « Accueil » du header → écran d'accueil (hub des 3 portes).
-  const homeLink = $("#home-link"); if (homeLink) homeLink.addEventListener("click", goHome);
+  // Bouton « Accueil » du header : vraie ancre <a href="#/accueil">, navigation via hashchange.
   // Bascule de la langue d'INTERFACE (FR ⇄ EN), distincte de la langue de contenu.
   const uiToggle = $("#ui-lang-toggle");
   if (uiToggle) uiToggle.dataset.active = getUiLang();   // moitié verte = langue active (capsule FR|EN)
@@ -6205,8 +6197,7 @@ function initEvents() {
     setUiLang(getUiLang() === "en" ? "fr" : "en");
     location.reload();
   });
-  // Sélecteur de langue (header) + déclaration d'une nouvelle langue.
-  const langChip = $("#lang-chip"); if (langChip) langChip.addEventListener("click", openLangChoice);
+  // Sélecteur de langue (header) : vraie ancre <a href="#/langue">, navigation via hashchange.
   const ldSubmit = $("#ld-submit"); if (ldSubmit) ldSubmit.addEventListener("click", submitDeclareLang);
   // Couche 3 : correction de la langue d'une de SES contributions (délégation de clic).
   const mcList = $("#mc-list");
@@ -6290,14 +6281,9 @@ function initEvents() {
     if (_declareCtx === "profile") { const p = $("#profile-langs"); if (p) p.scrollIntoView({ behavior: "smooth", block: "nearest" }); }
     _declareCtx = null;
   });
-  // Logo + nom (header ET footer) = raccourci cliquable vers l'accueil (souris + clavier).
-  [$("#brand-home"), $("#foot-home")].forEach((el) => {
-    if (!el) return;
-    el.addEventListener("click", goHome);
-    el.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") { e.preventDefault(); goHome(); }
-    });
-  });
+  // Logo + nom (header ET footer) : vraies ancres <a href="#/accueil"> désormais (clic droit
+  // → « ouvrir dans un nouvel onglet » fonctionne). Clic gauche/clavier (Entrée, natif sur <a>)
+  // passent par hashchange ; plus de handler direct nécessaire.
   // Mode présentation (plein écran)
   // Témoignage « Laisser un mot » : ouvrir / publier / annuler.
   const tOpen = $("#testi-open"); if (tOpen) tOpen.addEventListener("click", showTestimonialForm);
@@ -6309,6 +6295,11 @@ function initEvents() {
   const dlPdf = $("#present-dl-pdf"); if (dlPdf) dlPdf.addEventListener("click", () => downloadPresent("pdf"));
   // Routeur : le bouton Précédent/Suivant du navigateur rejoue la vue correspondante.
   window.addEventListener("popstate", onHistoryNav);
+  // Les contrôles de navigation sont maintenant de VRAIES ancres <a href="#/route"> (clic droit
+  // → « ouvrir dans un nouvel onglet » fonctionne, comme sur la plupart des sites). Un clic gauche
+  // change donc le hash nativement ; hashchange route la vue. Couvre aussi les liens du pied de
+  // page (déjà de vraies ancres) qui ne déclenchaient rien au clic faute d'écouteur.
+  window.addEventListener("hashchange", onHistoryNav);
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape" && $("#present") && !$("#present").hidden) closePresent();
   });
