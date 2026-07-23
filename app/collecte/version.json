@@ -1,6 +1,9 @@
 {
-  "version": "v355",
+  "version": "v356",
   "changelog": {
+    "v356": [
+      "Quand une correction échoue, le motif exact est affiché (au lieu d'un simple « impossible »)"
+    ],
     "v355": [
       "Correction de langue possible depuis n'importe quel appareil enregistré (autorisation renforcée)",
       "Le bouton Écouter d'une contribution indique « Chargement… » puis « Lecture… », comme dans les popups",

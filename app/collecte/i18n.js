@@ -113,6 +113,7 @@ export const STR = {
   "mc.save": { fr: "Corriger", en: "Fix" },
   "mc.saved": { fr: "Langue corrigée", en: "Language fixed" },
   "mc.err": { fr: "Correction impossible", en: "Could not fix" },
+  "mc.err.lang": { fr: "Choisis d'abord une langue valide", en: "Pick a valid language first" },
   "mc.audio": { fr: "(contribution vocale)", en: "(voice contribution)" },
   "wod.eye": { fr: "◆ Mot du jour", en: "◆ Word of the day" },
   "wod.cta": { fr: "Dis-le dans ta langue →", en: "Say it in your language →" },

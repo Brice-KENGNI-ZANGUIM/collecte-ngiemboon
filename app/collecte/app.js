@@ -55,7 +55,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v355";
+const APP_VERSION = "v356";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1724,10 +1724,11 @@ async function _mcPlay(btn, url) {
   au.onended = restore; au.onpause = restore; au.onerror = restore;
 }
 async function _mcSave(sid, newLid, itemEl) {
-  const lid = canonLangId(newLid);
+  const lid = canonLangId(newLid) || String(newLid || "").trim();
   let rec = null;
   try { rec = (await DB.all()).find((r) => String(r.server_id) === String(sid)); } catch (e) { rec = null; }
-  if (!rec || !lid) { toast(t("mc.err"), "err"); return; }
+  if (!rec) { toast(t("mc.err"), "err"); return; }
+  if (!lid) { toast(t("mc.err.lang"), "err"); return; }
   const orient = dirOrient(rec.direction);
   const patch = {
     langue: lid,
@@ -1741,7 +1742,7 @@ async function _mcSave(sid, newLid, itemEl) {
   try { r = await updateContribution({ id: String(sid), device_id: deviceId(), owner_token: ownerToken(), patch }); }
   catch (e) { r = null; }
   if (btn) btn.disabled = false;
-  if (!r || r.ok === false) { toast(t("mc.err"), "err"); return; }
+  if (!r || r.ok === false) { toast((r && r.error) ? (t("mc.err") + " : " + r.error) : t("mc.err"), "err"); return; }
   try { Object.assign(rec, patch); await DB.put(rec); } catch (e) { /* copie locale best-effort */ }
   toast(t("mc.saved"), "ok");
   renderMyContributions();
