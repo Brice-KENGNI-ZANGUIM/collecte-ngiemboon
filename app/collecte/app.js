@@ -64,7 +64,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v362";
+const APP_VERSION = "v363";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1284,14 +1284,13 @@ function showView(name) {
   const dmv = $("#view-demander"); if (dmv) dmv.hidden = name !== "demander";
   const glv = $("#view-legal"); if (glv) glv.hidden = name !== "legal";
   const nav = $("#main-nav");
-  // Les 4 onglets d'activité sont accessibles depuis TOUTES les pages SAUF l'accueil
-  // (le hub, où les 4 grandes portes jouent déjà ce rôle).
-  if (nav) nav.hidden = (name === "hub");
-  // Onglet actif de la barre de navigation (les 4 espaces).
-  if (!nav || !nav.hidden) {
-    const active = { app: (activity === "transcribe" ? "tab-transcrire" : "tab-traduire"), explore: "tab-explorer", demander: "tab-demander" }[name];
-    ["#tab-transcrire", "#tab-traduire", "#tab-explorer", "#tab-demander"].forEach((s) => { const el = $(s); if (el) el.classList.toggle("is-active", ("#" + active) === s); });
-  }
+  // Les 4 onglets d'activité sont désormais accessibles SYSTÉMATIQUEMENT, sur TOUTES les pages
+  // sans exception, y compris l'accueil (choix Brice 2026-07-23 : avant masqués sur le hub).
+  if (nav) nav.hidden = false;
+  // Onglet actif de la barre de navigation (les 4 espaces) ; aucun n'est actif sur l'accueil
+  // ou une page hors de ces 4 espaces (À propos, Bugs, Profil…), ce qui est normal.
+  const active = { app: (activity === "transcribe" ? "tab-transcrire" : "tab-traduire"), explore: "tab-explorer", demander: "tab-demander" }[name];
+  ["#tab-transcrire", "#tab-traduire", "#tab-explorer", "#tab-demander"].forEach((s) => { const el = $(s); if (el) el.classList.toggle("is-active", ("#" + active) === s); });
   // « Mon profil » : visibilité conditionnée UNIQUEMENT à l'existence d'un profil.
   // Il reste donc affiché sur TOUTES les pages, y compris la vue profil elle-même
   // (il y sert de repère et n'a jamais à disparaître). Sans profil : rien à ouvrir.

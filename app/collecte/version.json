@@ -1,6 +1,9 @@
 {
-  "version": "v362",
+  "version": "v363",
   "changelog": {
+    "v363": [
+      "Les 4 onglets Transcrire/Traduire/Explorer/Demander restent visibles sur toutes les pages, y compris l'accueil"
+    ],
     "v362": [
       "Même principe que les notifications, étendu au témoignage : si tu en as déjà laissé un sur un appareil, on ne te le redemande plus sur un autre"
     ],
