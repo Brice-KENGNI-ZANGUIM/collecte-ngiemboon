@@ -55,7 +55,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v352";
+const APP_VERSION = "v353";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1708,6 +1708,28 @@ async function _mcSave(sid, newLid, itemEl) {
   try { Object.assign(rec, patch); await DB.put(rec); } catch (e) { /* copie locale best-effort */ }
   toast(t("mc.saved"), "ok");
   renderMyContributions();
+}
+
+const CREDIT_DEFAULT_KEY = "langa-credit-defaut-v1";
+/** SYNC UNIQUE (choix Brice 2026-07-23) : crédit public par défaut « oui / prénom ». Pour un
+    profil DÉJÀ existant dont l'affichage du nom n'est pas activé localement, on l'active UNE seule
+    fois (puis on pose un drapeau) et on le pousse en base. Ensuite l'utilisateur est maître : s'il
+    décoche plus tard, son choix fait foi (upsert bidirectionnel). Les nouveaux profils ont déjà le
+    défaut coché via le formulaire ; on pose juste le drapeau pour ne pas repasser. */
+function applyCreditDefaultOnce() {
+  try {
+    if (localStorage.getItem(CREDIT_DEFAULT_KEY)) return;   // déjà appliqué → on ne force plus jamais
+    const c = loadContributeur();
+    const exists = !!(c && (c.nom || c.prenom || c.email));
+    if (exists && !(c.creditMode && c.creditMode !== "none")) {
+      c.creditMode = "prenom";
+      c.consentement_credit = true;
+      c.credit_display = computeCredit("prenom", c.prenom, c.nom);
+      saveContributeur(c);
+      try { pushUserProfile(); } catch (e) { /* offline : repartira au prochain envoi */ }
+    }
+    localStorage.setItem(CREDIT_DEFAULT_KEY, "1");
+  } catch (e) { /* jamais bloquant */ }
 }
 
 /** Remonte le PROFIL courant vers la base (best-effort, offline-safe) : tout profil
@@ -6146,6 +6168,7 @@ async function main() {
   const ver = $("#app-ver");
   if (ver) ver.textContent = APP_VERSION;
   initContributeur();
+  applyCreditDefaultOnce();   // crédit public par défaut « oui/prénom » appliqué UNE fois aux profils existants
   initKeyboard();
   initKeyboardReveal();
   initPropCategories();

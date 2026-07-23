@@ -1,6 +1,9 @@
 {
-  "version": "v352",
+  "version": "v353",
   "changelog": {
+    "v353": [
+      "Les contributeurs déjà inscrits sont désormais crédités publiquement par leur prénom (appliqué une fois, modifiable à tout moment dans le profil)"
+    ],
     "v352": [
       "Un nouvel utilisateur est par défaut crédité publiquement de ses contributions (prénom), cases cochées à la création ; libre de décocher"
     ],
