@@ -467,10 +467,10 @@ export const STR = {
   "work.domaine.ph": { fr: "ex. parenté, nourriture, nature…", en: "e.g. kinship, food, nature…" },
   "work.note.ph": { fr: "registre, contexte d'emploi…", en: "register, context of use…" },
   "work.public": { fr: "Afficher mon nom sur mes contributions publiques", en: "Show my name on my public contributions" },
-  "work.help.transcribe": { fr: "Fais-toi <b>proposer</b> un mot (ou <b>écris</b> le tien), puis <b>enregistre ta voix</b> qui le prononce en ngiemboon. Ici, la <b>voix est obligatoire</b> ; la traduction écrite est facultative.",
-                            en: "Get a word <b>suggested</b> (or <b>write</b> your own), then <b>record your voice</b> pronouncing it in ngiemboon. Here the <b>voice is required</b>; the written translation is optional." },
-  "work.help.translate": { fr: "Fais-toi <b>proposer</b> un mot à traduire (ou <b>écris</b> le tien), puis donne sa <b>traduction</b>. Tu peux ajouter ta voix, c'est un plus.",
-                           en: "Get a word to translate <b>suggested</b> (or <b>write</b> your own), then give its <b>translation</b>. You can add your voice too, it helps." },
+  "work.help.transcribe": { fr: "Lègue ta prononciation : fais-toi <b>proposer</b> un mot (ou <b>écris</b> le tien), puis <b>enregistre ta voix</b> qui le dit en ngiemboon. C'est cette voix que d'autres écouteront pour apprendre ta langue. Ici la <b>voix est obligatoire</b>, la traduction écrite est facultative.",
+                            en: "Pass on your pronunciation: get a word <b>suggested</b> (or <b>write</b> your own), then <b>record your voice</b> saying it in ngiemboon. That voice is what others will hear to learn your language. Here the <b>voice is required</b>, the written translation is optional." },
+  "work.help.translate": { fr: "Transmets le sens des mots : fais-toi <b>proposer</b> un mot à traduire (ou <b>écris</b> le tien), puis donne sa <b>traduction</b>. Chaque mot que tu confies enrichit l'héritage que la communauté apprend. Ajouter ta voix, c'est un plus.",
+                           en: "Pass on the meaning of words: get a word to translate <b>suggested</b> (or <b>write</b> your own), then give its <b>translation</b>. Every word you share grows the heritage the community learns from. Adding your voice helps too." },
 
   // — Explorer —
   "exp.title": { fr: "Explorer la bibliothèque", en: "Explore the library" },

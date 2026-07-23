@@ -1287,7 +1287,7 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 .zone { --acc: var(--cyan); position: relative;
   border: 1px solid color-mix(in srgb, var(--acc) 42%, var(--border));
   border-left: 4px solid var(--acc); border-radius: 14px; padding: 13px 16px 15px;
-  background: color-mix(in srgb, var(--acc) 7%, var(--card-bg));
+  background: color-mix(in srgb, var(--acc) 10%, var(--panel));
   box-shadow: 0 0 28px -20px var(--acc), inset 0 1px 0 var(--card-sheen), inset 0 -1px 0 var(--card-inner);
   transition: box-shadow .2s ease, border-color .2s ease; }
 /* Liseré gauche lumineux + intensification quand on écrit dans la zone (interactif, pas d'animation continue = perf de frappe préservée). */

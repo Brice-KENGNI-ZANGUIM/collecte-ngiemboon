@@ -1,6 +1,10 @@
 {
-  "version": "v347",
+  "version": "v348",
   "changelog": {
+    "v348": [
+      "Les cadres de saisie (mot, traduction, voix) ont un fond plein bien visible : fini l'effet \"cadre vide\" (un fond invalide les rendait transparents)",
+      "Les textes d'accueil de Traduire et Transcrire parlent d'abord du sens : transmettre sa langue, léguer sa voix, l'héritage qu'on apprend ensemble"
+    ],
     "v347": [
       "Le bouton « Langue de ta contribution » a un fond plein bien visible (fini le fond transparent)",
       "Les boutons d'action centraux de chaque page (Envoyer, Prochain mot, Publier, Rechercher…) sont mis en lumière par un halo qui attire l'œil"
