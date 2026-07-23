@@ -1,6 +1,11 @@
 {
-  "version": "v356",
+  "version": "v357",
   "changelog": {
+    "v357": [
+      "Corrige un bug qui affichait sans cesse la même mise à jour (le fichier livré restait décalé d'une version)",
+      "Profil : la traduction écrite est modifiable directement, et la voix peut être ré-enregistrée",
+      "Écouter une contribution ne demande plus de choisir une langue au préalable"
+    ],
     "v356": [
       "Quand une correction échoue, le motif exact est affiché (au lieu d'un simple « impossible »)"
     ],

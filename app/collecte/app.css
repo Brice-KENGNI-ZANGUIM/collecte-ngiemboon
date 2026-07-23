@@ -588,13 +588,40 @@ a#about-link { color: var(--cyan); border-color: rgba(34,211,238,.4); font-weigh
 .mc-play.is-loading { opacity: .85; cursor: progress; animation: incListenPulse 1s ease-in-out infinite; }
 .mc-play.is-playing { background: var(--cyan); color: var(--bg); box-shadow: 0 0 16px -5px var(--cyan); }
 @media (prefers-reduced-motion: reduce) { .mc-play.is-loading { animation: none; } }
-.mc-item { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+.mc-item { display: flex; flex-direction: column; gap: 8px;
   padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--panel); }
 .mc-word { font-weight: 600; min-width: 0; }
 .mc-arrow { color: var(--cyan); }
+.mc-target { color: var(--green); }
+.mc-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+/* CONTENU modifiable : boutons discrets qui ouvrent un panneau d'édition inline. */
+.mc-edit-trad, .mc-edit-voice { font: inherit; font-weight: 600; font-size: .82rem; cursor: pointer;
+  padding: 5px 12px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted);
+  background: transparent; }
+.mc-edit-trad:hover, .mc-edit-voice:hover { color: var(--text); border-color: var(--cyan); }
+.mc-trad-edit, .mc-voice-edit { display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 10px; border-radius: 10px; background: color-mix(in srgb, var(--cyan) 6%, var(--panel));
+  border: 1px solid color-mix(in srgb, var(--cyan) 25%, var(--border)); }
+.mc-trad-edit[hidden], .mc-voice-edit[hidden] { display: none; }
+.mc-trad-input { flex: 1 1 180px; min-width: 0; box-sizing: border-box; padding: 8px 10px; border-radius: 8px;
+  border: 1px solid var(--border); background: var(--bg); color: var(--text); font: inherit; }
+.mc-trad-input:focus { outline: none; border-color: var(--cyan); }
+.mc-edit-btns { display: flex; align-items: center; gap: 8px; }
+.mc-edit-cancel { font: inherit; font-size: .82rem; background: none; border: none; color: var(--muted);
+  cursor: pointer; text-decoration: underline; }
+.mc-edit-cancel:hover { color: var(--text); }
+.mc-voice-rec.is-rec { background: var(--red); border-color: var(--red); color: #fff; animation: incListenPulse 1s ease-in-out infinite; }
+.mc-voice-timer { font-variant-numeric: tabular-nums; color: var(--muted); font-size: .85rem; }
+.mc-voice-preview { flex: 1 1 140px; min-width: 0; }
+.mc-lang-more { font-size: .8rem; }
+.mc-lang-more summary { cursor: pointer; color: var(--muted); list-style: none; }
+.mc-lang-more summary::-webkit-details-marker { display: none; }
+.mc-lang-more summary:hover { color: var(--text); }
+.mc-lang-more[open] summary { color: var(--text); margin-bottom: 8px; }
 .mc-edit { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .mc-lang { display: flex; align-items: center; gap: 6px; font-size: .85rem; color: var(--muted); }
 .mc-save { padding: 6px 14px; font-size: .85rem; }
+@media (prefers-reduced-motion: reduce) { .mc-voice-rec.is-rec { animation: none; } }
 .app-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .welcome { color: var(--cyan); font-weight: 600; font-size: .95rem; }
 .mini-profile {

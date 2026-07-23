@@ -55,7 +55,7 @@ const nfc = (s) => (s || "").normalize("NFC");
 // Version affichée dans l'en-tête : permet de vérifier d'un coup d'œil que le
 // téléphone charge bien la DERNIÈRE version (et non une copie en cache). À garder
 // synchrone avec CACHE dans sw.js.
-const APP_VERSION = "v356";
+const APP_VERSION = "v357";
 // Espace courant : "translate" (Traduire) ou "transcribe" (Transcrire).
 let activity = "translate";
 // Vue affichée (pour la visite guidée contextuelle). Défaut NEUTRE (null) : au boot,
@@ -1672,23 +1672,45 @@ function _mcPaint(q) {
     const cur = canonLangId(r.langue || entryLang(r));
     const opts = langs.map((l) => `<option value="${escapeHtml(l.id)}"${canonLangId(l.id) === cur ? " selected" : ""}>${escapeHtml(l.nom)}</option>`).join("");
     const w = (r.source_text || "").trim(), tr = (r.target_text || "").trim();
-    const label = escapeHtml(w) + (tr ? ' <span class="mc-arrow">→</span> ' + escapeHtml(tr) : "");
+    const label = escapeHtml(w) + (tr ? ' <span class="mc-arrow">→</span> <span class="mc-target">' + escapeHtml(tr) + '</span>' : "");
     const hasAudio = isPlayable(r.audio_url), hasTrad = !!tr;
     // Type : une contribution peut porter une prononciation (voix) ET/OU une traduction écrite.
     const badges = (hasAudio ? `<span class="mc-type mc-type--voice">${escapeHtml(t("mc.type.voice"))}</span>` : "")
                  + (hasTrad ? `<span class="mc-type mc-type--trad">${escapeHtml(t("mc.type.trad"))}</span>` : "");
     const playBtn = hasAudio ? `<button type="button" class="mc-play" data-audio="${escapeHtml(r.audio_url)}">▶ ${escapeHtml(t("mc.listen"))}</button>` : "";
+    // CONTENU modifiable directement : la traduction écrite (texte) et/ou la voix (ré-enregistrement).
+    const editTradBtn = hasTrad ? `<button type="button" class="mc-edit-trad">✎ ${escapeHtml(t("mc.edit.trad"))}</button>` : "";
+    const editVoiceBtn = hasAudio ? `<button type="button" class="mc-edit-voice">🎙 ${escapeHtml(t("mc.edit.voice"))}</button>` : "";
     return `<div class="mc-item" data-sid="${escapeHtml(String(r.server_id))}">
       <div class="mc-main">
         <div class="mc-types">${badges}</div>
         <div class="mc-word">${label || t("mc.audio")}</div>
-        ${playBtn}
+        <div class="mc-actions">${playBtn}${editTradBtn}${editVoiceBtn}</div>
       </div>
-      <div class="mc-edit">
-        <label class="mc-lang"><span data-i18n="mc.lang">Langue</span>
-          <select class="mc-lang-sel">${opts}</select></label>
-        <button type="button" class="btn mc-save" data-i18n="mc.save">Corriger</button>
+      <div class="mc-trad-edit" hidden>
+        <input type="text" class="mc-trad-input" value="${escapeHtml(tr)}" maxlength="2000" />
+        <div class="mc-edit-btns">
+          <button type="button" class="btn mc-edit-save-trad">${escapeHtml(t("mc.edit.save"))}</button>
+          <button type="button" class="mc-edit-cancel">${escapeHtml(t("mc.edit.cancel"))}</button>
+        </div>
       </div>
+      <div class="mc-voice-edit" hidden>
+        <button type="button" class="btn btn--rec mc-voice-rec">${escapeHtml(t("mc.edit.rec.start"))}</button>
+        <span class="rec-timer mc-voice-timer" hidden>00:00</span>
+        <span class="mc-voice-preview"></span>
+        <div class="mc-edit-btns">
+          <button type="button" class="btn mc-edit-save-voice" disabled>${escapeHtml(t("mc.edit.save"))}</button>
+          <button type="button" class="mc-edit-cancel">${escapeHtml(t("mc.edit.cancel"))}</button>
+        </div>
+      </div>
+      <details class="mc-lang-more">
+        <summary>${escapeHtml(t("mc.lang.more"))}</summary>
+        <div class="mc-edit">
+          <label class="mc-lang"><span data-i18n="mc.lang">Langue</span>
+            <select class="mc-lang-sel">${opts}</select></label>
+          <button type="button" class="btn mc-save" data-i18n="mc.save">Corriger</button>
+        </div>
+      </details>
     </div>`;
   }).join("")
     + (query && !matches.length ? `<div class="mc-empty">${escapeHtml(t("mc.noresult"))}</div>` : "")
@@ -1727,8 +1749,7 @@ async function _mcSave(sid, newLid, itemEl) {
   const lid = canonLangId(newLid) || String(newLid || "").trim();
   let rec = null;
   try { rec = (await DB.all()).find((r) => String(r.server_id) === String(sid)); } catch (e) { rec = null; }
-  if (!rec) { toast(t("mc.err"), "err"); return; }
-  if (!lid) { toast(t("mc.err.lang"), "err"); return; }
+  if (!rec || !lid) return;   // correction seulement : sans mot local ou langue valide, on ne fait rien (aucun blocage)
   const orient = dirOrient(rec.direction);
   const patch = {
     langue: lid,
@@ -1745,6 +1766,81 @@ async function _mcSave(sid, newLid, itemEl) {
   if (!r || r.ok === false) { toast((r && r.error) ? (t("mc.err") + " : " + r.error) : t("mc.err"), "err"); return; }
   try { Object.assign(rec, patch); await DB.put(rec); } catch (e) { /* copie locale best-effort */ }
   toast(t("mc.saved"), "ok");
+  renderMyContributions();
+}
+
+/** Édite directement le TEXTE de la traduction d'une contribution déjà envoyée (contenu, pas
+    seulement sa langue). Propriétaire uniquement (autorisation multi-appareils côté .gs). */
+async function _mcSaveText(sid, newText, itemEl, box) {
+  const texte = nfc((newText || "").trim());
+  if (!texte) { toast(t("mc.edit.empty"), "warn"); return; }
+  const btn = box && box.querySelector(".mc-edit-save-trad");
+  if (btn) btn.disabled = true;
+  let r = null;
+  try { r = await updateContribution({ id: String(sid), device_id: deviceId(), owner_token: ownerToken(), patch: { target_text: texte } }); }
+  catch (e) { r = null; }
+  if (btn) btn.disabled = false;
+  if (!r || r.ok === false) { toast((r && r.error) ? (t("mc.err") + " : " + r.error) : t("mc.err"), "err"); return; }
+  try {
+    const all = await DB.all(); const rec = all.find((x) => String(x.server_id) === String(sid));
+    if (rec) { rec.target_text = texte; await DB.put(rec); }
+  } catch (e) { /* copie locale best-effort */ }
+  toast(t("mc.saved"), "ok");
+  renderMyContributions();
+}
+
+let _mcRec = null, _mcChunks = [], _mcRecTimer = null, _mcRecStart = 0;
+/** Démarre/arrête l'enregistrement du RÉ-ENREGISTREMENT de voix pour une contribution du profil.
+    Même mécanique que le micro de saisie (MediaRecorder), scoped au panneau de l'item cliqué. */
+async function _mcToggleVoiceRec(btn) {
+  const box = btn.closest(".mc-voice-edit"); if (!box) return;
+  if (_mcRec && _mcRec.state === "recording") { _mcRec.stop(); return; }
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+    toast(t("mic.err.other"), "err"); return;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    _mcChunks = [];
+    _mcRec = new MediaRecorder(stream);
+    _mcRec.ondataavailable = (ev) => { if (ev.data.size) _mcChunks.push(ev.data); };
+    _mcRec.onstop = () => {
+      const blob = new Blob(_mcChunks, { type: _mcRec.mimeType || "audio/webm" });
+      box._mcBlob = blob; box._mcDur = Date.now() - _mcRecStart;
+      try { stream.getTracks().forEach((tr) => tr.stop()); } catch (e) { /* ok */ }
+      btn.textContent = t("mc.edit.rec.start"); btn.classList.remove("is-rec");
+      const timer = box.querySelector(".mc-voice-timer"); if (timer) timer.hidden = true;
+      clearInterval(_mcRecTimer);
+      const prev = box.querySelector(".mc-voice-preview");
+      if (prev) { prev.innerHTML = ""; mountLocalAudioPlayer(prev, URL.createObjectURL(blob), box._mcDur || 0); }
+      const saveBtn = box.querySelector(".mc-edit-save-voice"); if (saveBtn) saveBtn.disabled = false;
+    };
+    _mcRecStart = Date.now();
+    _mcRec.start();
+    btn.textContent = t("mc.edit.rec.stop"); btn.classList.add("is-rec");
+    const timer = box.querySelector(".mc-voice-timer");
+    if (timer) { timer.hidden = false; timer.textContent = "00:00"; clearInterval(_mcRecTimer); _mcRecTimer = setInterval(() => { timer.textContent = fmtRec(Date.now() - _mcRecStart); }, 250); }
+  } catch (e) { toast(t("mic.err.denied"), "err"); }
+}
+/** Envoie le ré-enregistrement (remplace l'audio en base, colonnes 15/16 du .gs). */
+async function _mcSaveVoice(sid, blob, durMs, itemEl, box) {
+  const btn = box && box.querySelector(".mc-edit-save-voice");
+  if (btn) btn.disabled = true;
+  let r = null;
+  try {
+    const b64 = await blobToBase64Corr(blob);
+    r = await updateContribution({
+      id: String(sid), device_id: deviceId(), owner_token: ownerToken(), patch: {},
+      audio_base64: b64, audio: { present: true, format: blob.type || "audio/webm", duree_ms: durMs || 0 },
+    });
+  } catch (e) { r = null; }
+  if (btn) btn.disabled = false;
+  if (!r || r.ok === false) { toast((r && r.error) ? (t("mc.err") + " : " + r.error) : t("mc.err"), "err"); return; }
+  try {
+    const all = await DB.all(); const rec = all.find((x) => String(x.server_id) === String(sid));
+    if (rec && r.patch && r.patch.audio_url) { rec.audio_url = r.patch.audio_url; await DB.put(rec); }
+  } catch (e) { /* copie locale best-effort */ }
+  toast(t("mc.saved"), "ok");
+  box._mcBlob = null; box._mcDur = 0;
   renderMyContributions();
 }
 
@@ -6117,6 +6213,38 @@ function initEvents() {
   if (mcList) mcList.addEventListener("click", (e) => {
     const play = e.target.closest(".mc-play");
     if (play) { e.preventDefault(); const u = play.dataset.audio; if (u) keepScroll(() => _mcPlay(play, u)); return; }
+
+    const editTrad = e.target.closest(".mc-edit-trad");
+    if (editTrad) { e.preventDefault(); const item = editTrad.closest(".mc-item"); const box = item && item.querySelector(".mc-trad-edit");
+      if (box) { keepScroll(() => { box.hidden = false; const inp = box.querySelector(".mc-trad-input"); if (inp) inp.focus(); }); } return; }
+
+    const editVoice = e.target.closest(".mc-edit-voice");
+    if (editVoice) { e.preventDefault(); const item = editVoice.closest(".mc-item"); const box = item && item.querySelector(".mc-voice-edit");
+      if (box) keepScroll(() => { box.hidden = false; }); return; }
+
+    const cancel = e.target.closest(".mc-edit-cancel");
+    if (cancel) { e.preventDefault(); const box = cancel.closest(".mc-trad-edit, .mc-voice-edit"); if (box) keepScroll(() => { box.hidden = true; }); return; }
+
+    const saveTrad = e.target.closest(".mc-edit-save-trad");
+    if (saveTrad) {
+      e.preventDefault();
+      const item = saveTrad.closest(".mc-item"); const box = saveTrad.closest(".mc-trad-edit");
+      const inp = box && box.querySelector(".mc-trad-input");
+      if (item && inp) _mcSaveText(item.dataset.sid, inp.value, item, box);
+      return;
+    }
+
+    const voiceRec = e.target.closest(".mc-voice-rec");
+    if (voiceRec) { e.preventDefault(); _mcToggleVoiceRec(voiceRec); return; }
+
+    const saveVoice = e.target.closest(".mc-edit-save-voice");
+    if (saveVoice) {
+      e.preventDefault();
+      const item = saveVoice.closest(".mc-item"); const box = saveVoice.closest(".mc-voice-edit");
+      if (item && box && box._mcBlob) _mcSaveVoice(item.dataset.sid, box._mcBlob, box._mcDur || 0, item, box);
+      return;
+    }
+
     const b = e.target.closest(".mc-save"); if (!b) return;
     const item = b.closest(".mc-item"); if (!item) return;
     const sel = item.querySelector(".mc-lang-sel");
