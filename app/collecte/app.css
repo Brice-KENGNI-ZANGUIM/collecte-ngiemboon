@@ -1312,9 +1312,11 @@ body {
   content: ""; position: absolute; inset: 0;
   background: url("icons/bg-pattern-light.jpg") center / 260px auto repeat; opacity: .5;
 }
-:root[data-theme="dark"] .pgate-hero-wrap::before, :root[data-theme="dark"] .thanks-hero-wrap::before { background-image: url("icons/bg-pattern-dark.jpg"); opacity: .55; }
+/* Popup profil (welcome-first) : TOUJOURS le motif CLAIR, même en thème sombre (Brice
+   2026-07-24 : le fond sombre casse le rythme et le design de cette illustration précise).
+   Seul le popup de remerciement (.thanks-hero-wrap) continue de suivre le thème courant. */
+:root[data-theme="dark"] .thanks-hero-wrap::before { background-image: url("icons/bg-pattern-dark.jpg"); opacity: .55; }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .pgate-hero-wrap::before,
   :root:not([data-theme="light"]) .thanks-hero-wrap::before { background-image: url("icons/bg-pattern-dark.jpg"); opacity: .5; }
 }
 .pgate-hero-wrap::after, .thanks-hero-wrap::after {
@@ -1382,10 +1384,6 @@ body {
   .tr-guide-ex-label { font-size: .66rem; }
   .tour-title { font-size: .92rem; }
   .tour-text { font-size: .76rem; }
-  .incite-msg { font-size: .86rem; }
-  .incite-actions .btn--primary { font-size: .84rem; padding: 8px 14px; }
-  .update-title { font-size: .92rem; }
-  .update-sub, .update-notes { font-size: .76rem; }
   .field--consent span { font-size: .84rem; }
 }
 /* Règles en cartes, avec icône + mots-clés surlignés */
@@ -2487,6 +2485,39 @@ body.kb-docked { padding-bottom: var(--kb-h, 50vh); }
 .incite-close:hover { color: var(--text); border-color: var(--pop-acc); }
 @media (max-width: 560px) { .incite-banner { right: 12px; left: 12px; bottom: 12px; width: auto; } }
 @media (prefers-reduced-motion: reduce) { .incite-banner { animation: updIn .3s ease both; } }
+/* MOBILE, popups d'info/incitation/mise à jour (Brice 2026-07-24) : sur téléphone, ces popups
+   prenaient jusqu'à ~40-50% de la hauteur d'écran. Cadre, cercle d'illustration et police
+   resserrés pour viser ~30% dans les cas courants, sans sacrifier la lisibilité (texte toujours
+   sur plusieurs lignes plutôt que tronqué). Placé ICI (après les règles non scopées de
+   .incite-banner/.update-banner ci-dessus) et pas dans le bloc mobile général en tête de
+   fichier : à spécificité CSS égale, une règle plus TARDIVE dans le fichier gagne toujours,
+   qu'elle soit ou non dans un @media — un bloc mobile placé trop tôt était donc silencieusement
+   écrasé par les règles non scopées définies plus bas (piège de cascade, cf. tr-guide/piège
+   color-mix : même famille de bug que la doc `piege-colormix-gradient` connaît déjà pour un
+   autre cas). Mobile UNIQUEMENT, le rendu desktop est inchangé. */
+@media (max-width: 560px) {
+  .incite-banner { padding: 11px 34px 11px 13px; gap: 8px; border-radius: 15px; }
+  .update-banner { padding: 11px 14px; gap: 8px; border-radius: 15px; }
+  .incite-body { gap: 6px; }
+  .incite-msg { font-size: .82rem; line-height: 1.38; }
+  .incite-actions, .update-actions { gap: 8px; }
+  .incite-actions .btn--primary, .update-banner .btn--primary { font-size: .8rem; padding: 7px 12px; }
+  .incite-later, .update-later { font-size: .78rem; }
+  .incite-listen { font-size: .78rem; padding: 6px 11px; }
+  .incite-close { top: 6px; right: 8px; width: 22px; height: 22px; font-size: .72rem; }
+  .incite-ico { font-size: 1.4rem; }
+  /* Cercle d'illustration (haut-gauche) : rayon × 0.9 (124px → 112px), débord réduit à l'avenant. */
+  .incite-ico .pop-ill { width: 112px; height: 112px; margin: -31px 2px -7px -40px; }
+  .update-dot { width: 10px; height: 10px; margin-top: 4px; }
+  .update-title { font-size: .88rem; }
+  .update-sub { font-size: .74rem; margin: 3px 0 5px; }
+  /* Si plusieurs versions se sont accumulées (utilisateur resté longtemps sans MAJ), le
+     changelog défile DANS son propre cadre plutôt que de pousser tout le popup en hauteur
+     (Brice 2026-07-24 : préfère un texte scrollable à un popup qui envahit l'écran). */
+  .update-notes { font-size: .74rem; gap: 6px; max-height: 15vh; overflow-y: auto; }
+  .update-notes-list { gap: 2px; }
+  .update-vtag { font-size: .62rem; }
+}
 /* Popup de notification : sa couleur suit le TYPE de notification via data-ptype
    (violet = activité sur tes contributions, cyan = demandes). Défaut violet si non typé. */
 .notif-popup { --pop-acc: var(--violet); }
