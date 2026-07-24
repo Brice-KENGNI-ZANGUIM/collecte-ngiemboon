@@ -1,6 +1,9 @@
 {
-  "version": "v366",
+  "version": "v367",
   "changelog": {
+    "v367": [
+      "Les icônes du header, des notifications et des popups se chargent beaucoup plus vite (fichiers jusqu'à 30 fois plus légers, sans perte de netteté) : elles ne devraient plus apparaître vides sur une connexion lente"
+    ],
     "v366": [
       "Le centre de notifications distingue beaucoup plus nettement une notification lue d'une non lue (liséré, pastille, contraste renforcé), en clair comme en sombre"
     ],
